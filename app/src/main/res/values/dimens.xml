@@ -9,4 +9,6 @@
     <dimen name="margin_xl">50dp</dimen>
     <dimen name="heading_small">20sp</dimen>
     <dimen name="heading_large">30sp</dimen>
+    <dimen name="border_weight">2dp</dimen>
+    <dimen name="min_text_width_recycler_view">100dp</dimen>
 </resources>
