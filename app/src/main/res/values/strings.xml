@@ -5,5 +5,11 @@
     <string name="scoreboard">Scoreboard</string>
     <string name="instructions">Instructions</string>
     <string name="profile">Profile</string>
-    <string name="exclamation_mark_with_front_space">!</string>
+    <string name="exclamation_mark_with_front_space">\u00A0!</string>
+    <string name="_0">0</string>
+    <string name="username_unavailable">Username unavailable</string>
+    <string name="score_unavailable">Score unavailable</string>
+    <string name="time_unavailable">Time unavailable</string>
+    <string name="opponent_unavailable">Opponent unavailable</string>
+
 </resources>
