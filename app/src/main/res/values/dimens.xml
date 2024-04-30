@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_height">40dp</dimen>
+    <dimen name="button_width">200dp</dimen>
+    <dimen name="margin_xs">5dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_medium">20dp</dimen>
+    <dimen name="margin_large">35dp</dimen>
+    <dimen name="margin_xl">50dp</dimen>
+    <dimen name="heading_small">20sp</dimen>
+    <dimen name="heading_large">30sp</dimen>
+</resources>
