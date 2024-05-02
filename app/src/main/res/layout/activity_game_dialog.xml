@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@drawable/rounded_white_background">
+    android:background="@drawable/background_game_dialog">
 
 <TextView
 android:id="@+id/titleTextView"
@@ -22,7 +22,7 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:layout_below="@id/titleTextView"
 android:layout_centerHorizontal="true"
-android:layout_marginTop="@dimen/margin_small"
+android:layout_marginTop="@dimen/margin_medium"
 android:orientation="vertical">
 
 <TextView
@@ -63,7 +63,7 @@ android:layout_width="@dimen/button_width_medium"
 android:layout_height="@dimen/button_height"
 android:layout_below="@id/opponentsLayout"
 android:layout_alignParentEnd="true"
-android:layout_marginTop="@dimen/margin_medium"
+android:layout_marginTop="@dimen/margin_large"
 android:layout_marginEnd="@dimen/margin_medium"
 android:background="@drawable/gradient_button_green"
 android:fontFamily="@font/inter_semibold"
@@ -79,7 +79,7 @@ android:layout_height="@dimen/button_height"
 android:layout_below="@id/opponentsLayout"
 android:layout_alignParentStart="true"
 android:layout_marginStart="@dimen/margin_medium"
-android:layout_marginTop="@dimen/margin_medium"
+android:layout_marginTop="@dimen/margin_large"
 android:background="@drawable/gradient_button_red"
 android:fontFamily="@font/inter_semibold"
 android:gravity="center"
