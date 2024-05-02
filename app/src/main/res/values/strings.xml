@@ -11,5 +11,7 @@
     <string name="score_unavailable">Score unavailable</string>
     <string name="time_unavailable">Time unavailable</string>
     <string name="opponent_unavailable">Opponent unavailable</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
 
 </resources>

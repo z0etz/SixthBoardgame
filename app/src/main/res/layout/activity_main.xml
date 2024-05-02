@@ -33,26 +33,30 @@
             android:textSize="30sp"
             android:textStyle="italic" />
 
-        <Button
-            android:id="@+id/buttonSignUp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:backgroundTint="@color/black"
-            android:text="sp"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textButtonSignUp"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/sign_up"
+            android:background="@drawable/gradient_button_orange"
+            android:padding="@dimen/margin_small"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:fontFamily="@font/inter_semibold" />
 
-        <Button
-            android:id="@+id/buttonLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:backgroundTint="@color/white"
-            android:text="lo"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textButtonLogin"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/login"
+            android:background="@drawable/button_white"
+            android:padding="@dimen/margin_small"
+            android:textColor="@color/orange_dark"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:fontFamily="@font/inter_semibold"
+            android:layout_margin="@dimen/margin_small"/>
 
     </LinearLayout>
 
