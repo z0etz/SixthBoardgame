@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle"> <!-- Grundformen är en rektangel -->
+    <solid android:color="#FFFFFF"/> <!-- Bakgrundsfärgen för EditText -->
+    <corners android:radius="30dp"/> <!-- Radie för att skapa de ovala hörnen -->
+    <stroke android:width="2dp" android:color="@color/orange_light"/> <!-- Kantlinje för att definiera kanterna tydligare -->
+</shape>
