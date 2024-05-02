@@ -15,4 +15,5 @@
     <dimen name="height_view_white">600dp</dimen>
     <dimen name="buttons_sign_up_width">300</dimen>
     <dimen name="buttons_sign_up_height">50</dimen>
+    <dimen name="button_width_medium">169dp</dimen>
 </resources>
