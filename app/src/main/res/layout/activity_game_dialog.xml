@@ -46,7 +46,7 @@
         android:layout_height="@dimen/button_height"
         android:text="Cancel"
         android:textColor="@color/white"
-        android:background="#FF0000"
+        android:background="@drawable/gradient_button_red"
         android:layout_below="@id/opponentsTextView"
         android:layout_marginTop="50dp"
         android:layout_marginStart="20dp"
