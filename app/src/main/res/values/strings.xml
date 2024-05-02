@@ -11,7 +11,10 @@
     <string name="score_unavailable">Score unavailable</string>
     <string name="time_unavailable">Time unavailable</string>
     <string name="opponent_unavailable">Opponent unavailable</string>
-    <string name="sign_up">Sign up</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
+    <string name="let_s_play">LET´S PLAY</string>
+    <string name="wooden_background_image_description">Wood image</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -19,6 +22,4 @@
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="log_in">Log in</string>
     <string name="sign_up_to_your_new_account">Sign up to your new account</string>
-
-
 </resources>
