@@ -13,7 +13,9 @@
     <dimen name="min_text_width_recycler_view">100dp</dimen>
     <dimen name="margin_xxl">90dp</dimen>
     <dimen name="height_view_white">600dp</dimen>
-    <dimen name="buttons_sign_up_width">300dp</dimen>
-    <dimen name="buttons_sign_up_height">50dp</dimen>
+    <dimen name="buttons_xl_width">300dp</dimen>
+    <dimen name="buttons_xl_height">50dp</dimen>
     <dimen name="button_width_medium">169dp</dimen>
+    <dimen name="margin_end">152dp</dimen>
+    <dimen name="margin_xxs">4dp</dimen>
 </resources>

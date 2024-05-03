@@ -32,9 +32,7 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         binding.logInTextButton.setOnClickListener {
-
-            // welcome activity should be replaced with logInActivity when it is available
-            val intent = Intent(this, WelcomeActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 

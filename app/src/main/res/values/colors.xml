@@ -12,4 +12,5 @@
     <color name="grey_dark">#504E4E</color>
     <color name="red_light">#F93A3A</color>
     <color name="red_dark">#8A1212</color>
+    <color name="transparent">#00F44336</color>
 </resources>

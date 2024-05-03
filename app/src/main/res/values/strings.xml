@@ -27,4 +27,12 @@
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
+    <string name="you_won">YOU WON</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="log_in_to_your_account">Log in to your account</string>
+    <string name="unfortunately">Unfortunately!</string>
+    <string name="you_lost">YOU LOST</string>
+    <string name="add_player">Add player...</string>
+    <string name="start_game">Start Game</string>
+
 </resources>
