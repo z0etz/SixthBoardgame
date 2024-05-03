@@ -14,6 +14,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var fireBaseAuth: FirebaseAuth
     private lateinit var userDao: UserDao
+    private lateinit var userNameList: List<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -21,6 +22,14 @@ class SignUpActivity : AppCompatActivity() {
 
         fireBaseAuth = Firebase.auth
         userDao = UserDao()
+
+        // this is taking sometime
+        // ask Bill how to handel such problems
+        userDao.fetchUserNames {
+
+            userNameList = it
+            println(userNameList.toString())
+        }
 
         binding.logInTextButton.setOnClickListener {
 
@@ -38,7 +47,6 @@ class SignUpActivity : AppCompatActivity() {
 
     fun register() {
 
-        var doesUserExist: Boolean = false
         val userName = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
@@ -52,49 +60,54 @@ class SignUpActivity : AppCompatActivity() {
 
 
 
-        userDao.fetchUserNames { userNames ->
+        // we need to keep all following code inside this userDao function to avoid conflict
+        // between asynchronous code and synchronous code
 
-            for (oldUserName in userNames) {
 
-                println(oldUserName )
+            for (oldUserName in userNameList) {
+
+                println(oldUserName)
+                println(oldUserName.indices)
                 if (oldUserName == userName) {
                     Toast.makeText(this, "Username is taken", Toast.LENGTH_SHORT).show()
-                    doesUserExist = true
-                    return@fetchUserNames
+                    return
                 }
             }
-        }
-
-        if(doesUserExist){
-            println(userName)
-            return
-        }
 
 
-        if (password != confirmPassWord) {
-
-            Toast.makeText(this, "Passwords don't match ", Toast.LENGTH_SHORT).show()
-            return
-        }
 
 
-        fireBaseAuth.createUserWithEmailAndPassword(usermail, password)
-            .addOnSuccessListener { authResult ->
-                val user = fireBaseAuth.currentUser
 
-                val newUser = User(user?.uid.toString(), userName, usermail)
-                userDao.addUser(newUser)
+            if (password != confirmPassWord) {
 
-                Toast.makeText(this, "Welcome: $userName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Passwords don't match ", Toast.LENGTH_SHORT).show()
+                return
 
-                val intent = Intent(this, WelcomeActivity::class.java)
-                startActivity(intent)
-                finish()
             }
-            .addOnFailureListener { exception ->
-                Toast.makeText(this, "Failed to sign up: ${exception.message}", Toast.LENGTH_SHORT)
-                    .show()
-            }
+
+
+            fireBaseAuth.createUserWithEmailAndPassword(usermail, password)
+                .addOnSuccessListener { authResult ->
+                    val user = fireBaseAuth.currentUser
+
+                    val newUser = User(user?.uid.toString(), userName, usermail)
+                    userDao.addUser(newUser)
+
+                    Toast.makeText(this, "Welcome: $userName", Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent(this, WelcomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(
+                        this,
+                        "Failed to sign up: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+
 
 
     }

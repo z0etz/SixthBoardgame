@@ -68,4 +68,25 @@ class UserDao {
                 completion(emptyList())
             }
     }
+
+
+    fun fetchUserNames2(completion: (List<String>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val userList = mutableListOf<String>()
+
+        db.collection("users")
+            .limit(100)
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    val userName = document.getString(USER_NAME_KEY) ?: ""
+                    userList.add(userName)
+                }
+                completion(userList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Failed to fetch user list from Firestore", exception)
+                completion(emptyList())
+            }
+    }
 }
