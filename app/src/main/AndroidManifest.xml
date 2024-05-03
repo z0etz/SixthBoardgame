@@ -19,15 +19,14 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
+            android:name=".GameDialogActivity"
+            android:exported="false" />
+        <activity
             android:name=".GameActivity"
             android:exported="false" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".SignUpActivity"
-            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"

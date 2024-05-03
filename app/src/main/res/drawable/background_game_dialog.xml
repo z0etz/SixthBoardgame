@@ -1,0 +1,10 @@
+<!-- rounded_white_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/white" />
+    <corners android:radius="12dp" />
+    <padding android:left="8dp" android:top="60dp" android:right="30dp" android:bottom="60dp" />
+    <stroke
+        android:width="2dp"
+    android:color="#DDDDDD" />
+</shape>

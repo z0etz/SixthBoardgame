@@ -22,4 +22,9 @@
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="log_in">Log in</string>
     <string name="sign_up_to_your_new_account">Sign up to your new account</string>
+    <string name="are_you_ready">Are You Ready?</string>
+    <string name="vs">VS</string>
+    <string name="opponents">Opponents</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Continue</string>
 </resources>
