@@ -3,5 +3,5 @@
     android:shape="rectangle"> <!-- Grundformen är en rektangel -->
     <solid android:color="#FFFFFF"/> <!-- Bakgrundsfärgen för EditText -->
     <corners android:radius="30dp"/> <!-- Radie för att skapa de ovala hörnen -->
-    <stroke android:width="2dp" android:color="@color/orange_light"/> <!-- Kantlinje för att definiera kanterna tydligare -->
+    <stroke android:width="3dp" android:color="@color/orange_light"/> <!-- Kantlinje för att definiera kanterna tydligare -->
 </shape>
