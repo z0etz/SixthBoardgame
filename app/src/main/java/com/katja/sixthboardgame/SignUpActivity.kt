@@ -1,6 +1,6 @@
 package com.katja.sixthboardgame
 
-<<<<<<< HEAD
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -32,7 +32,6 @@ class SignUpActivity : AppCompatActivity() {
         binding.signUpButton.setOnClickListener {
             register()
         }
-
 
 
     }
@@ -78,3 +77,4 @@ class SignUpActivity : AppCompatActivity() {
 
 
     }
+}
