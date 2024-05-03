@@ -38,15 +38,28 @@ class SignUpActivity : AppCompatActivity() {
 
     fun register() {
 
-        val username = binding.etUsername.text.toString().trim()
+        val userName = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
         val confirmPassWord = binding.etConfirmPassword.text.toString().trim()
 
-        if (username.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()) {
+        if (userName.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()) {
 
             Toast.makeText(this, "please fill all required fields", Toast.LENGTH_SHORT).show()
             return
+        }
+
+
+
+        userDao.fetchUserNames { userNames ->
+
+            for (oldUserName in userNames) {
+
+                if (oldUserName == userName) {
+                    Toast.makeText(this, "Username is taken", Toast.LENGTH_SHORT).show()
+                    return@fetchUserNames
+                }
+            }
         }
 
         if (password != confirmPassWord) {
@@ -60,12 +73,11 @@ class SignUpActivity : AppCompatActivity() {
             .addOnSuccessListener { authResult ->
                 val user = fireBaseAuth.currentUser
 
-                val newUser = User(user?.uid.toString(), username, usermail)
+                val newUser = User(user?.uid.toString(), userName, usermail)
                 userDao.addUser(newUser)
 
-                Toast.makeText(this, "Welcome: $username", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Welcome: $userName", Toast.LENGTH_SHORT).show()
 
-                // should replace the welcome Activity wtih the right activity
                 val intent = Intent(this, WelcomeActivity::class.java)
                 startActivity(intent)
                 finish()

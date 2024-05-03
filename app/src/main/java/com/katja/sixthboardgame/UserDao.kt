@@ -1,6 +1,7 @@
 package com.katja.sixthboardgame
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -46,6 +47,25 @@ class UserDao {
             .addOnFailureListener { exception ->
                 Log.e(ContentValues.TAG, "Failed to fetch user from Firestore", exception)
                 completion(null)
+            }
+    }
+
+
+    fun fetchUserNames(completion: (List<String>) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                val userList = mutableListOf<String>()
+                for (document in result) {
+                    val userName = document.getString(USER_NAME_KEY) ?: ""
+                    userList.add(userName)
+                }
+                completion(userList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Failed to fetch user list from Firestore", exception)
+                completion(emptyList())
             }
     }
 }
