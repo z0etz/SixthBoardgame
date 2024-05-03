@@ -22,15 +22,14 @@ class SignUpActivity : AppCompatActivity() {
         fireBaseAuth = Firebase.auth
         userDao = UserDao()
 
-        binding.logInTextButton.setOnClickListener {
-
-            // welcome activity should be replaced with logInActivity when it is available
+        binding.signUpButton.setOnClickListener {
             val intent = Intent(this, WelcomeActivity::class.java)
             startActivity(intent)
         }
 
-        binding.signUpButton.setOnClickListener {
-            register()
+        binding.logInTextButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
 
 
