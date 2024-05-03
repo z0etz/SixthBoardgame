@@ -27,4 +27,6 @@
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
+    <string name="you_won">YOU WON</string>
+    <string name="congratulations">Congratulations!</string>
 </resources>
