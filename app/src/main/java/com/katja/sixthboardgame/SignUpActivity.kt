@@ -38,6 +38,7 @@ class SignUpActivity : AppCompatActivity() {
 
     fun register() {
 
+        var doesUserExist: Boolean = false
         val userName = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
@@ -55,12 +56,20 @@ class SignUpActivity : AppCompatActivity() {
 
             for (oldUserName in userNames) {
 
+                println(oldUserName )
                 if (oldUserName == userName) {
                     Toast.makeText(this, "Username is taken", Toast.LENGTH_SHORT).show()
+                    doesUserExist = true
                     return@fetchUserNames
                 }
             }
         }
+
+        if(doesUserExist){
+            println(userName)
+            return
+        }
+
 
         if (password != confirmPassWord) {
 
