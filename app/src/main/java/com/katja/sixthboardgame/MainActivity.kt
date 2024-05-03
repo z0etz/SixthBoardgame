@@ -1,25 +1,21 @@
 package com.katja.sixthboardgame
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import com.katja.sixthboardgame.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    lateinit var bindning: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        bindning = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(bindning.root)
 
-        val textButtonSignUp = findViewById<TextView>(R.id.textButtonSignUp)
-        val textButtonLogin = findViewById<TextView>(R.id.textButtonLogin)
 
-        textButtonSignUp.setOnClickListener {
+        bindning.textButtonSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
-        }
-
-        textButtonLogin.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
