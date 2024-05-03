@@ -31,5 +31,7 @@
     <string name="congratulations">Congratulations!</string>
 
     <string name="log_in_to_your_account">Log in to your account</string>
+    <string name="unfortunately">Unfortunately!</string>
+    <string name="you_lost">YOU LOST</string>
 
 </resources>
