@@ -1,5 +1,6 @@
 package com.katja.sixthboardgame
 
+<<<<<<< HEAD
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -36,22 +37,22 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 
-    fun register(){
+    fun register() {
 
         val username = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
         val confirmPassWord = binding.etConfirmPassword.text.toString().trim()
 
-        if(username.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()){
+        if (username.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()) {
 
             Toast.makeText(this, "please fill all required fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if(password != confirmPassWord){
+        if (password != confirmPassWord) {
 
-            Toast.makeText(this,"Passwords don't match ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Passwords don't match ", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -77,4 +78,3 @@ class SignUpActivity : AppCompatActivity() {
 
 
     }
-}

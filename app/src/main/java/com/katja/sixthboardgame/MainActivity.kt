@@ -3,6 +3,7 @@ package com.katja.sixthboardgame
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import com.katja.sixthboardgame.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
