@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/background_game_dialog">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/unfortunately"
+        android:textColor="@color/orange_dark"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="@dimen/heading_large"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_medium"/>
+
+    <LinearLayout
+        android:id="@+id/opponentsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/usernameDialogTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/username"
+            android:textSize="@dimen/heading_small"
+            android:textColor="@color/grey"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/inter_bold"/>
+
+        <TextView
+            android:id="@+id/vsDialogTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/you_lost"
+            android:textColor="@color/orange_dark"
+            android:fontFamily="@font/inter_semibold"
+            android:textSize="@dimen/heading_large"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_small" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textButtonContinue"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_below="@id/opponentsLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:background="@drawable/gradient_button_red"
+        android:fontFamily="@font/inter_semibold"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/margin_small"
+        android:text="@string/accept"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
