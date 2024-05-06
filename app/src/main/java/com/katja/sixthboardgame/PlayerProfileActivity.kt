@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
 
-class PlayerProfile : AppCompatActivity() {
+class PlayerProfileActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityPlayerProfileBinding
 

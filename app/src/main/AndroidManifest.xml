@@ -16,7 +16,7 @@
             android:name=".GameInstructionActivity"
             android:exported="false" />
         <activity
-            android:name=".PlayerProfile"
+            android:name=".PlayerProfileActivity"
             android:exported="false" />
         <activity
             android:name=".LoseDialogActivity"
