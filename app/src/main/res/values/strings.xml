@@ -51,4 +51,5 @@
     <string name="time_not_loaded">Time not loaded</string>
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
+    <string name="pending_invites">Pending invites</string>
 </resources>
