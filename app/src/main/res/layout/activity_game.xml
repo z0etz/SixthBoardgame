@@ -46,61 +46,66 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/row1">
 
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square" android:tag="square1.1"/>
+            <include layout="@layout/view_square" android:tag="square1.2"/>
+            <include layout="@layout/view_square" android:tag="square1.3"/>
+            <include layout="@layout/view_square" android:tag="square1.4"/>
+            <include layout="@layout/view_square" android:tag="square1.5"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/row2">
 
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square" android:tag="square2.1"/>
+            <include layout="@layout/view_square" android:tag="square2.2"/>
+            <include layout="@layout/view_square" android:tag="square2.3"/>
+            <include layout="@layout/view_square" android:tag="square2.4"/>
+            <include layout="@layout/view_square" android:tag="square2.5"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/row3">
 
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square" android:tag="square3.1"/>
+            <include layout="@layout/view_square" android:tag="square3.2"/>
+            <include layout="@layout/view_square" android:tag="square3.3"/>
+            <include layout="@layout/view_square" android:tag="square3.4"/>
+            <include layout="@layout/view_square" android:tag="square3.5"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/row4">
 
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square" android:tag="square4.1"/>
+            <include layout="@layout/view_square" android:tag="square4.2"/>
+            <include layout="@layout/view_square" android:tag="square4.3"/>
+            <include layout="@layout/view_square" android:tag="square4.4"/>
+            <include layout="@layout/view_square" android:tag="square4.5"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/row5">
 
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
-            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square" android:tag="square5.1"/>
+            <include layout="@layout/view_square" android:tag="square5.2"/>
+            <include layout="@layout/view_square" android:tag="square5.3"/>
+            <include layout="@layout/view_square" android:tag="square5.4"/>
+            <include layout="@layout/view_square" android:tag="square5.5"/>
         </LinearLayout>
 
 
