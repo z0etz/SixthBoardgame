@@ -14,6 +14,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var fireBaseAuth: FirebaseAuth
     private lateinit var userDao: UserDao
+    private lateinit var userNameList: List<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -22,10 +23,16 @@ class SignUpActivity : AppCompatActivity() {
         fireBaseAuth = Firebase.auth
         userDao = UserDao()
 
-        binding.logInTextButton.setOnClickListener {
+        // this is taking sometime
+        // ask Bill how to handel such problems
+        userDao.fetchUserNames {
 
-            // welcome activity should be replaced with logInActivity when it is available
-            val intent = Intent(this, WelcomeActivity::class.java)
+            userNameList = it
+            println(userNameList.toString())
+        }
+
+        binding.logInTextButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
@@ -38,43 +45,66 @@ class SignUpActivity : AppCompatActivity() {
 
     fun register() {
 
-        val username = binding.etUsername.text.toString().trim()
+        val userName = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
         val confirmPassWord = binding.etConfirmPassword.text.toString().trim()
 
-        if (username.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()) {
+        if (userName.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()) {
 
             Toast.makeText(this, "please fill all required fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (password != confirmPassWord) {
-
-            Toast.makeText(this, "Passwords don't match ", Toast.LENGTH_SHORT).show()
-            return
-        }
 
 
-        fireBaseAuth.createUserWithEmailAndPassword(usermail, password)
-            .addOnSuccessListener { authResult ->
-                val user = fireBaseAuth.currentUser
+        // we need to keep all following code inside this userDao function to avoid conflict
+        // between asynchronous code and synchronous code
 
-                val newUser = User(user?.uid.toString(), username, usermail)
-                userDao.addUser(newUser)
 
-                Toast.makeText(this, "Welcome: $username", Toast.LENGTH_SHORT).show()
+            for (oldUserName in userNameList) {
 
-                // should replace the welcome Activity wtih the right activity
-                val intent = Intent(this, WelcomeActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(this, "Failed to sign up: ${exception.message}", Toast.LENGTH_SHORT)
-                    .show()
+                println(oldUserName)
+                println(oldUserName.indices)
+                if (oldUserName == userName) {
+                    Toast.makeText(this, "Username is taken", Toast.LENGTH_SHORT).show()
+                    return
+                }
             }
 
+
+
+
+
+            if (password != confirmPassWord) {
+
+                Toast.makeText(this, "Passwords don't match ", Toast.LENGTH_SHORT).show()
+                return
+
+            }
+
+
+            fireBaseAuth.createUserWithEmailAndPassword(usermail, password)
+                .addOnSuccessListener { authResult ->
+                    val user = fireBaseAuth.currentUser
+
+                    val newUser = User(user?.uid.toString(), userName, usermail)
+                    userDao.addUser(newUser)
+
+                    Toast.makeText(this, "Welcome: $userName", Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent(this, WelcomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(
+                        this,
+                        "Failed to sign up: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
 
     }
 }
