@@ -3,9 +3,9 @@ package com.katja.sixthboardgame
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class PlayerProfile : AppCompatActivity() {
+class GameInstructionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player_profile)
+        setContentView(R.layout.activity_game_instruction)
     }
 }
