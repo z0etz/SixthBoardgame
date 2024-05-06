@@ -25,6 +25,7 @@ class GameActivity : AppCompatActivity() {
             width = gameBoardSize
             height = gameBoardSize
         }
+        //TODO: Make the squares on the game board change size with the game board.
     }
 
     private fun calcGameBoardSize() {
