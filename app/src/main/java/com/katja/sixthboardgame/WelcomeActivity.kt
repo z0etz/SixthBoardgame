@@ -1,24 +1,23 @@
 package com.katja.sixthboardgame
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityWelcomeBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_welcome)
+        binding = ActivityWelcomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val ongoingGamesData: List<String> = getOngoingGamesData()
-        val adapter = WelcomeAdapterCurrentGamesList(this, getOngoingGamesData)
+        binding.textButtonScoreboard.setOnClickListener{
+            val intent = Intent(this, HighscoreActivity::class.java)
+            startActivity(intent)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerViewOngoingGames)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
-    }
+        }
 
-    private fun getOngoingGamesData(): List<String> {
-        return listOf("Game 1", "Game 2", "Game 3")
     }
 }
