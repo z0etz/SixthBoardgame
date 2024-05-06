@@ -20,4 +20,5 @@
     <dimen name="margin_xxs">4dp</dimen>
     <dimen name="margin_xxxs">2dp</dimen>
     <dimen name="game_board_size">350dp</dimen>
+    <dimen name="game_board_square_size">70dp</dimen>
 </resources>
