@@ -3,6 +3,7 @@ package com.katja.sixthboardgame
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
@@ -13,11 +14,22 @@ class WelcomeActivity : AppCompatActivity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val ongoingGamesData: List<String> = getOngoingGamesData()
+        var adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData)
+
+        // Set the adapter to the RecyclerView
+        binding.recyclerViewOngoingGames.adapter = adapter
+        binding.recyclerViewOngoingGames.layoutManager = LinearLayoutManager(this)
+
         binding.textButtonScoreboard.setOnClickListener{
             val intent = Intent(this, HighscoreActivity::class.java)
             startActivity(intent)
 
         }
 
+    }
+
+    private fun getOngoingGamesData(): List<String> {
+        return listOf("Game 1", "Game 2", "Game 3")
     }
 }
