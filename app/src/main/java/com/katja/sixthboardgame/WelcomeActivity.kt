@@ -16,7 +16,12 @@ class WelcomeActivity : AppCompatActivity() {
         binding.textButtonScoreboard.setOnClickListener{
             val intent = Intent(this, HighscoreActivity::class.java)
             startActivity(intent)
+        }
 
+
+        binding.textButtonNewGame.setOnClickListener{
+            val intent = Intent(this, StartGameActivity::class.java)
+            startActivity(intent)
         }
 
     }

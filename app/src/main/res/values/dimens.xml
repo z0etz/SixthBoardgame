@@ -18,4 +18,7 @@
     <dimen name="button_width_medium">169dp</dimen>
     <dimen name="margin_end">152dp</dimen>
     <dimen name="margin_xxs">4dp</dimen>
+    <dimen name="recycle_view_h">300dp</dimen>
+    <dimen name="recycle_view_w">350dp</dimen>
+
 </resources>
