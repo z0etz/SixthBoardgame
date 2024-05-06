@@ -64,6 +64,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/invitesRecyclerView"
         android:layout_width="@dimen/recycle_view_w"
         android:layout_height="@dimen/recycle_view_h"
         android:layout_marginBottom="32dp"
