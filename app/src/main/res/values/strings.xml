@@ -40,4 +40,7 @@
     <string name="add_player">Add player...</string>
     <string name="start_game">Start Game</string>
     <string name="highscore">Highscore</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delete_account">Delete Account</string>
+
 </resources>
