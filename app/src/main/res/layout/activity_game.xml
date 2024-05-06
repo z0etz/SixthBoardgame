@@ -8,6 +8,36 @@
     android:background="@drawable/wooden_background"
     android:orientation="vertical">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_large">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/whos_turn"
+            android:textColor="@color/green_dark"
+            android:fontFamily="@font/inter_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_left_not_loaded"
+            android:textColor="@color/green_dark"
+            android:fontFamily="@font/inter_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -15,7 +45,8 @@
     android:text="@string/opponent_name_not_loaded"
     android:layout_gravity="center"
     android:layout_margin="@dimen/margin_small"
-    android:textColor="@color/white"/>
+    android:textColor="@color/white"
+    android:fontFamily="@font/inter_semibold"/>
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -28,16 +59,21 @@
             android:layout_height="50dp"
             android:background="@drawable/player_piece_gray"
             android:layout_margin="5dp"
-            android:clipToOutline="true"
             android:elevation="2dp" />
     </FrameLayout>
 
+<FrameLayout
+    android:layout_width="@dimen/game_board_size_plus_border"
+    android:layout_height="@dimen/game_board_size_plus_border"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/orange_light"
+    android:layout_marginVertical="@dimen/margin_small">
+
     <GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gameBoard"
         android:layout_width="@dimen/game_board_size"
         android:layout_height="@dimen/game_board_size"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:layout_margin="@dimen/margin_small"
         android:columnCount="5"
         android:rowCount="5"
@@ -108,8 +144,8 @@
             <include layout="@layout/view_square" android:tag="square5.5"/>
         </LinearLayout>
 
-
     </GridLayout>
+</FrameLayout>
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -122,7 +158,6 @@
             android:layout_height="50dp"
             android:background="@drawable/player_piece_brown"
             android:layout_margin="5dp"
-            android:clipToOutline="true"
             android:elevation="2dp" />
     </FrameLayout>
 
@@ -134,7 +169,8 @@
         android:text="@string/player_name_not_loaded"
         android:layout_gravity="center"
         android:layout_margin="@dimen/margin_small"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_semibold"/>
 
 
 </LinearLayout>
