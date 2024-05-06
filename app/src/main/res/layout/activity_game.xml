@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,4 +8,128 @@
     android:background="@drawable/wooden_background"
     android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/text_opponent_name"
+    android:text="@string/opponent_name_not_loaded"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/margin_small"
+    android:textColor="@color/white"/>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <!-- Add the circle as the background of a View -->
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/player_piece_gray"
+            android:layout_margin="5dp"
+            android:clipToOutline="true"
+            android:elevation="2dp" />
+    </FrameLayout>
+
+    <GridLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gameBoard"
+        android:layout_width="@dimen/game_board_size"
+        android:layout_height="@dimen/game_board_size"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_small"
+        android:columnCount="5"
+        android:rowCount="5"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+            <include layout="@layout/view_square"/>
+        </LinearLayout>
+
+
+    </GridLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/player_piece_brown"
+            android:layout_margin="5dp"
+            android:clipToOutline="true"
+            android:elevation="2dp" />
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_player_name"
+        android:text="@string/player_name_not_loaded"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/margin_small"
+        android:textColor="@color/white"/>
+
+
+</LinearLayout>
