@@ -13,6 +13,12 @@ class WelcomeActivity : AppCompatActivity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.textButtonNewGame.setOnClickListener{
+            val intent = Intent(this, StartGameActivity::class.java)
+            startActivity(intent)
+
+        }
+
         binding.textButtonScoreboard.setOnClickListener{
             val intent = Intent(this, HighscoreActivity::class.java)
             startActivity(intent)
