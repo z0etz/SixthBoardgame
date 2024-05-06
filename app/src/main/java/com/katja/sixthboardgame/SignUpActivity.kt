@@ -106,7 +106,5 @@ class SignUpActivity : AppCompatActivity() {
                         .show()
                 }
 
-
-
     }
 }

@@ -27,6 +27,11 @@
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
+    <string name="gotit">Got it!</string>
+    <string name="rules">The rules are simple</string>
+    <string name="game_instructions">Your goal is to build a tower of six or more disks with your color on top.
+        On your turn, you will either start a new tower by adding a piece to the board, or capture an existing tower by moving another in play.
+        The twist is that each tower moves like a different chess piece, based on the number of disks in that tower.</string>
     <string name="you_won">YOU WON</string>
     <string name="congratulations">Congratulations!</string>
     <string name="log_in_to_your_account">Log in to your account</string>
@@ -41,5 +46,7 @@
     <string name="your_turn">YOUR TURN</string>
     <string name="opponents_turn">OPPONENTS TURN</string>
     <string name="time_left_not_loaded">Time left not loaded</string>
-
+    <string name="highscore">Highscore</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delete_account">Delete Account</string>
 </resources>

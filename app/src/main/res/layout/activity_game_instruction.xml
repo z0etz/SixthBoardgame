@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wooden_background"
+    tools:context=".GameInstructionActivity">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="147dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/instructions"
+        android:textColor="@color/white"
+        android:textSize="@dimen/heading_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:shadowColor="@color/orange_light"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="8"/>
+
+    <TextView
+        android:id="@+id/textViewExclamation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="136dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/exclamation_mark_with_front_space"
+        android:textColor="@color/orange_light"
+        android:textSize="@dimen/heading_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:shadowColor="@color/orange_light"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="8"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="250dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="105dp"
+        android:layout_marginTop="133dp"
+        android:layout_marginEnd="106dp"
+        android:layout_marginBottom="66dp"
+        android:shadowColor="@color/green_dark"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        app:layout_constraintBottom_toTopOf="@+id/textButtonGotit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="@dimen/margin_medium"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/rules"
+            android:layout_margin="@dimen/margin_xs"
+            android:textSize="@dimen/margin_medium"
+            android:fontFamily="@font/inter_bold"
+            android:padding="@dimen/margin_xs"
+            android:shadowColor="@color/green_light"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="8"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:text="@string/game_instructions"
+            android:textAlignment="center"
+            android:padding="@dimen/margin_xs"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+
+
+    <TextView
+        android:id="@+id/textButtonGotit"
+        android:layout_width="@dimen/button_width_medium"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="121dp"
+        android:layout_marginEnd="121dp"
+        android:layout_marginBottom="92dp"
+        android:background="@drawable/gradient_button_green"
+        android:fontFamily="@font/inter_semibold"
+        android:gravity="center"
+        android:padding="@dimen/margin_small"
+        android:text="@string/gotit"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:shadowColor="@color/white"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="8"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
