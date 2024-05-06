@@ -42,4 +42,6 @@
     <string name="highscore">Highscore</string>
     <string name="opponent_not_loaded">Opponent not loaded</string>
     <string name="time_not_loaded">Time not loaded</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delete_account">Delete Account</string>
 </resources>

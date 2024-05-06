@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wooden_background">
+    android:background="@drawable/wooden_background"
+    tools:context=".GameInstructionActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -111,6 +112,5 @@
         android:shadowDy="5"
         android:shadowRadius="8"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
