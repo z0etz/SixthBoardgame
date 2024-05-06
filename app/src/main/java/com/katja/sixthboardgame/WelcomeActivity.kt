@@ -25,5 +25,11 @@ class WelcomeActivity : AppCompatActivity() {
 
         }
 
+        binding.textButtonInstructions.setOnClickListener{
+            val intent = Intent(this, GameInstructionActivity::class.java)
+            startActivity(intent)
+
+        }
+
     }
 }

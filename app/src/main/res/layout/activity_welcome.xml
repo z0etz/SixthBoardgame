@@ -68,7 +68,7 @@
         android:layout_margin="@dimen/margin_small"/>
 
     <TextView
-        android:id="@+id/textInstructions"
+        android:id="@+id/textButtonInstructions"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:text="@string/instructions"
