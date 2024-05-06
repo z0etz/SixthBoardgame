@@ -44,4 +44,5 @@
     <string name="delete_account">Delete Account</string>
     <string name="pending_invites">Pending invites</string>
 
+    <color name="orange_test">#FF5722</color>
 </resources>

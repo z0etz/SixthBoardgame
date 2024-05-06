@@ -67,9 +67,11 @@
         android:layout_width="@dimen/recycle_view_w"
         android:layout_height="@dimen/recycle_view_h"
         android:layout_marginBottom="32dp"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/pending_invite"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
