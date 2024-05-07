@@ -13,7 +13,8 @@
         tools:context=".GameActivity"
         android:background="@drawable/wooden_background"
         android:scaleType="fitXY"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/gameBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -68,7 +69,8 @@
             android:layout_height="50dp"
             android:background="@drawable/player_piece_gray"
             android:layout_margin="5dp"
-            android:elevation="2dp" />
+            android:elevation="2dp"
+            android:id="@+id/opponents_discs"/>
     </FrameLayout>
 
   <GridLayout
@@ -83,17 +85,30 @@
         android:background="@color/orange_light"
         android:padding="@dimen/margin_xxxs">
 
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:id="@+id/row5">
+
+          <include layout="@layout/view_square" android:id="@+id/square00"/>
+          <include layout="@layout/view_square" android:id="@+id/square01"/>
+          <include layout="@layout/view_square" android:id="@+id/square02"/>
+          <include layout="@layout/view_square" android:id="@+id/square03"/>
+          <include layout="@layout/view_square" android:id="@+id/square04"/>
+      </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/row1">
 
+            <include layout="@layout/view_square" android:id="@+id/square10"/>
             <include layout="@layout/view_square" android:id="@+id/square11"/>
             <include layout="@layout/view_square" android:id="@+id/square12"/>
             <include layout="@layout/view_square" android:id="@+id/square13"/>
             <include layout="@layout/view_square" android:id="@+id/square14"/>
-            <include layout="@layout/view_square" android:id="@+id/square15"/>
         </LinearLayout>
 
         <LinearLayout
@@ -102,11 +117,11 @@
             android:orientation="horizontal"
             android:id="@+id/row2">
 
+            <include layout="@layout/view_square" android:id="@+id/square20"/>
             <include layout="@layout/view_square" android:id="@+id/square21"/>
             <include layout="@layout/view_square" android:id="@+id/square22"/>
             <include layout="@layout/view_square" android:id="@+id/square23"/>
             <include layout="@layout/view_square" android:id="@+id/square24"/>
-            <include layout="@layout/view_square" android:id="@+id/square25"/>
         </LinearLayout>
 
         <LinearLayout
@@ -115,11 +130,11 @@
             android:orientation="horizontal"
             android:id="@+id/row3">
 
+            <include layout="@layout/view_square" android:id="@+id/square30"/>
             <include layout="@layout/view_square" android:id="@+id/square31"/>
             <include layout="@layout/view_square" android:id="@+id/square32"/>
             <include layout="@layout/view_square" android:id="@+id/square33"/>
             <include layout="@layout/view_square" android:id="@+id/square34"/>
-            <include layout="@layout/view_square" android:id="@+id/square35"/>
         </LinearLayout>
 
         <LinearLayout
@@ -128,24 +143,11 @@
             android:orientation="horizontal"
             android:id="@+id/row4">
 
+            <include layout="@layout/view_square" android:id="@+id/square40"/>
             <include layout="@layout/view_square" android:id="@+id/square41"/>
             <include layout="@layout/view_square" android:id="@+id/square42"/>
             <include layout="@layout/view_square" android:id="@+id/square43"/>
             <include layout="@layout/view_square" android:id="@+id/square44"/>
-            <include layout="@layout/view_square" android:id="@+id/square45"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/row5">
-
-            <include layout="@layout/view_square" android:id="@+id/square51"/>
-            <include layout="@layout/view_square" android:id="@+id/square52"/>
-            <include layout="@layout/view_square" android:id="@+id/square53"/>
-            <include layout="@layout/view_square" android:id="@+id/square54"/>
-            <include layout="@layout/view_square" android:id="@+id/square55"/>
         </LinearLayout>
 
     </GridLayout>
@@ -161,7 +163,8 @@
             android:layout_height="50dp"
             android:background="@drawable/player_piece_brown"
             android:layout_margin="5dp"
-            android:elevation="2dp" />
+            android:elevation="2dp"
+            android:id="@+id/players_discs"/>
     </FrameLayout>
 
 
