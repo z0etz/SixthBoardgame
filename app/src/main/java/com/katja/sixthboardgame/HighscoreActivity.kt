@@ -9,24 +9,24 @@ import com.katja.sixthboardgame.databinding.ActivityHighscoreBinding
 class HighscoreActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityHighscoreBinding
+    private val userDao = UserDao()
+    private lateinit var leaderboardAdapter: LeaderboardAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHighscoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        val highscores = listOf(
-            Highscore("User1", 100),
-            Highscore("User2", 90),
-            Highscore("User3", 80),
-
-        )
-
-        val adapter = HighscoreAdapter(highscores)
-        binding.recyclerViewHighscore.adapter = adapter
+        leaderboardAdapter = LeaderboardAdapter(emptyList())
+        binding.recyclerViewHighscore.adapter = leaderboardAdapter
         binding.recyclerViewHighscore.layoutManager = LinearLayoutManager(this)
 
+        fetchAndDisplayLeaderboard()
+    }
 
-
+    private fun fetchAndDisplayLeaderboard() {
+        userDao.fetchLeaderboard { leaderboard ->
+            leaderboardAdapter.updateHighscores(leaderboard)
+        }
     }
 }

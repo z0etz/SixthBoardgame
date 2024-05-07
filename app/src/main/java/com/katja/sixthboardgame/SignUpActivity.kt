@@ -48,6 +48,7 @@ class SignUpActivity : AppCompatActivity() {
         val userName = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
+        val highscore = 0
         val confirmPassWord = binding.etConfirmPassword.text.toString().trim()
 
         if (userName.isEmpty() || usermail.isEmpty() || password.isEmpty() || confirmPassWord.isEmpty()) {
@@ -88,7 +89,7 @@ class SignUpActivity : AppCompatActivity() {
                 .addOnSuccessListener { authResult ->
                     val user = fireBaseAuth.currentUser
 
-                    val newUser = User(user?.uid.toString(), userName, usermail)
+                    val newUser = User(user?.uid.toString(), userName, usermail, highscore)
                     userDao.addUser(newUser)
 
                     Toast.makeText(this, "Welcome: $userName", Toast.LENGTH_SHORT).show()
