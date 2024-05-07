@@ -4,6 +4,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
 
@@ -21,11 +23,25 @@ class GameActivity : AppCompatActivity() {
 
         getScreenSize()
         calcGameBoardSize()
+
+        // Set size of game board and the square views on it according to screen size
         binding.gameBoard.layoutParams.apply {
             width = gameBoardSize
             height = gameBoardSize
         }
-        //TODO: Make the squares on the game board change size with the game board.
+        for (i in 1..5) {
+            for (j in 1..5) {
+                val squareId = resources.getIdentifier("square$i$j", "id", packageName)
+                val viewSquare = findViewById<FrameLayout>(squareId)
+                viewSquare?.let {
+                    val layoutParams = it.layoutParams as ViewGroup.LayoutParams
+                    layoutParams.width = (gameBoardSize - 4) / 5
+                    layoutParams.height = (gameBoardSize - 4) / 5
+                    it.layoutParams = layoutParams
+                }
+            }
+        }
+
     }
 
     private fun calcGameBoardSize() {

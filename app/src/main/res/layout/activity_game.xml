@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity"
-    android:background="@drawable/wooden_background"
-    android:orientation="vertical">
+    android:fillViewport="true"
+    android:id="@+id/scrollViewGame">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".GameActivity"
+        android:background="@drawable/wooden_background"
+        android:scaleType="fitXY"
+        android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -82,11 +89,11 @@
             android:orientation="horizontal"
             android:id="@+id/row1">
 
-            <include layout="@layout/view_square" android:tag="square1.1"/>
-            <include layout="@layout/view_square" android:tag="square1.2"/>
-            <include layout="@layout/view_square" android:tag="square1.3"/>
-            <include layout="@layout/view_square" android:tag="square1.4"/>
-            <include layout="@layout/view_square" android:tag="square1.5"/>
+            <include layout="@layout/view_square" android:id="@+id/square11"/>
+            <include layout="@layout/view_square" android:id="@+id/square12"/>
+            <include layout="@layout/view_square" android:id="@+id/square13"/>
+            <include layout="@layout/view_square" android:id="@+id/square14"/>
+            <include layout="@layout/view_square" android:id="@+id/square15"/>
         </LinearLayout>
 
         <LinearLayout
@@ -95,11 +102,11 @@
             android:orientation="horizontal"
             android:id="@+id/row2">
 
-            <include layout="@layout/view_square" android:tag="square2.1"/>
-            <include layout="@layout/view_square" android:tag="square2.2"/>
-            <include layout="@layout/view_square" android:tag="square2.3"/>
-            <include layout="@layout/view_square" android:tag="square2.4"/>
-            <include layout="@layout/view_square" android:tag="square2.5"/>
+            <include layout="@layout/view_square" android:id="@+id/square21"/>
+            <include layout="@layout/view_square" android:id="@+id/square22"/>
+            <include layout="@layout/view_square" android:id="@+id/square23"/>
+            <include layout="@layout/view_square" android:id="@+id/square24"/>
+            <include layout="@layout/view_square" android:id="@+id/square25"/>
         </LinearLayout>
 
         <LinearLayout
@@ -108,11 +115,11 @@
             android:orientation="horizontal"
             android:id="@+id/row3">
 
-            <include layout="@layout/view_square" android:tag="square3.1"/>
-            <include layout="@layout/view_square" android:tag="square3.2"/>
-            <include layout="@layout/view_square" android:tag="square3.3"/>
-            <include layout="@layout/view_square" android:tag="square3.4"/>
-            <include layout="@layout/view_square" android:tag="square3.5"/>
+            <include layout="@layout/view_square" android:id="@+id/square31"/>
+            <include layout="@layout/view_square" android:id="@+id/square32"/>
+            <include layout="@layout/view_square" android:id="@+id/square33"/>
+            <include layout="@layout/view_square" android:id="@+id/square34"/>
+            <include layout="@layout/view_square" android:id="@+id/square35"/>
         </LinearLayout>
 
         <LinearLayout
@@ -121,11 +128,11 @@
             android:orientation="horizontal"
             android:id="@+id/row4">
 
-            <include layout="@layout/view_square" android:tag="square4.1"/>
-            <include layout="@layout/view_square" android:tag="square4.2"/>
-            <include layout="@layout/view_square" android:tag="square4.3"/>
-            <include layout="@layout/view_square" android:tag="square4.4"/>
-            <include layout="@layout/view_square" android:tag="square4.5"/>
+            <include layout="@layout/view_square" android:id="@+id/square41"/>
+            <include layout="@layout/view_square" android:id="@+id/square42"/>
+            <include layout="@layout/view_square" android:id="@+id/square43"/>
+            <include layout="@layout/view_square" android:id="@+id/square44"/>
+            <include layout="@layout/view_square" android:id="@+id/square45"/>
         </LinearLayout>
 
         <LinearLayout
@@ -134,11 +141,11 @@
             android:orientation="horizontal"
             android:id="@+id/row5">
 
-            <include layout="@layout/view_square" android:tag="square5.1"/>
-            <include layout="@layout/view_square" android:tag="square5.2"/>
-            <include layout="@layout/view_square" android:tag="square5.3"/>
-            <include layout="@layout/view_square" android:tag="square5.4"/>
-            <include layout="@layout/view_square" android:tag="square5.5"/>
+            <include layout="@layout/view_square" android:id="@+id/square51"/>
+            <include layout="@layout/view_square" android:id="@+id/square52"/>
+            <include layout="@layout/view_square" android:id="@+id/square53"/>
+            <include layout="@layout/view_square" android:id="@+id/square54"/>
+            <include layout="@layout/view_square" android:id="@+id/square55"/>
         </LinearLayout>
 
     </GridLayout>
@@ -170,3 +177,4 @@
 
 
 </LinearLayout>
+    </ScrollView>

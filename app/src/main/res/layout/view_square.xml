@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:layout_margin="@dimen/margin_xxxs" />
+        android:layout_margin="@dimen/margin_xxxs"
+        android:id="@+id/square_background"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="match_parent"
@@ -34,7 +35,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:id="@+id/disc1"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -46,7 +48,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:id="@+id/disc2"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,7 +61,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:id="@+id/disc3"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -70,7 +74,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:id="@+id/disc4"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -82,7 +87,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:id="@+id/disc5"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -94,7 +100,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:id="@+id/disc6"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
