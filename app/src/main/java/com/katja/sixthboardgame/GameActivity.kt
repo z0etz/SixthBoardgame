@@ -6,11 +6,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.GridLayout
 import androidx.annotation.RequiresApi
-import androidx.core.view.children
-import androidx.core.view.forEachIndexed
-import androidx.core.view.size
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
@@ -19,6 +15,7 @@ class GameActivity : AppCompatActivity() {
     private var gameBoardSize = 354
     private var screenWidth = 0
     private var screenHeight = 0
+    private var discStackSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,25 +48,27 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        binding.gameBackground.setOnClickListener {
+            discStackSelected = false
+            println("Deselected")
+        }
+
         binding.playersDiscs.setOnClickListener {
-            // Handle onClick event for player's discs here
-            // Example:
+            discStackSelected = true
             println("Clicked player discs")
         }
 
         // Set onClickListener for all squares on the game board
-        binding.gameBoard.children.forEach { row ->
-            if (row is GridLayout) {
-                row.forEachIndexed { index, view ->
-                    if (view is FrameLayout) {
-                        view.setOnClickListener {
-                            // Handle onClick event for each square here
-                            val rowNumber = index / row.size
-                            val columnNumber = index % row.size
-                            // Example: Log the row and column number of the clicked square
-                            println("Clicked square: Row $rowNumber, Column $columnNumber")
-                        }
-                    }
+        for (i in 1..5) {
+            for (j in 1..5) {
+                val squareId = resources.getIdentifier("square$i$j", "id", packageName)
+                val squareView = findViewById<FrameLayout>(squareId)
+                squareView?.setOnClickListener {
+                    // Handle onClick event for each square here
+                    val rowNumber = i
+                    val columnNumber = j
+                    // Example: Log the row and column number of the clicked square
+                    println("Clicked square: Row $rowNumber, Column $columnNumber")
                 }
             }
         }
