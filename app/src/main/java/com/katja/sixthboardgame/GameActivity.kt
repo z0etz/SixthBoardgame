@@ -4,9 +4,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
@@ -15,7 +17,8 @@ class GameActivity : AppCompatActivity() {
     private var gameBoardSize = 354
     private var screenWidth = 0
     private var screenHeight = 0
-    private var discStackSelected = false
+    private var discStackClicked = false
+    private var playerDiscColor = Stack.DiscColor.BROWN
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,14 +32,15 @@ class GameActivity : AppCompatActivity() {
 
         //TODO: change initiation of game to load the current game from the view model by correct game id
         val game = viewModel.loadGame("1")
+        //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
 
         // Set size of game board and the square views on it according to screen size
         binding.gameBoard.layoutParams.apply {
             width = gameBoardSize
             height = gameBoardSize
         }
-        for (i in 1..5) {
-            for (j in 1..5) {
+        for (i in 0..4) {
+            for (j in 0..4) {
                 val squareId = resources.getIdentifier("square$i$j", "id", packageName)
                 val viewSquare = findViewById<FrameLayout>(squareId)
                 viewSquare?.let {
@@ -49,18 +53,18 @@ class GameActivity : AppCompatActivity() {
         }
 
         binding.gameBackground.setOnClickListener {
-            discStackSelected = false
+            discStackClicked = false
             println("Deselected")
         }
 
         binding.playersDiscs.setOnClickListener {
-            discStackSelected = true
+            discStackClicked = true
             println("Clicked player discs")
         }
 
         // Set onClickListener for all squares on the game board
-        for (i in 1..5) {
-            for (j in 1..5) {
+        for (i in 0..4) {
+            for (j in 0..4) {
                 val squareId = resources.getIdentifier("square$i$j", "id", packageName)
                 val squareView = findViewById<FrameLayout>(squareId)
                 squareView?.setOnClickListener {
@@ -69,6 +73,13 @@ class GameActivity : AppCompatActivity() {
                     val columnNumber = j
                     // Example: Log the row and column number of the clicked square
                     println("Clicked square: Row $rowNumber, Column $columnNumber")
+
+                    if(discStackClicked && game.gameboard[i][j].discs.isEmpty()) {
+                        game.gameboard[i][j].push(playerDiscColor)
+                        println("Added disc")
+                        updateViewSquare(game.gameboard[i][j], squareView)
+                    }
+
                 }
             }
         }
@@ -94,6 +105,26 @@ class GameActivity : AppCompatActivity() {
             windowManager.defaultDisplay.getMetrics(displayMetrics)
             screenWidth = displayMetrics.widthPixels
             screenHeight = displayMetrics.heightPixels
+        }
+    }
+
+    private fun updateViewSquare(stack: Stack<Stack.DiscColor>, squareView: FrameLayout) {
+        // Iterate through the discs in the stack
+        stack.discs.forEachIndexed { index, discColor ->
+            val discViewId = resources.getIdentifier("disc${index}", "id", packageName)
+            val discView = squareView.findViewById<View>(discViewId)
+
+            // Set the visibility of the disc view based on the presence of a disc in the stack
+            discView?.visibility = if (discColor != null) View.VISIBLE else View.GONE
+
+            // Show disc of correct color
+            discView?.background = ContextCompat.getDrawable(
+                this,
+                when (discColor) {
+                    Stack.DiscColor.GRAY -> R.drawable.player_piece_gray
+                    else -> R.drawable.player_piece_brown
+                }
+            )
         }
     }
 }
