@@ -6,7 +6,11 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.GridLayout
 import androidx.annotation.RequiresApi
+import androidx.core.view.children
+import androidx.core.view.forEachIndexed
+import androidx.core.view.size
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
@@ -21,8 +25,13 @@ class GameActivity : AppCompatActivity() {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val viewModel = GameViewModel()
+
         getScreenSize()
         calcGameBoardSize()
+
+        //TODO: change initiation of game to load the current game from the view model by correct game id
+        val game = viewModel.loadGame("1")
 
         // Set size of game board and the square views on it according to screen size
         binding.gameBoard.layoutParams.apply {
@@ -42,7 +51,30 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        binding.playersDiscs.setOnClickListener {
+            // Handle onClick event for player's discs here
+            // Example:
+            println("Clicked player discs")
+        }
+
+        // Set onClickListener for all squares on the game board
+        binding.gameBoard.children.forEach { row ->
+            if (row is GridLayout) {
+                row.forEachIndexed { index, view ->
+                    if (view is FrameLayout) {
+                        view.setOnClickListener {
+                            // Handle onClick event for each square here
+                            val rowNumber = index / row.size
+                            val columnNumber = index % row.size
+                            // Example: Log the row and column number of the clicked square
+                            println("Clicked square: Row $rowNumber, Column $columnNumber")
+                        }
+                    }
+                }
+            }
+        }
     }
+
 
     private fun calcGameBoardSize() {
         gameBoardSize = if (screenHeight > screenWidth) screenWidth - 50 else screenWidth / 2
