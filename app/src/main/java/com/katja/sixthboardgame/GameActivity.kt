@@ -18,7 +18,10 @@ class GameActivity : AppCompatActivity() {
     private var screenWidth = 0
     private var screenHeight = 0
     private var discStackClicked = false
+    private var stackSelected: Stack? = null
     private var playerDiscColor = Stack.DiscColor.BROWN
+    private var availibleMoveSquares: MutableList<FrameLayout> = mutableListOf()
+    lateinit var game: Game
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +34,7 @@ class GameActivity : AppCompatActivity() {
         calcGameBoardSize()
 
         //TODO: change initiation of game to load the current game from the view model by correct game id
-        val game = viewModel.loadGame("1")
+        game = viewModel.loadGame("1")
         //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
 
         // Set size of game board and the square views on it according to screen size
@@ -108,7 +111,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateViewSquare(stack: Stack<Stack.DiscColor>, squareView: FrameLayout) {
+    private fun updateViewSquare(stack: Stack, squareView: FrameLayout) {
         // Determine the starting index based on the number of discs in the stack
         val startIndex = maxOf(0, stack.discs.size - 6)
 
@@ -132,4 +135,35 @@ class GameActivity : AppCompatActivity() {
         }
         discStackClicked = false
     }
+
+    private fun setAvilibleMoveSquare(squareView: FrameLayout) {
+        squareView.setBackgroundColor(
+                ContextCompat.getColor(this, R.color.green_dark))
+        availibleMoveSquares.add(squareView)
+    }
+    private fun resetAvilibleMoveSquares() {
+        availibleMoveSquares.forEach { squareView ->
+            squareView.setBackgroundColor(
+                ContextCompat.getColor(this, R.color.white)
+            )
+        }
+        availibleMoveSquares.clear()
+    }
+
+    private fun updateBackgroundColors() {
+        for (i in 1..5) {
+            for (j in 1..5) {
+                // Check if any disc in the stack associated with the square is visible
+                val anyVisibleDisc = game.gameboard[i][j].discs.any { it != null }
+
+                // Get the square view based on its identifier
+                val squareId = resources.getIdentifier("square$i$j", "id", packageName)
+                val squareView = findViewById<FrameLayout>(squareId)
+
+                // Set background color for the square
+                setAvilibleMoveSquare(squareView)
+            }
+        }
+    }
+
 }

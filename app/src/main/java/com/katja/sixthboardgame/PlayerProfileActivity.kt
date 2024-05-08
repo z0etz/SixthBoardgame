@@ -22,6 +22,7 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
 
             binding.textButtonSignOut.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
+                //TODO: Funktionallity to sign out
             startActivity(intent)
              }
             
