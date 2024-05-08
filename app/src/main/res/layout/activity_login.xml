@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/etUsername"
+        android:id="@+id/etUsermail"
         android:layout_width="@dimen/buttons_xl_width"
         android:layout_height="@dimen/buttons_xl_height"
         android:layout_gravity="center_horizontal"
@@ -53,7 +53,7 @@
         android:background="@drawable/oval_edittext"
         android:fontFamily="@font/inter_semibold"
         android:gravity="center"
-        android:hint="@string/username"
+        android:hint="@string/email"
         android:padding="@dimen/margin_small"
         android:textColorHint="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
