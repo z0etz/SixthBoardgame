@@ -47,6 +47,7 @@ class WelcomeActivity : AppCompatActivity() {
             val intent = Intent(this, PlayerProfileActivity::class.java)
             startActivity(intent)
         }
+
     }
 
     private fun getOngoingGamesData(): List<String> {
