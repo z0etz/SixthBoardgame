@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class HighscoreAdapter(private val highscores: List<Highscore>) : RecyclerView.Adapter<HighscoreAdapter.ViewHolder>() {
+class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val positionTextView: TextView = itemView.findViewById(R.id.scoreboard_position)
@@ -20,14 +20,19 @@ class HighscoreAdapter(private val highscores: List<Highscore>) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val highscore = highscores[position]
+        val leaderboard = highscores[position]
         holder.positionTextView.text = (position + 1).toString()
-        holder.usernameTextView.text = highscore.username
-        holder.scoreTextView.text = highscore.score.toString()
+        holder.usernameTextView.text = leaderboard.username
+        holder.scoreTextView.text = leaderboard.score.toString()
     }
 
     override fun getItemCount(): Int {
         return highscores.size
     }
+
+    fun updateHighscores(newHighscores: List<Leaderboard>) {
+        highscores = newHighscores
+        notifyDataSetChanged()
+    }
 }
-data class Highscore(val username: String, val score: Int)
+data class Leaderboard(val username: String, val score: Int)
