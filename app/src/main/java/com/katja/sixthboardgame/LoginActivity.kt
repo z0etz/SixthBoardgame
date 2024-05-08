@@ -3,6 +3,7 @@ package com.katja.sixthboardgame
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -23,13 +24,19 @@ class LoginActivity : AppCompatActivity() {
         auth = Firebase.auth
         if (auth.currentUser != null){
 
+            val intent = Intent(this, WelcomeActivity::class.java)
+            startActivity(intent)
+            finish()
 
-            auth.signOut()
+
+
 
         }
 
         binding.logInButton.setOnClickListener {
-            logIn()
+            val userMail = binding.etUsermail.text.toString()
+            val password = binding.etPassword.text.toString()
+            authenticateUser(userMail, password)
         }
 
         binding.goToSignUpTextButton.setOnClickListener {
@@ -40,6 +47,38 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
+
+    fun authenticateUser(username: String, password: String) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || password.isEmpty()) {
+            Toast.makeText(
+                this, "Both or one Field is incorrect/empty",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            login(username, password)
+        }
+
+    }
+
+    fun login(username: String, password: String) {
+
+        auth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword(username, password)
+            .addOnSuccessListener {
+                val intent = Intent(this, WelcomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            }.addOnFailureListener { error ->
+                Toast.makeText(
+                    this, "Thy credentials tis not correct",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+}
+
+
+/*
     fun logIn(){
         val userMail = binding.etUsermail.text.toString()
         val password = binding.etPassword.text.toString()
@@ -70,4 +109,4 @@ class LoginActivity : AppCompatActivity() {
 
 
     }
-}
+*/
