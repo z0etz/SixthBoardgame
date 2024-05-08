@@ -109,9 +109,13 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun updateViewSquare(stack: Stack<Stack.DiscColor>, squareView: FrameLayout) {
-        // Iterate through the discs in the stack
-        stack.discs.forEachIndexed { index, discColor ->
-            val discViewId = resources.getIdentifier("disc${index}", "id", packageName)
+        // Determine the starting index based on the number of discs in the stack
+        val startIndex = maxOf(0, stack.discs.size - 6)
+
+        // Iterate through the last 6 discs in the stack
+        for (i in startIndex until stack.discs.size) {
+            val discColor = stack.discs[i]
+            val discViewId = resources.getIdentifier("disc${i - startIndex + 1}", "id", packageName)
             val discView = squareView.findViewById<View>(discViewId)
 
             // Set the visibility of the disc view based on the presence of a disc in the stack
@@ -126,5 +130,6 @@ class GameActivity : AppCompatActivity() {
                 }
             )
         }
+        discStackClicked = false
     }
 }
