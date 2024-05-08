@@ -22,16 +22,12 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-        if (auth.currentUser != null){
-
-            val intent = Intent(this, WelcomeActivity::class.java)
-            startActivity(intent)
-            finish()
-
-
-
-
-        }
+//        if (auth.currentUser != null){
+//
+//            val intent = Intent(this, WelcomeActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
 
         binding.logInButton.setOnClickListener {
             val userMail = binding.etUsermail.text.toString()
@@ -70,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }.addOnFailureListener { error ->
                 Toast.makeText(
-                    this, "Thy credentials tis not correct",
+                    this, "Email or password is not correct",
                     Toast.LENGTH_SHORT
                 ).show()
             }
