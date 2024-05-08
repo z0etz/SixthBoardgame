@@ -48,8 +48,6 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-
     }
 
     private fun getOngoingGamesData(): List<String> {
