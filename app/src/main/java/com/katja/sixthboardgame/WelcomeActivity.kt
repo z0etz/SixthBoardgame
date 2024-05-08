@@ -1,5 +1,6 @@
 package com.katja.sixthboardgame
 
+import StartGameActivity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -32,11 +33,6 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-        binding.textButtonNewGame.setOnClickListener{
-            val intent = Intent(this, StartGameActivity::class.java)
-            startActivity(intent)
-        }
 
         binding.textButtonInstructions.setOnClickListener{
             val intent = Intent(this, GameInstructionActivity::class.java)

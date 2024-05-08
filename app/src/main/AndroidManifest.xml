@@ -22,7 +22,7 @@
             android:name=".LoseDialogActivity"
             android:exported="false" />
         <activity
-            android:name=".StartGameActivity"
+            android:name=".ActivityStartGame"
             android:exported="false" />
         <activity
             android:name=".WinDialogActivity"
