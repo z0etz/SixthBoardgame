@@ -24,12 +24,15 @@ class GameActivity : AppCompatActivity() {
     private var availableMoveSquares: MutableList<FrameLayout> = mutableListOf()
     lateinit var game: Game
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = GameViewModel()
+        val userDaoInstance = UserDao()
+
+        val viewModel = GameViewModel(userDaoInstance)
 
         getScreenSize()
         calcGameBoardSize()

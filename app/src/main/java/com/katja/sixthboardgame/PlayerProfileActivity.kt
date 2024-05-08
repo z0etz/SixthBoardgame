@@ -20,12 +20,15 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
 
             auth = FirebaseAuth.getInstance()
 
-            binding.textButtonSignOut.setOnClickListener{
-            val intent = Intent(this, LoginActivity::class.java)
-                //TODO: Funktionallity to sign out
-            startActivity(intent)
-             }
-            
+            binding.textButtonSignOut.setOnClickListener {
+                auth.signOut()
+                Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+
             binding.textButtonDeleteAccount.setOnClickListener{
                 val user = auth.currentUser
                 user?.delete()
