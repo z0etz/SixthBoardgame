@@ -27,6 +27,7 @@ class StartGameActivity : AppCompatActivity() {
     private var selectedUsersList = mutableListOf<String>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
+    private lateinit var inviteDao: InviteDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,7 @@ class StartGameActivity : AppCompatActivity() {
 
         firebaseAuth = Firebase.auth
         userDao = UserDao()
+        inviteDao = InviteDao()
 
         autoCompleteTextView = binding.autoTv
         adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
@@ -47,6 +49,15 @@ class StartGameActivity : AppCompatActivity() {
 
         firestore = FirebaseFirestore.getInstance()
 
+
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null){
+            inviteDao.listenForInvitations(currentUser.uid) { invitations ->
+                processInvitations(invitations)
+            }
+
+        }
+
         userDao.fetchUserNames { names ->
             userNameList = names
             adapter.addAll(names ?: emptyList())
@@ -54,7 +65,19 @@ class StartGameActivity : AppCompatActivity() {
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
-            val userId2: String? = userMap[selectedUser]
+            val receiverId: String? = userMap[selectedUser]
+
+            receiverId?.let{
+                val senderId = firebaseAuth.currentUser?.uid
+                if (senderId != null){
+                    InviteDao().sendInvitation(senderId, it)
+                } else {
+                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+                }
+            } ?: run {
+                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+            }
+
             selectedUsersList.add(selectedUser)
             pendingInviteAdapter.notifyDataSetChanged()
         }
@@ -82,6 +105,19 @@ class StartGameActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+    }
+
+    private fun processInvitations(invitiations: List<Map<String, Any>>){
+        val incomingInvites = mutableListOf<String>()
+        for (invitation in invitiations) {
+            val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
+            val status = invitation[inviteDao.STATUS_KEY] as String
+
+            val inviteInfo = "Invitation from: $senderId - Status: $status"
+            incomingInvites.add(inviteInfo)
+        }
+
+        pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
 
     override fun onResume() {

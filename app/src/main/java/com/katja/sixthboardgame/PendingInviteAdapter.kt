@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class PendingInviteAdapter(private val inviteList: List<String>) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
+class PendingInviteAdapter(private val inviteList: MutableList<String>) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
@@ -28,5 +28,11 @@ class PendingInviteAdapter(private val inviteList: List<String>) : RecyclerView.
         fun bind(playerName: String) {
             playerNameTextView.text = playerName
         }
+    }
+
+    fun updateInvitationsList(newInvites: List<String>) {
+        inviteList.clear()
+        inviteList.addAll(newInvites)
+        notifyDataSetChanged()
     }
 }
