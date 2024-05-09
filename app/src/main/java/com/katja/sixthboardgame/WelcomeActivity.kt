@@ -43,11 +43,9 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-
-        binding.textButtonPlayerProfile.setOnClickListener{
+        binding.textButtonProfile.setOnClickListener{
             val intent = Intent(this, PlayerProfileActivity::class.java)
             startActivity(intent)
-
         }
 
     }

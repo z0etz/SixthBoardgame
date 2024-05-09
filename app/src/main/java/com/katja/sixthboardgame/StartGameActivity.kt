@@ -1,11 +1,12 @@
 package com.katja.sixthboardgame
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +22,7 @@ class StartGameActivity : AppCompatActivity() {
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private val userMap = mutableMapOf<String?, String?>()
     private lateinit var firestore: FirebaseFirestore
+    private var selectedUsersList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +47,17 @@ class StartGameActivity : AppCompatActivity() {
             val selectedUser = parent.getItemAtPosition(position) as String
             val userId2: String? = userMap[selectedUser]
             val userArray = arrayListOf(selectedUser, userId2)
-           // val intent = Intent(this, DestinationActivity::class.java)
-            intent.putExtra("userArray", userArray)
-            startActivity(intent)
+            // Uppdatera listan med valda användare
+            selectedUsersList.add(selectedUser)
+            // Meddela RecyclerView-adaptern att data har ändrats
+            adapter.notifyDataSetChanged()
         }
+
+        val recyclerView: RecyclerView = findViewById(R.id.invitesRecyclerView)
+        val layoutManager = LinearLayoutManager(this)
+        val adapter = PendingInviteAdapter(selectedUsersList) // Uppdatera med valda användare
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
     }
 
     private fun getAllUsers() {
