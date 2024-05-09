@@ -114,10 +114,10 @@ class StartGameActivity : AppCompatActivity() {
             val status = invitation[inviteDao.STATUS_KEY] as String
 
             val inviteInfo = "Invitation from: $senderId - Status: $status"
-            incomingInvites.add(inviteInfo)
+            selectedUsersList.add(inviteInfo)
         }
 
-        pendingInviteAdapter.updateInvitationsList(incomingInvites)
+        pendingInviteAdapter.updateInvitationsList(selectedUsersList)
     }
 
     override fun onResume() {
