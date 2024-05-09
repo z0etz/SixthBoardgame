@@ -1,3 +1,6 @@
+package com.katja.sixthboardgame;
+
+import android.app.Activity;
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -9,9 +12,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.katja.sixthboardgame.PendingInviteAdapter
-import com.katja.sixthboardgame.R
-import com.katja.sixthboardgame.UserDao
 import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
 class StartGameActivity : AppCompatActivity() {
