@@ -43,19 +43,19 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(selectedUsersList)
+        pendingInviteAdapter = PendingInviteAdapter(selectedUsersList) { position ->
+            deleteInvite(position)
+        }
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         firestore = FirebaseFirestore.getInstance()
-
 
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null){
             inviteDao.listenForInvitations(currentUser.uid) { invitations ->
                 processInvitations(invitations)
             }
-
         }
 
         userDao.fetchUserNames { names ->
@@ -114,10 +114,16 @@ class StartGameActivity : AppCompatActivity() {
             val status = invitation[inviteDao.STATUS_KEY] as String
 
             val inviteInfo = "Invitation from: $senderId - Status: $status"
-            selectedUsersList.add(inviteInfo)
+            incomingInvites.add(inviteInfo)
         }
 
-        pendingInviteAdapter.updateInvitationsList(selectedUsersList)
+        pendingInviteAdapter.updateInvitationsList(incomingInvites)
+    }
+
+    private fun deleteInvite(position: Int) {
+        selectedUsersList.removeAt(position)
+        pendingInviteAdapter.notifyItemRemoved(position)
+
     }
 
     override fun onResume() {
