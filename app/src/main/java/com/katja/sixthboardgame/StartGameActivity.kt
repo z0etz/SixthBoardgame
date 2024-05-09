@@ -15,7 +15,7 @@ import com.google.firebase.ktx.Firebase
 import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
 class StartGameActivity : AppCompatActivity() {
-    //y
+
 
     private lateinit var binding: ActivityStartGameBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -108,18 +108,27 @@ class StartGameActivity : AppCompatActivity() {
             }
     }
 
-    private fun processInvitations(invitiations: List<Map<String, Any>>){
+    private fun processInvitations(invitations: List<Map<String, Any>>) {
         val incomingInvites = mutableListOf<String>()
-        for (invitation in invitiations) {
-            val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
-            val status = invitation[inviteDao.STATUS_KEY] as String
+        val currentUser = firebaseAuth.currentUser
+        val currentUserId = currentUser?.uid
 
+        for (invitation in invitations) {
+            val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
+            val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
+            val status = invitation[inviteDao.STATUS_KEY] as String
             val inviteInfo = "Invitation from: $senderId - Status: $status"
-            incomingInvites.add(inviteInfo)
+
+            // Check if the current user is either the sender or receiver
+            if (currentUserId == senderId || currentUserId == receiverId) {
+                incomingInvites.add(inviteInfo)
+            }
         }
 
+        // Add all invites to the list, both sent and received
         pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
+
 
     private fun deleteInvite(position: Int) {
         selectedUsersList.removeAt(position)
