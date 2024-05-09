@@ -16,6 +16,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
         android:orientation="horizontal">
 
         <TextView
@@ -25,7 +26,7 @@
             android:text="@string/welcome"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_semibold"
-            android:textSize="@dimen/heading_small" />
+            android:textSize="@dimen/heading_large" />
 
         <TextView
             android:id="@+id/textViewExclamation"
@@ -34,7 +35,7 @@
             android:text="@string/exclamation_mark_with_front_space"
             android:textColor="@color/orange_light"
             android:fontFamily="@font/inter_semibold"
-            android:textSize="@dimen/heading_small" />
+            android:textSize="@dimen/heading_large" />
 
     </LinearLayout>
 
@@ -44,26 +45,28 @@
         android:id="@+id/textButtonNewGame"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:text="@string/new_game"
-        android:background="@drawable/gradient_button_orange"
-        android:padding="@dimen/margin_small"
-        android:textColor="@color/white"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:background="@drawable/gradient_button_orange"
+        android:fontFamily="@font/inter_bold"
         android:gravity="center"
-        android:fontFamily="@font/inter_semibold" />
+        android:elevation="@dimen/elevation_small"
+        android:text="@string/new_game"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/textButtonScoreboard"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:text="@string/scoreboard"
+        android:elevation="@dimen/elevation_small"
         android:background="@drawable/button_white"
-        android:padding="@dimen/margin_small"
         android:textColor="@color/orange_dark"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:fontFamily="@font/inter_semibold"
-        android:layout_margin="@dimen/margin_small"/>
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:fontFamily="@font/inter_bold"/>
 
     <TextView
         android:id="@+id/textButtonInstructions"
@@ -71,11 +74,12 @@
         android:layout_height="@dimen/button_height"
         android:text="@string/instructions"
         android:background="@drawable/gradient_button_green"
-        android:padding="@dimen/margin_small"
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:fontFamily="@font/inter_semibold" />
+        android:elevation="@dimen/elevation_small"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:fontFamily="@font/inter_bold" />
 
     <TextView
         android:id="@+id/textButtonProfile"
@@ -83,12 +87,12 @@
         android:layout_height="@dimen/button_height"
         android:text="@string/profile"
         android:background="@drawable/gradient_button_blue"
-        android:padding="@dimen/margin_small"
         android:textColor="@color/blue_dark"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:fontFamily="@font/inter_semibold"
-        android:layout_margin="@dimen/margin_small"/>
+        android:elevation="@dimen/elevation_small"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:fontFamily="@font/inter_bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewOngoingGames"

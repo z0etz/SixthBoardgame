@@ -116,6 +116,7 @@
         android:gravity="center"
         android:padding="@dimen/margin_small"
         android:text="@string/log_in"
+        android:elevation="@dimen/elevation_small"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
