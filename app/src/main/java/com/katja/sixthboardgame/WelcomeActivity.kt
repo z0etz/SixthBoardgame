@@ -33,11 +33,6 @@ class WelcomeActivity : AppCompatActivity() {
         }
 
 
-        binding.textButtonNewGame.setOnClickListener{
-            val intent = Intent(this, StartGameActivity::class.java)
-            startActivity(intent)
-        }
-
         binding.textButtonInstructions.setOnClickListener{
             val intent = Intent(this, GameInstructionActivity::class.java)
             startActivity(intent)
