@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_view_large"
         android:src="@drawable/wooden_background"
+        android:contentDescription="@string/wooden_background_image_description"
         android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/dividerView" />
