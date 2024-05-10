@@ -32,6 +32,7 @@ class GameActivity : AppCompatActivity() {
 
         //TODO: change initiation of game to load the current game from the view model by correct game id
         val game = viewModel.loadGame("1")
+        println(game) // Test if the game was loaded
         //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
 
         // Set size of game board and the square views on it according to screen size
@@ -74,10 +75,10 @@ class GameActivity : AppCompatActivity() {
                     // Example: Log the row and column number of the clicked square
                     println("Clicked square: Row $rowNumber, Column $columnNumber")
 
-                    if(discStackClicked && game.gameboard[i][j].discs.isEmpty()) {
-                        game.gameboard[i][j].push(playerDiscColor)
+                    if(discStackClicked && game.gameboard.matrix[i][j].discs.isEmpty()) {
+                        game.gameboard.matrix[i][j].push(playerDiscColor)
                         println("Added disc")
-                        updateViewSquare(game.gameboard[i][j], squareView)
+                        updateViewSquare(game.gameboard.matrix[i][j], squareView)
                     }
 
                 }

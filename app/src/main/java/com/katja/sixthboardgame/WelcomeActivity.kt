@@ -9,6 +9,7 @@ import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 class WelcomeActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityWelcomeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
@@ -17,6 +18,19 @@ class WelcomeActivity : AppCompatActivity() {
         val ongoingGamesData: List<String> = getOngoingGamesData()
         var adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData)
 
+        // test begins here
+
+
+        val gameViewModel = GameViewModel()
+        val game = gameViewModel.loadGame("1")
+        println("this is welcome activity")
+        println(game.playerIds)
+        //gameViewModel.saveGame(Game(mutableListOf("1", "2", "3")))
+
+
+
+
+        // test ends here
         // Set the adapter to the RecyclerView
         binding.recyclerViewOngoingGames.adapter = adapter
         binding.recyclerViewOngoingGames.layoutManager = LinearLayoutManager(this)
@@ -48,7 +62,7 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.textButtonPlayerProfile.setOnClickListener{
+        binding.textButtonProfile.setOnClickListener{
             val intent = Intent(this, PlayerProfileActivity::class.java)
             startActivity(intent)
 
