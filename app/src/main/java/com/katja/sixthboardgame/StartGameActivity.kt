@@ -1,9 +1,12 @@
 package com.katja.sixthboardgame;
 
 import android.app.Activity;
+import android.app.Dialog
 import android.os.Bundle
+import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,6 +75,7 @@ class StartGameActivity : AppCompatActivity() {
                 val senderId = firebaseAuth.currentUser?.uid
                 if (senderId != null){
                     InviteDao().sendInvitation(senderId, it)
+                    showGameDialog()
                 } else {
                     Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
                 }
@@ -159,6 +163,30 @@ class StartGameActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showGameDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.activity_game_dialog)
+
+        val buttonContinue = dialog.findViewById<TextView>(R.id.textButtonContinue)
+        val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
+
+        buttonContinue.setOnClickListener {
+            // Handle Continue button click
+            dialog.dismiss()
+            // Place your logic here to proceed with the game
+        }
+
+        buttonCancel.setOnClickListener {
+            // Handle Cancel button click
+            dialog.dismiss()
+            // Place your logic here to cancel the game
+        }
+
+        dialog.show()
     }
 
 
