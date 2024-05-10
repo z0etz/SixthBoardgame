@@ -1,9 +1,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="@dimen/margin_medium"
+    android:layout_margin="@dimen/margin_small"
+    android:elevation="@dimen/elevation_small"
     android:background="@drawable/background_list_item"
     android:orientation="horizontal">
 
@@ -13,12 +14,12 @@
         android:layout_height="wrap_content"
         android:text="@string/opponent_unavailable"
         android:textColor="@color/grey"
-        android:textSize="@dimen/heading_small"
+        android:textSize="@dimen/heading_xs"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="@dimen/margin_small"
-        android:fontFamily="@font/inter_semibold"/>
+        android:fontFamily="@font/inter_bold"/>
 
     <TextView
         android:id="@+id/gamelist_time_left"
@@ -26,10 +27,13 @@
         android:layout_height="wrap_content"
         android:text="@string/time_unavailable"
         android:textColor="@color/green_dark"
+        android:textSize="@dimen/heading_xs"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="@dimen/margin_medium"
-        android:minWidth="@dimen/min_text_width_recycler_view"/>
+        android:minWidth="@dimen/min_text_width_recycler_view"
+        android:fontFamily="@font/inter_semibold"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/sixth_text_image"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/margin_medium"
+        android:layout_marginBottom="@dimen/margin_xl"
         android:contentDescription="@string/wooden_background_image_description"/>
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:text="@string/let_s_play"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_semibold"
-            android:textSize="@dimen/heading_small" />
+            android:textSize="@dimen/heading_large" />
 
         <TextView
             android:id="@+id/textViewExclamation"
@@ -37,7 +37,7 @@
             android:text="@string/exclamation_mark_with_front_space"
             android:textColor="@color/orange_light"
             android:fontFamily="@font/inter_semibold"
-            android:textSize="@dimen/heading_small" />
+            android:textSize="@dimen/heading_large" />
 
     </LinearLayout>
 
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:translationZ="1dp"
+        android:translationZ="@dimen/height_view_medium"
         android:layout_marginTop="@dimen/margin_xxl">
 
         <TextView
@@ -53,25 +53,25 @@
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:text="@string/sign_up"
+            android:elevation="@dimen/elevation_small"
             android:background="@drawable/gradient_button_orange"
-            android:padding="@dimen/margin_small"
             android:textColor="@color/white"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:layout_marginBottom="@dimen/margin_medium"
-            android:fontFamily="@font/inter_semibold" />
+            android:fontFamily="@font/inter_bold" />
 
         <TextView
             android:id="@+id/textButtonLogin"
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:text="@string/login"
+            android:elevation="@dimen/elevation_small"
             android:background="@drawable/button_white"
-            android:padding="@dimen/margin_small"
-            android:textColor="@color/orange_dark"
+            android:textColor="@color/orange_light"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:fontFamily="@font/inter_semibold"
+            android:fontFamily="@font/inter_bold"
             android:layout_margin="@dimen/margin_small"/>
 
     </LinearLayout>
