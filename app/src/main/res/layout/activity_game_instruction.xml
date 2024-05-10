@@ -8,109 +8,78 @@
     tools:context=".GameInstructionActivity">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="147dp"
-        android:layout_marginTop="54dp"
-        android:layout_marginEnd="147dp"
-        android:fontFamily="@font/inter_semibold"
+        android:layout_marginTop="@dimen/margin_xl"
         android:text="@string/instructions"
         android:textColor="@color/white"
         android:textSize="@dimen/heading_small"
+        android:fontFamily="@font/inter_bold"
+        android:shadowColor="@color/orange_light"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="8"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:shadowColor="@color/orange_light"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="8"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewExclamation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:layout_marginEnd="136dp"
-        android:fontFamily="@font/inter_semibold"
-        android:text="@string/exclamation_mark_with_front_space"
-        android:textColor="@color/orange_light"
-        android:textSize="@dimen/heading_small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="parent"
-        android:shadowColor="@color/orange_light"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="8"/>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="250dp"
-        android:layout_height="300dp"
-        android:layout_marginStart="105dp"
-        android:layout_marginTop="133dp"
-        android:layout_marginEnd="106dp"
-        android:layout_marginBottom="66dp"
-        android:shadowColor="@color/green_dark"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="5"
+    <LinearLayout
+        android:id="@+id/backgroundTextView"
+        android:layout_width="@dimen/buttons_xl_width"
+        android:layout_height="@dimen/recycle_view_h"
+        android:layout_marginStart="@dimen/height_view_large"
+        android:layout_marginTop="@dimen/margin_end"
+        android:layout_marginEnd="@dimen/height_view_large"
+        android:layout_marginBottom="@dimen/buttons_xl_height"
+        android:background="@drawable/background_list_item"
+        android:elevation="@dimen/elevation_small"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/textButtonGotit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardCornerRadius="@dimen/margin_medium"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="@string/rules"
-            android:layout_margin="@dimen/margin_xs"
-            android:textSize="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_large"
             android:fontFamily="@font/inter_bold"
             android:padding="@dimen/margin_xs"
-            android:shadowColor="@color/green_light"
+            android:shadowColor="@color/red_light"
             android:shadowDx="2"
             android:shadowDy="2"
-            android:shadowRadius="8"/>
-
+            android:shadowRadius="8"
+            android:text="@string/rules"
+            android:textAlignment="center"
+            android:textSize="@dimen/heading_small" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/margin_end"
+            android:layout_height="@dimen/buttons_xl_width"
             android:layout_margin="@dimen/margin_large"
+            android:fontFamily="@font/inter_bold"
             android:text="@string/game_instructions"
-            android:textAlignment="center"
-            android:padding="@dimen/margin_xs"
-            />
-
-    </androidx.cardview.widget.CardView>
-
-
+            android:textAlignment="center" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textButtonGotit"
-        android:layout_width="@dimen/button_width_medium"
+        android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="121dp"
-        android:layout_marginEnd="121dp"
-        android:layout_marginBottom="92dp"
-        android:background="@drawable/gradient_button_green"
-        android:fontFamily="@font/inter_semibold"
+        android:layout_marginBottom="@dimen/game_board_square_size"
+        android:background="@drawable/gradient_button_orange"
+        android:fontFamily="@font/inter_bold"
         android:gravity="center"
         android:padding="@dimen/margin_small"
         android:text="@string/gotit"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:shadowColor="@color/white"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="8"
-        />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

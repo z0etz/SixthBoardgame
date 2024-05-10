@@ -27,7 +27,7 @@
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
-    <string name="gotit">Got it!</string>
+    <string name="gotit">Got It</string>
     <string name="rules">The rules are simple</string>
     <string name="game_instructions">Your goal is to build a tower of six or more disks with your color on top.
         On your turn, you will either start a new tower by adding a piece to the board, or capture an existing tower by moving another in play.
