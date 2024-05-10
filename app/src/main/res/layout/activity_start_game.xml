@@ -12,7 +12,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_xl"
         android:text="@string/start_game"
         android:textColor="@color/white"
         android:textSize="@dimen/heading_small"        android:fontFamily="@font/inter_bold"
@@ -32,6 +32,10 @@
         android:elevation="@dimen/elevation_small"
         android:fontFamily="@font/inter_bold"
         android:hint="@string/add_player"
+        android:autofillHints="search"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="yes"
+        android:inputType="text"
         android:padding="@dimen/margin_medium"
         android:textColor="@color/grey"
         android:textSize="@dimen/heading_xs"
@@ -40,7 +44,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.198" />
+        app:layout_constraintVertical_bias="0.168" />
 
     <TextView
         android:id="@+id/textView3"
@@ -54,14 +58,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.472" />
+        app:layout_constraintVertical_bias="0.346" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/invitesRecyclerView"
         android:layout_width="@dimen/recycle_view_w"
         android:layout_height="@dimen/recycle_view_h"
-        android:layout_marginTop="@dimen/margin_large"
-        android:foregroundGravity="center"
+        android:layout_margin="@dimen/margin_medium"         android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
