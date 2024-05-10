@@ -32,6 +32,7 @@ class StartGameActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
     private lateinit var inviteDao: InviteDao
+    private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +49,11 @@ class StartGameActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
         pendingInviteAdapter = PendingInviteAdapter(selectedUsersList) { position ->
-            deleteInvite(position)
+            val receiverName = selectedUsersList[position]
+            val receiverId = userMap[receiverName]
+            receiverId?.let {
+                deleteInvite(firebaseAuth.currentUser?.uid!!, it)
+            }
         }
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -74,7 +79,8 @@ class StartGameActivity : AppCompatActivity() {
             receiverId?.let{
                 val senderId = firebaseAuth.currentUser?.uid
                 if (senderId != null){
-                    InviteDao().sendInvitation(senderId, it)
+                    val inviteId = invitationsCollection.document().id
+                    InviteDao().sendInvitation(senderId, it, inviteId)
                     showGameDialog()
                 } else {
                     Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
@@ -134,35 +140,28 @@ class StartGameActivity : AppCompatActivity() {
     }
 
 
-    private fun deleteInvite(position: Int) {
-        val currentUser = firebaseAuth.currentUser
-        val senderId = currentUser?.uid
-        val receiverName = selectedUsersList[position]
-
-        if (senderId != null && receiverName != null) {
-
-            val receiverId = userMap[receiverName]
-
-            if (receiverId != null) {
-                // Delete invitation from Firestore
-                inviteDao.deleteInvitation(senderId, receiverId)
-                    .addOnSuccessListener {
-                        selectedUsersList.removeAt(position)
-                        pendingInviteAdapter.notifyItemRemoved(position)
-                    }
-                    .addOnFailureListener { exception ->
-                        Toast.makeText(
-                            this,
-                            "Failed to delete invitation: ${exception.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            } else {
-                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+    private fun deleteInvite(senderId: String, receiverId: String) {
+        // Delete invitation from Firestore
+        inviteDao.deleteInvitation(senderId, receiverId)
+            .addOnSuccessListener {
+                val position = selectedUsersList.indexOf(receiverId)
+                if (position != -1) {
+                    selectedUsersList.removeAt(position)
+                    pendingInviteAdapter.notifyItemRemoved(position)
+                }
+                Toast.makeText(
+                    this,
+                    "Invitation deleted successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
-        }
+            .addOnFailureListener { exception ->
+                Toast.makeText(
+                    this,
+                    "Failed to delete invitation: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     private fun showGameDialog() {

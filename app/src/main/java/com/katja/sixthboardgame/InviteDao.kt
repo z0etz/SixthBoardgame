@@ -13,8 +13,9 @@ class InviteDao {
     val RECEIVER_ID_KEY = "receiverId"
     val STATUS_KEY = "status"
 
-    fun sendInvitation(senderId: String, receiverId: String) {
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String) {
         val invitationData = hashMapOf(
+            INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
             STATUS_KEY to "pending"
