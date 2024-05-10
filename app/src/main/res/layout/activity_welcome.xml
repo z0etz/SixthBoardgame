@@ -26,6 +26,10 @@
             android:text="@string/welcome"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_semibold"
+            android:shadowColor="@color/orange_light"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="8"
             android:textSize="@dimen/heading_large" />
 
         <TextView
@@ -33,6 +37,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/exclamation_mark_with_front_space"
+            android:shadowColor="@color/orange_light"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="8"
             android:textColor="@color/orange_light"
             android:fontFamily="@font/inter_semibold"
             android:textSize="@dimen/heading_large" />

@@ -26,25 +26,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/highscore"
                 android:textColor="@color/white"
-                android:fontFamily="@font/inter_semibold"
-                android:textSize="@dimen/heading_small"
-                android:shadowColor="@color/orange_light"
-                android:shadowDx="5"
-                android:shadowDy="5"
-                android:shadowRadius="8"/>
-
-            <TextView
-                android:id="@+id/textViewExclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/exclamation_mark_with_front_space"
-                android:textColor="@color/orange_light"
-                android:fontFamily="@font/inter_semibold"
-                android:textSize="@dimen/heading_small"
-                android:shadowColor="@color/orange_light"
-                android:shadowDx="5"
-                android:shadowDy="5"
-                android:shadowRadius="8"/>
+                android:fontFamily="@font/inter_bold"
+                android:textSize="@dimen/heading_small"/>
 
         </LinearLayout>
 
