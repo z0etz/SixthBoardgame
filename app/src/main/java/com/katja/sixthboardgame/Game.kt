@@ -9,9 +9,13 @@ class Game(private val userDao: UserDao, playerIdsList: List<String>) {
     var nextPlayer: String = playerIds.first()
     var freeDiscsGray = 15
     var freeDiscsBrown = 15
-    var gameboard: List<List<Stack<Stack.DiscColor>>> = List(5) { List(5) { Stack(mutableListOf()) } }
+    var gameboard: List<List<DiscStack>> = List(5) { List(5) { DiscStack(mutableListOf()) } }
 
-    // Function to fetch usernames.
+    constructor(userDao: UserDao, gameId: String, playerIdsList: List<String>) : this(userDao, playerIdsList) {
+        this.id = gameId
+    }
+
+
     fun fetchUsernames(completion: (List<String>) -> Unit) {
         val usernames = mutableListOf<String>()
         val countDownLatch = CountDownLatch(playerIds.size)
@@ -22,13 +26,9 @@ class Game(private val userDao: UserDao, playerIdsList: List<String>) {
                     usernames.add(user.userName)
                 }
                 countDownLatch.countDown()
-
             }
-            
         }
         countDownLatch.await()
         completion(usernames)
-
-
     }
 }
