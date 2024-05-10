@@ -131,10 +131,36 @@ class StartGameActivity : AppCompatActivity() {
 
 
     private fun deleteInvite(position: Int) {
-        selectedUsersList.removeAt(position)
-        pendingInviteAdapter.notifyItemRemoved(position)
+        val currentUser = firebaseAuth.currentUser
+        val senderId = currentUser?.uid
+        val receiverName = selectedUsersList[position]
 
+        if (senderId != null && receiverName != null) {
+
+            val receiverId = userMap[receiverName]
+
+            if (receiverId != null) {
+                // Delete invitation from Firestore
+                inviteDao.deleteInvitation(senderId, receiverId)
+                    .addOnSuccessListener {
+                        selectedUsersList.removeAt(position)
+                        pendingInviteAdapter.notifyItemRemoved(position)
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(
+                            this,
+                            "Failed to delete invitation: ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            } else {
+                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+        }
     }
+
 
     override fun onResume() {
         super.onResume()
