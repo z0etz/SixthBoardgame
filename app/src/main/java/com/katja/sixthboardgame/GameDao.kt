@@ -30,7 +30,7 @@ class GameDao {
 
         FirebaseFirestore
             .getInstance()
-            .document("Games/${game.id}")
+            .document("Games/${game.playerIds.get(0)}/${game.playerIds.get(1)}/${game.id}")
             .set(dataToStore)
             .addOnSuccessListener {
                 Log.i(
@@ -45,11 +45,93 @@ class GameDao {
 
     }
 
-    fun fetchGameById(gameId: String?, callback: (Game) -> Unit){
+
+
+    fun fetchGamesAgainstOpponent(currentId: String?, opponentId: String? ,callback: (List<Game>) -> Unit){
+        val gameList = mutableListOf<Game>()
 
         FirebaseFirestore
             .getInstance()
-            .document("Games/${gameId}")
+            .collection("Games/${currentId}/${opponentId}")
+            .get()
+            .addOnSuccessListener {result ->
+
+                for(document in result){
+                    val data = document.data
+                    if (data != null){
+
+                        val id = data.get(KEY_ID) as String
+                        val playerIds = data[KEY_PLAYERIDS] as List<String>
+                        val nextPlayer = data[KEY_NEXTPLAYER] as String
+                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
+                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
+                        val gameBoardJson = data[KEY_GAMEBOARD] as String
+                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
+
+                        val game = Game(playerIds)
+                        game.id = id
+                        game.nextPlayer = nextPlayer
+                        game.freeDiscsGray = freeDiscsGray
+                        game.freeDiscsBrown = freeDiscsBrown
+                        game.gameboard = gameBoard
+
+                        gameList.add(game)
+                    }
+                }
+
+                callback(gameList)
+            }
+            .addOnFailureListener {exception ->
+                Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
+            }
+    }
+
+
+
+
+
+
+    fun fetchAllUserGmes(currentId: String?, callback: (MutableList<Game>) -> Unit){
+        val gameList = mutableListOf<Game>()
+        FirebaseFirestore
+            .getInstance()
+            .collection("Games")
+            .document(currentId!!)
+            .get()
+
+            .addOnSuccessListener { result ->
+                println("this is the fetchAllUserGames")
+                println(result.data)
+
+
+                    /*for (games in opponent){
+
+                        // the result will giv med a list of the oppenents and in every opponent collection I have the games I played against them
+                    }
+
+                     */
+
+
+
+                callback(gameList)
+
+            }
+
+
+
+            .addOnFailureListener {exception ->
+                Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
+            }
+
+
+
+    }
+
+    fun fetchGameById(currentId: String?, opponentId: String? , gameId: String?, callback: (Game) -> Unit){
+
+        FirebaseFirestore
+            .getInstance()
+            .document("Games/${currentId}/${opponentId}/${gameId}")
             .get()
             .addOnSuccessListener { result ->
                 val data = result.data
@@ -77,28 +159,37 @@ class GameDao {
                 }
 
             }
-    }
-
-
-
-
-
-
-
-    fun fetchGmes(callback: (List<Game>) -> Unit){
-        val gameList = mutableListOf<Game>()
-        FirebaseFirestore
-            .getInstance()
-            .collection("games")
-            .get()
-            .addOnSuccessListener { QuerySnapshot ->
-                for (document in QuerySnapshot) {
-                   // val id = document.getString(KEY_ID) ?: ""
-                    val game = document as Game
-                    gameList.add(game)
-                }
-
+            .addOnFailureListener {exception ->
+                Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
-
     }
+   /*
+    fun ttteetingFunctions(){
+        val db = FirebaseFirestore.getInstance()
+        val userId = "currentUserId" // Replace "currentUserId" with the actual ID of the current user
+
+// Get the reference to the user's document
+        val userDocumentRef = db.collection("games").document(userId)
+
+// Get all collections inside the user's document
+        userDocumentRef.listCollections().addOnSuccessListener { collections ->
+            for (collection in collections) {
+                // Get the documents inside each opponent's collection
+                collection.get().addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        // Handle each game document
+                        println("Game ID: ${document.id}, Data: ${document.data}")
+                    }
+                }.addOnFailureListener { exception ->
+                    // Handle failures in getting documents from opponent's collection
+                    println("Error getting documents from collection ${collection.id}: $exception")
+                }
+            }
+        }.addOnFailureListener { exception ->
+            // Handle failures in listing collections from the user's document
+            println("Error listing collections from user document: $exception")
+        }
+    }
+
+    */
 }

@@ -22,10 +22,21 @@ class WelcomeActivity : AppCompatActivity() {
 
 
         val gameViewModel = GameViewModel()
-        val game = gameViewModel.loadGame("1")
-        println("this is welcome activity")
-        println(game.playerIds)
-        //gameViewModel.saveGame(Game(mutableListOf("1", "2", "3")))
+        val gameList = gameViewModel.loadGame2("1")
+
+
+
+
+
+
+        /*  var  playerIDs = mutableListOf<String>()
+          playerIDs.add("1")
+          playerIDs.add("2")
+          val game = Game(playerIDs)
+          gameViewModel.saveGame(game)
+
+         */
+
 
 
 

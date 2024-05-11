@@ -3,8 +3,10 @@ package com.katja.sixthboardgame
 import java.util.UUID
 
 class Game(playerIdsList: List<String>) {
-    var id = "1"
-    val playerIds: List<String> = playerIdsList.shuffled()
+
+    // let the current userID be first in the list and put the other users Id at the second place with index 1
+    var id = UUID.randomUUID().toString()
+    val playerIds: List<String> = playerIdsList
     var nextPlayer: String = playerIds.first()
     var freeDiscsGray = 15
     var freeDiscsBrown = 15

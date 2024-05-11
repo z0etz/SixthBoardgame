@@ -6,8 +6,8 @@ class GameViewModel {
 
     val gameDao = GameDao()
     var game: Game = Game(mutableListOf("1", "2", "3"))
-    fun loadGame(gameId: String): Game {
-        gameDao.fetchGameById(gameId){game: Game ->
+    fun loadGame(currentId: String?, opponentId: String?, gameId: String): Game {
+        gameDao.fetchGameById(currentId, opponentId, gameId) { game: Game ->
 
             this.game = game
         }
@@ -21,19 +21,34 @@ class GameViewModel {
     }
 
     fun createNewGame(playerIdsList: List<String>): Game {
-            return Game(playerIdsList)
+        return Game(playerIdsList)
     }
 
-    fun getGameById(gameId: String?, callback: (Game) -> Unit){
-        gameDao.fetchGameById(gameId){game: Game ->
+    fun getGameById(
+        currentId: String?,
+        opponentId: String?,
+        gameId: String?,
+        callback: (Game) -> Unit
+    ) {
+        gameDao.fetchGameById(currentId, opponentId, gameId) { game: Game ->
 
             callback(game)
         }
     }
 
-    fun saveGame(game: Game){
+    fun saveGame(game: Game) {
 
         gameDao.addGame(game)
     }
 
+    fun loadGame2(currentId: String?): MutableList<Game> {
+        var gameList = mutableListOf<Game>()
+        gameDao.fetchAllUserGmes(currentId) {
+
+            gameList = it
+        }
+
+
+        return gameList
+    }
 }
