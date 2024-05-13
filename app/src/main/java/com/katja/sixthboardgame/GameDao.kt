@@ -80,10 +80,9 @@ class GameDao {
                     }
                 }
 
-                callback(filterUserOpponentGames(currentId, opponentId, gameList))
+                callback(gameList)
             }
             .addOnFailureListener {exception ->
-                callback(mutableListOf())
                 Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
     }
@@ -125,10 +124,9 @@ class GameDao {
                     }
                 }
 
-                callback(filterCurrentUserGames(currentId, gameList))
+                callback(gameList)
             }
             .addOnFailureListener {exception ->
-                callback(mutableListOf())
                 Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
 
@@ -136,11 +134,11 @@ class GameDao {
 
     }
 
-    fun fetchGameById( gameId: String?, callback: (Game) -> Unit){
+    fun fetchGameById(currentId: String?, opponentId: String? , gameId: String?, callback: (Game) -> Unit){
 
         FirebaseFirestore
             .getInstance()
-            .document("Games/${gameId}")
+            .document("Games/${currentId}/${opponentId}/${gameId}")
             .get()
             .addOnSuccessListener { result ->
                 val data = result.data
@@ -172,40 +170,33 @@ class GameDao {
                 Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
     }
+   /*
+    fun ttteetingFunctions(){
+        val db = FirebaseFirestore.getInstance()
+        val userId = "currentUserId" // Replace "currentUserId" with the actual ID of the current user
 
+// Get the reference to the user's document
+        val userDocumentRef = db.collection("games").document(userId)
 
-    fun filterCurrentUserGames(currentUserId: String?, oldGameList: MutableList<Game> ): MutableList<Game> {
-
-        val newGameList = mutableListOf<Game>()
-
-        for(game in oldGameList){
-
-            if(currentUserId in game.playerIds){
-                newGameList.add(game)
+// Get all collections inside the user's document
+        userDocumentRef.listCollections().addOnSuccessListener { collections ->
+            for (collection in collections) {
+                // Get the documents inside each opponent's collection
+                collection.get().addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        // Handle each game document
+                        println("Game ID: ${document.id}, Data: ${document.data}")
+                    }
+                }.addOnFailureListener { exception ->
+                    // Handle failures in getting documents from opponent's collection
+                    println("Error getting documents from collection ${collection.id}: $exception")
+                }
             }
-
+        }.addOnFailureListener { exception ->
+            // Handle failures in listing collections from the user's document
+            println("Error listing collections from user document: $exception")
         }
-
-
-
-
-        return newGameList
-
     }
 
-    fun filterUserOpponentGames(currentUserId: String?, opponentId: String?, oldGameList: MutableList<Game> ): MutableList<Game> {
-
-        val newGameList = mutableListOf<Game>()
-
-        for(game in oldGameList){
-
-            if(currentUserId in game.playerIds && opponentId in game.playerIds){
-                newGameList.add(game)
-            }
-
-        }
-
-        return newGameList
-
-    }
+    */
 }
