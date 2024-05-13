@@ -3,6 +3,7 @@ package com.katja.sixthboardgame;
 import android.app.Activity;
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View.OnClickListener
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -48,7 +49,7 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(selectedUsersList) { position ->
+        pendingInviteAdapter = PendingInviteAdapter(this,selectedUsersList) { position ->
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
@@ -64,7 +65,9 @@ class StartGameActivity : AppCompatActivity() {
         if (currentUser != null){
             inviteDao.listenForInvitations(currentUser.uid) { invitations ->
                 processInvitations(invitations)
+
             }
+
         }
 
         userDao.fetchUserNames { names ->
@@ -81,7 +84,7 @@ class StartGameActivity : AppCompatActivity() {
                 if (senderId != null){
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, it, inviteId)
-                    showGameDialog()
+
                 } else {
                     Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
                 }
@@ -91,6 +94,7 @@ class StartGameActivity : AppCompatActivity() {
 
             selectedUsersList.add(selectedUser)
             pendingInviteAdapter.notifyDataSetChanged()
+
         }
 
         getAllUsers()
@@ -164,29 +168,7 @@ class StartGameActivity : AppCompatActivity() {
             }
     }
 
-    private fun showGameDialog() {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.activity_game_dialog)
 
-        val buttonContinue = dialog.findViewById<TextView>(R.id.textButtonContinue)
-        val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
-
-        buttonContinue.setOnClickListener {
-            // Handle Continue button click
-            dialog.dismiss()
-            // Place your logic here to proceed with the game
-        }
-
-        buttonCancel.setOnClickListener {
-            // Handle Cancel button click
-            dialog.dismiss()
-            // Place your logic here to cancel the game
-        }
-
-        dialog.show()
-    }
 
 
     override fun onResume() {
