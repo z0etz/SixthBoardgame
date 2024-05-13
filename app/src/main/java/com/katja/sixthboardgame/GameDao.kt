@@ -30,7 +30,8 @@ class GameDao {
 
         FirebaseFirestore
             .getInstance()
-            .document("Games/${game.playerIds.get(0)}/${game.playerIds.get(1)}/${game.id}")
+            .document("Games/${game.id}")
+
             .set(dataToStore)
             .addOnSuccessListener {
                 Log.i(
@@ -46,13 +47,13 @@ class GameDao {
     }
 
 
-
-    fun fetchGamesAgainstOpponent(currentId: String?, opponentId: String? ,callback: (List<Game>) -> Unit){
+// need to filter the required games from the big list
+    fun fetchGamesAgainstOpponent(currentId: String?, opponentId: String? ,callback: (MutableList<Game>) -> Unit){
         val gameList = mutableListOf<Game>()
 
         FirebaseFirestore
             .getInstance()
-            .collection("Games/${currentId}/${opponentId}")
+            .collection("Games")
             .get()
             .addOnSuccessListener {result ->
 
@@ -103,6 +104,7 @@ class GameDao {
                 println("this is the fetchAllUserGames")
                 println(result.data)
 
+                
 
                     /*for (games in opponent){
 

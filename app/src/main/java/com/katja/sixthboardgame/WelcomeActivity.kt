@@ -18,30 +18,7 @@ class WelcomeActivity : AppCompatActivity() {
         val ongoingGamesData: List<String> = getOngoingGamesData()
         var adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData)
 
-        // test begins here
 
-
-        val gameViewModel = GameViewModel()
-        val gameList = gameViewModel.loadGame2("1")
-
-
-
-
-
-
-        /*  var  playerIDs = mutableListOf<String>()
-          playerIDs.add("1")
-          playerIDs.add("2")
-          val game = Game(playerIDs)
-          gameViewModel.saveGame(game)
-
-         */
-
-
-
-
-
-        // test ends here
         // Set the adapter to the RecyclerView
         binding.recyclerViewOngoingGames.adapter = adapter
         binding.recyclerViewOngoingGames.layoutManager = LinearLayoutManager(this)
