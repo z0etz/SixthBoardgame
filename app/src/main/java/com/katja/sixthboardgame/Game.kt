@@ -5,15 +5,21 @@ import java.util.concurrent.CountDownLatch
 
 class Game(private val userDao: UserDao, playerIdsList: List<String>) {
     var id = UUID.randomUUID().toString()
-    val playerIds: List<String> = playerIdsList.shuffled()
+    val playerIds: List<String> = playerIdsList
     var nextPlayer: String = playerIds.first()
     var freeDiscsGray = 15
     var freeDiscsBrown = 15
-    var gameboard: List<List<DiscStack>> = List(5) { List(5) { DiscStack(mutableListOf()) } }
+    var gameboard = GameBoard()
+
+
+    //a boolean can be added to track whether the game ended or not
+  //  var gameboard: List<List<Stack<Stack.DiscColor>>> = List(5) { List(5) { Stack(mutableListOf()) } }
+
 
     constructor(userDao: UserDao, gameId: String, playerIdsList: List<String>) : this(userDao, playerIdsList) {
         this.id = gameId
     }
+
 
 
     fun fetchUsernames(completion: (List<String>) -> Unit) {
