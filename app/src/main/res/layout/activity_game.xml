@@ -82,7 +82,7 @@
         android:columnCount="5"
         android:rowCount="5"
         android:orientation="vertical"
-        android:background="@drawable/pending_invite"
+        android:background="@drawable/background_game_board"
         android:padding="@dimen/margin_small">
 
       <LinearLayout
