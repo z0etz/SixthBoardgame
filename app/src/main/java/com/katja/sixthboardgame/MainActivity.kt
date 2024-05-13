@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
 
         bindning.textButtonSignUp.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
+            val intent = Intent(this, GameActivity::class.java)
             startActivity(intent)
         }
         bindning.textButtonLogin.setOnClickListener {
