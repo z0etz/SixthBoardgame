@@ -94,33 +94,38 @@ class GameDao {
 
     fun fetchAllUserGmes(currentId: String?, callback: (MutableList<Game>) -> Unit){
         val gameList = mutableListOf<Game>()
+
         FirebaseFirestore
             .getInstance()
             .collection("Games")
-            .document(currentId!!)
             .get()
+            .addOnSuccessListener {result ->
 
-            .addOnSuccessListener { result ->
-                println("this is the fetchAllUserGames")
-                println(result.data)
+                for(document in result){
+                    val data = document.data
+                    if (data != null){
 
-                
+                        val id = data.get(KEY_ID) as String
+                        val playerIds = data[KEY_PLAYERIDS] as List<String>
+                        val nextPlayer = data[KEY_NEXTPLAYER] as String
+                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
+                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
+                        val gameBoardJson = data[KEY_GAMEBOARD] as String
+                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                    /*for (games in opponent){
+                        val game = Game(UserDao(), playerIds)
+                        game.id = id
+                        game.nextPlayer = nextPlayer
+                        game.freeDiscsGray = freeDiscsGray
+                        game.freeDiscsBrown = freeDiscsBrown
+                        game.gameboard = gameBoard
 
-                        // the result will giv med a list of the oppenents and in every opponent collection I have the games I played against them
+                        gameList.add(game)
                     }
-
-                     */
-
-
+                }
 
                 callback(gameList)
-
             }
-
-
-
             .addOnFailureListener {exception ->
                 Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
