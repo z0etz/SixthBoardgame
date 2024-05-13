@@ -83,7 +83,7 @@
         android:rowCount="5"
         android:orientation="vertical"
         android:background="@drawable/pending_invite"
-        android:padding="@dimen/margin_xxxs">
+        android:padding="@dimen/margin_small">
 
       <LinearLayout
           android:layout_width="match_parent"
