@@ -5,7 +5,7 @@ import javax.security.auth.callback.Callback
 class GameViewModel {
 
     val gameDao = GameDao()
-    var game: Game = Game(mutableListOf("1", "2", "3"))
+    var game: Game = Game(UserDao(),mutableListOf("1", "2", "3"))
     fun loadGame(currentId: String?, opponentId: String?, gameId: String): Game {
         gameDao.fetchGameById(currentId, opponentId, gameId) { game: Game ->
 
@@ -21,9 +21,9 @@ class GameViewModel {
     }
 
     fun createNewGame(playerIdsList: List<String>): Game {
-        return Game(playerIdsList)
+        return Game(UserDao(), playerIdsList)
     }
-}
+
 
     fun getGameById(
         currentId: String?,

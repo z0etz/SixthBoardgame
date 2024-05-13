@@ -3,7 +3,7 @@ package com.katja.sixthboardgame
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 
-class Game(playerIdsList: List<String>) {
+class Game(private val userDao: UserDao, playerIdsList: List<String>) {
     var id = UUID.randomUUID().toString()
     val playerIds: List<String> = playerIdsList
     var nextPlayer: String = playerIds.first()
@@ -19,6 +19,7 @@ class Game(playerIdsList: List<String>) {
     constructor(userDao: UserDao, gameId: String, playerIdsList: List<String>) : this(userDao, playerIdsList) {
         this.id = gameId
     }
+
 
 
     fun fetchUsernames(completion: (List<String>) -> Unit) {

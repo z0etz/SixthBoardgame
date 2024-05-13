@@ -69,7 +69,7 @@ class GameDao {
                         val gameBoardJson = data[KEY_GAMEBOARD] as String
                         val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                        val game = Game(playerIds)
+                        val game = Game(UserDao(), playerIds)
                         game.id = id
                         game.nextPlayer = nextPlayer
                         game.freeDiscsGray = freeDiscsGray
@@ -147,7 +147,7 @@ class GameDao {
                     val gameBoardJson = data[KEY_GAMEBOARD] as String
                     val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                    val game = Game(playerIds)
+                    val game = Game(UserDao(), playerIds)
                     game.id = id
                     game.nextPlayer = nextPlayer
                     game.freeDiscsGray = freeDiscsGray
