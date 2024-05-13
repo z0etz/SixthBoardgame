@@ -1,5 +1,6 @@
 package com.katja.sixthboardgame
 
+import android.app.Activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
@@ -61,6 +64,8 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        updateFreeDiscsView(this)
+
         binding.gameBackground.setOnClickListener {
             resetAvailableMoveSquares()
         }
@@ -99,6 +104,7 @@ class GameActivity : AppCompatActivity() {
                         println("Added disc")
                         updateViewSquare(game.gameboard[i][j], squareView)
                         resetAvailableMoveSquares()
+                        updateFreeDiscsView(this)
                     }
 
                     // Move discs from stackSelected to the clicked stack
@@ -365,6 +371,32 @@ class GameActivity : AppCompatActivity() {
             }
             currentRow += dRow
             currentColumn += dColumn
+        }
+    }
+    private fun updateFreeDiscsView(activity: Activity) {
+        val discContainer = findViewById<LinearLayout>(R.id.players_discs)
+        discContainer.removeAllViews()
+
+        var discDrawable = R.drawable.player_piece_brown
+        var numDiscsToShow = game.freeDiscsBrown
+        if(playerDiscColor != DiscStack.DiscColor.BROWN) {
+            discDrawable = R.drawable.player_piece_gray
+            numDiscsToShow = game.freeDiscsGray
+        }
+
+        // Add disc views to the container
+        for (i in 0 until numDiscsToShow) {
+            val discView = ImageView(this) // Create a new ImageView for each disc
+            discView.setImageResource(discDrawable) // Set the image resource for the disc
+            val layoutParams = FrameLayout.LayoutParams(
+                (gameBoardSize - 264) / 5,
+                (gameBoardSize - 264) / 5)
+            if (i > 0) {
+                layoutParams.marginStart = - screenWidth / 8 // Overlapping margin
+            }
+            discView.layoutParams = layoutParams
+            discContainer.addView(discView)
+            println("Player disc $i shown")
         }
     }
 
