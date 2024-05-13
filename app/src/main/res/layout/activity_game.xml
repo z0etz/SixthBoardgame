@@ -82,7 +82,7 @@
         android:columnCount="5"
         android:rowCount="5"
         android:orientation="vertical"
-        android:background="@color/orange_light"
+        android:background="@drawable/pending_invite"
         android:padding="@dimen/margin_xxxs">
 
       <LinearLayout
