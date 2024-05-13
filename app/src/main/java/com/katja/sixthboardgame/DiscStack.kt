@@ -1,6 +1,6 @@
 package com.katja.sixthboardgame
 
-class Stack<T>(var discs: MutableList<DiscColor>) {
+class DiscStack(var discs: MutableList<DiscColor>) {
 
     enum class DiscColor {
         GRAY,

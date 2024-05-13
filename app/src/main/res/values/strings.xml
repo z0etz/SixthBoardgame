@@ -3,7 +3,7 @@
     <string name="welcome">WELCOME</string>
     <string name="new_game">New Game</string>
     <string name="scoreboard">Scoreboard</string>
-    <string name="instructions">Instructions</string>
+    <string name="instructions">Game Instructions</string>
     <string name="profile">Profile</string>
     <string name="exclamation_mark_with_front_space">\u00A0!</string>
     <string name="_0">0</string>
@@ -20,21 +20,21 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
-    <string name="log_in">Log in</string>
+    <string name="log_in">Login</string>
     <string name="sign_up_to_your_new_account">Sign up to your new account</string>
     <string name="are_you_ready">Are You Ready?</string>
     <string name="vs">VS</string>
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
-    <string name="gotit">Got it!</string>
+    <string name="gotit">Got It</string>
     <string name="rules">The rules are simple</string>
     <string name="game_instructions">Your goal is to build a tower of six or more disks with your color on top.
         On your turn, you will either start a new tower by adding a piece to the board, or capture an existing tower by moving another in play.
         The twist is that each tower moves like a different chess piece, based on the number of disks in that tower.</string>
     <string name="you_won">YOU WON</string>
     <string name="congratulations">Congratulations!</string>
-    <string name="log_in_to_your_account">Log in to your account</string>
+    <string name="log_in_to_your_account">Login to your account</string>
     <string name="unfortunately">Unfortunately!</string>
     <string name="you_lost">YOU LOST</string>
     <string name="add_player">Add player…</string>
@@ -46,10 +46,12 @@
     <string name="your_turn">YOUR TURN</string>
     <string name="opponents_turn">OPPONENTS TURN</string>
     <string name="time_left_not_loaded">Time left not loaded</string>
-    <string name="highscore">Highscore</string>
+    <string name="highscore">High Score</string>
     <string name="opponent_not_loaded">Opponent not loaded</string>
     <string name="time_not_loaded">Time not loaded</string>
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
     <string name="pending_invites">Pending invites</string>
+    <string name="player_name">Player Name</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>

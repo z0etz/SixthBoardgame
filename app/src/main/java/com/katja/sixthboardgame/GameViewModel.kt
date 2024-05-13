@@ -23,6 +23,7 @@ class GameViewModel {
     fun createNewGame(playerIdsList: List<String>): Game {
         return Game(playerIdsList)
     }
+}
 
     fun getGameById(
         currentId: String?,

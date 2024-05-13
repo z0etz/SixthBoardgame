@@ -1,10 +1,9 @@
 package com.katja.sixthboardgame
 
 import java.util.UUID
+import java.util.concurrent.CountDownLatch
 
 class Game(playerIdsList: List<String>) {
-
-    // let the current userID be first in the list and put the other users Id at the second place with index 1
     var id = UUID.randomUUID().toString()
     val playerIds: List<String> = playerIdsList
     var nextPlayer: String = playerIds.first()
@@ -15,5 +14,27 @@ class Game(playerIdsList: List<String>) {
     //TODO think of a way to find a proper game id.
     //a boolean can be added to track whether the game ended or not
   //  var gameboard: List<List<Stack<Stack.DiscColor>>> = List(5) { List(5) { Stack(mutableListOf()) } }
+
+
+    constructor(userDao: UserDao, gameId: String, playerIdsList: List<String>) : this(userDao, playerIdsList) {
+        this.id = gameId
+    }
+
+
+    fun fetchUsernames(completion: (List<String>) -> Unit) {
+        val usernames = mutableListOf<String>()
+        val countDownLatch = CountDownLatch(playerIds.size)
+
+        for (playerId in playerIds) {
+            userDao.fetchUserById(playerId) { user ->
+                user?.let {
+                    usernames.add(user.userName)
+                }
+                countDownLatch.countDown()
+            }
+        }
+        countDownLatch.await()
+        completion(usernames)
+    }
 }
 //    var id = UUID.randomUUID().toString()
