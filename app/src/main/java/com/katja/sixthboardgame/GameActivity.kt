@@ -101,14 +101,16 @@ class GameActivity : AppCompatActivity() {
                         resetAvailableMoveSquares()
                     }
 
-                    //Move discs from one stack to another
+                    // Move discs from stackSelected to the clicked stack
                     else if(discStackSelected != null && availableMoveSquares.contains(squareView)) {
-                        // Move discs from stackSelected to the clicked stack
-                        while (discStackSelected!!.discs.isNotEmpty()) {
-                            val discColor = discStackSelected!!.discs.removeFirst()
+                        var indexOffsetToRemove = 0
+                        for (index in (numberOfDiscs - discsToMove) until numberOfDiscs) {
+                            println("Removed disc at: " + (index + indexOffsetToRemove))
+                            val discColor = discStackSelected!!.discs.removeAt(index + indexOffsetToRemove)
                             println("Removed $discColor disk")
                             game.gameboard[i][j].push(discColor)
                             println("Added $discColor disk")
+                            indexOffsetToRemove --
                         }
 
                         // Update view squares for both stacks
@@ -125,6 +127,7 @@ class GameActivity : AppCompatActivity() {
                         discStackSelected = game.gameboard[i][j]
                         discStackSelectedView = squareView
                         numberOfDiscs = discStackSelected?.discs?.size ?: 0
+                        discsToMove = numberOfDiscs
                         println("Stack selected $i$j contains $numberOfDiscs")
 
                         // Logic to follow the rules of the game in how different stack sizes can move
@@ -227,30 +230,17 @@ class GameActivity : AppCompatActivity() {
                                 resetAvailableMoveSquares()
                         }
                         }
-
+                        if(numberOfDiscs in 2..5 && !availableMoveSquares.isEmpty()) {
+                            binding.discsTooMoveDialogue.visibility = View.VISIBLE
+                            binding.discsToMoveText.text =
+                                getString(R.string.discs_to_move) + " " + discsToMove
+                        }
                     }
-
                     else {
                         resetAvailableMoveSquares()
                     }
 
                 }
-
-                //Set long-click listener to trigger pop-up to choose number of discs to move in stacks
-                squareView?.setOnLongClickListener {
-                    // Trigger the onClick event
-                    squareView?.performClick()
-                    println("Long-licked square: Row $i, Column $j")
-                    if(numberOfDiscs in 2..5 && !availableMoveSquares.isEmpty()) {
-                        discsToMove = numberOfDiscs
-                        binding.discsTooMoveDialogue.visibility = View.VISIBLE
-                        binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
-                        println(getString(R.string.discs_to_move) + discsToMove)
-                    }
-                    true
-                }
-
-
             }
         }
 
