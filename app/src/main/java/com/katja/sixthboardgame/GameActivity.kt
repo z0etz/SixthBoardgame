@@ -37,13 +37,13 @@ class GameActivity : AppCompatActivity() {
 
         val userDaoInstance = UserDao()
 
-        val viewModel = GameViewModel(userDaoInstance)
+        val viewModel = GameViewModel()
 
         getScreenSize()
         calcGameBoardSize()
 
         //TODO: change initiation of game to load the current game from Firebase via the view model by correct game id
-        game = viewModel.loadGame("1", listOf("1", "2"))
+        game = viewModel.loadGame(listOf("1", "2"))
         //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
 
         // Set size of game board and the square views on it according to screen size
