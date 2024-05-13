@@ -11,7 +11,7 @@ class Game(private val userDao: UserDao, playerIdsList: List<String>) {
     var freeDiscsBrown = 15
     var gameboard = GameBoard()
 
-    //TODO think of a way to find a proper game id.
+
     //a boolean can be added to track whether the game ended or not
   //  var gameboard: List<List<Stack<Stack.DiscColor>>> = List(5) { List(5) { Stack(mutableListOf()) } }
 
@@ -38,4 +38,3 @@ class Game(private val userDao: UserDao, playerIdsList: List<String>) {
         completion(usernames)
     }
 }
-//    var id = UUID.randomUUID().toString()

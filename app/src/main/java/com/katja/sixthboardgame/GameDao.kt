@@ -80,9 +80,10 @@ class GameDao {
                     }
                 }
 
-                callback(gameList)
+                callback(filterUserOpponentGames(currentId, opponentId, gameList))
             }
             .addOnFailureListener {exception ->
+                callback(mutableListOf())
                 Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
     }
@@ -124,9 +125,10 @@ class GameDao {
                     }
                 }
 
-                callback(gameList)
+                callback(filterCurrentUserGames(currentId, gameList))
             }
             .addOnFailureListener {exception ->
+                callback(mutableListOf())
                 Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
 
@@ -134,11 +136,11 @@ class GameDao {
 
     }
 
-    fun fetchGameById(currentId: String?, opponentId: String? , gameId: String?, callback: (Game) -> Unit){
+    fun fetchGameById( gameId: String?, callback: (Game) -> Unit){
 
         FirebaseFirestore
             .getInstance()
-            .document("Games/${currentId}/${opponentId}/${gameId}")
+            .document("Games/${gameId}")
             .get()
             .addOnSuccessListener { result ->
                 val data = result.data
@@ -181,10 +183,27 @@ class GameDao {
             if(currentUserId in game.playerIds){
                 newGameList.add(game)
             }
+
         }
 
 
 
+
+        return newGameList
+
+    }
+
+    fun filterUserOpponentGames(currentUserId: String?, opponentId: String?, oldGameList: MutableList<Game> ): MutableList<Game> {
+
+        val newGameList = mutableListOf<Game>()
+
+        for(game in oldGameList){
+
+            if(currentUserId in game.playerIds && opponentId in game.playerIds){
+                newGameList.add(game)
+            }
+
+        }
 
         return newGameList
 
