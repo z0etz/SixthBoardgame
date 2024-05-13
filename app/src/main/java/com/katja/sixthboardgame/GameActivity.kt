@@ -21,6 +21,8 @@ class GameActivity : AppCompatActivity() {
     private var playerDiscColor = DiscStack.DiscColor.BROWN
     private var discStackSelected: DiscStack? = null
     private var discStackSelectedView: FrameLayout? = null
+    private var numberOfDiscs = 0
+    private var discsToMove = 0
     private var availableMoveSquares: MutableList<FrameLayout> = mutableListOf()
     private lateinit var game: Game
 
@@ -122,7 +124,7 @@ class GameActivity : AppCompatActivity() {
                         resetAvailableMoveSquares()
                         discStackSelected = game.gameboard[i][j]
                         discStackSelectedView = squareView
-                        val numberOfDiscs = discStackSelected?.discs?.size ?: 0
+                        numberOfDiscs = discStackSelected?.discs?.size ?: 0
                         println("Stack selected $i$j contains $numberOfDiscs")
 
                         // Logic to follow the rules of the game in how different stack sizes can move
@@ -161,20 +163,6 @@ class GameActivity : AppCompatActivity() {
                                 }
                             }
                             3 -> {
-                                // Define diagonal direction to move (up-left, up-right, down-left, down-right)
-                                val diagonalDirections = listOf(
-                                    Pair(-1, -1), // Up-left
-                                    Pair(-1, 1),  // Up-right
-                                    Pair(1, -1),  // Down-left
-                                    Pair(1, 1)    // Down-right
-                                )
-
-                                // Iterate over each diagonal direction and find available moves
-                                diagonalDirections.forEach { (dRow, dColumn) ->
-                                    findAvailableMovesInDirection(i, j, dRow, dColumn)
-                                }
-                            }
-                            4 -> {
                                 // Define possible knight moves on the board
                                 val knightMoves = listOf(
                                     Pair(-2, -1),  // Two steps up and one step left
@@ -203,6 +191,20 @@ class GameActivity : AppCompatActivity() {
                                     }
                                 }
                             }
+                            4 -> {
+                                // Define diagonal direction to move (up-left, up-right, down-left, down-right)
+                                val diagonalDirections = listOf(
+                                    Pair(-1, -1), // Up-left
+                                    Pair(-1, 1),  // Up-right
+                                    Pair(1, -1),  // Down-left
+                                    Pair(1, 1)    // Down-right
+                                )
+
+                                // Iterate over each diagonal direction and find available moves
+                                diagonalDirections.forEach { (dRow, dColumn) ->
+                                    findAvailableMovesInDirection(i, j, dRow, dColumn)
+                                }
+                            }
                             5 -> {
                             // Define directions to move (up, down, left, right, and diagonally)
                             val directions = listOf(
@@ -225,14 +227,50 @@ class GameActivity : AppCompatActivity() {
                                 resetAvailableMoveSquares()
                         }
                         }
+
                     }
+
                     else {
                         resetAvailableMoveSquares()
                     }
 
                 }
+
+                //Set long-click listener to trigger pop-up to choose number of discs to move in stacks
+                squareView?.setOnLongClickListener {
+                    // Trigger the onClick event
+                    squareView?.performClick()
+                    println("Long-licked square: Row $i, Column $j")
+                    if(numberOfDiscs in 2..5 && !availableMoveSquares.isEmpty()) {
+                        discsToMove = numberOfDiscs
+                        binding.discsTooMoveDialogue.visibility = View.VISIBLE
+                        binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                        println(getString(R.string.discs_to_move) + discsToMove)
+                    }
+                    true
+                }
+
+
             }
         }
+
+        //Set on-click listeners for buttons in the choose number of discs dialogue
+        binding.buttonMinus.setOnClickListener {
+            if(discsToMove > 1) {
+                discsToMove --
+                binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                println(getString(R.string.discs_to_move) + discsToMove)
+            }
+        }
+        //Set on-click listeners for buttons in the choose number of discs dialogue
+        binding.buttonPlus.setOnClickListener {
+            if(discsToMove < numberOfDiscs) {
+                discsToMove ++
+                binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                println(getString(R.string.discs_to_move) + discsToMove)
+            }
+        }
+
     }
 
 
@@ -304,6 +342,9 @@ class GameActivity : AppCompatActivity() {
         discStackSelected = null
         discStackSelectedView = null
         playerDiscStackClicked = false
+        numberOfDiscs = 0
+        discsToMove = 0
+        binding.discsTooMoveDialogue.visibility = View.GONE
     }
 
     private fun makeEmptySquaresAvailable() {
