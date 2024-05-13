@@ -10,30 +10,35 @@
 
     <TextView
         android:id="@+id/gamelist_opponent"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/opponent_unavailable"
         android:textColor="@color/grey"
         android:textSize="@dimen/heading_xs"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:ellipsize="end"
+        android:singleLine="true"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gamelist_time_left"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/margin_small"
-        android:fontFamily="@font/inter_bold"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:fontFamily="@font/inter_bold"
+        app:layout_constraintHorizontal_bias="0"/>
 
     <TextView
         android:id="@+id/gamelist_time_left"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/time_unavailable"
         android:textColor="@color/green_dark"
         android:textSize="@dimen/heading_xs"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gamelist_opponent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="@dimen/margin_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/margin_small"
         android:minWidth="@dimen/min_text_width_recycler_view"
-        android:fontFamily="@font/inter_semibold"/>
-
+        android:fontFamily="@font/inter_semibold"
+        app:layout_constraintHorizontal_bias="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
