@@ -42,7 +42,7 @@ class GameViewModel {
         gameDao.addGame(game)
     }
 
-    fun loadGame2(currentId: String? , opponentId: String?): MutableList<Game> {
+    fun loadGame2(currentId: String? , opponentId: String?): Game {
         var gameList = mutableListOf<Game>()
         gameDao.fetchGamesAgainstOpponent(currentId, opponentId) {
 
@@ -50,6 +50,6 @@ class GameViewModel {
         }
 
 
-        return gameList
+        return gameList.get(0)
     }
 }
