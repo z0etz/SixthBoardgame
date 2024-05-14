@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
@@ -65,6 +66,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         updateFreeDiscsView(this)
+        updateFreeDiscsView(this, playerDiscs = false)
 
         binding.gameBackground.setOnClickListener {
             resetAvailableMoveSquares()
@@ -322,6 +324,14 @@ class GameActivity : AppCompatActivity() {
         // Show plus view if there are more than 6 discs in the list
         val plusView = squareView.findViewById<View>(R.id.plus_sign)
         plusView?.visibility = if (discStack.discs.size > 6) View.VISIBLE else View.GONE
+
+        var numberOfdiscsText = squareView.findViewById<TextView>(R.id.text_number_of_discs)
+        numberOfdiscsText.text = discStack.discs.size.toString()
+        if(discStack.discs.size > 1 && numberOfdiscsText != null) {
+            numberOfdiscsText.visibility = View.VISIBLE
+        } else {
+            numberOfdiscsText?.visibility = View.GONE
+        }
     }
 
     private fun setAvailableMoveSquare(squareView: FrameLayout) {
@@ -373,13 +383,19 @@ class GameActivity : AppCompatActivity() {
             currentColumn += dColumn
         }
     }
-    private fun updateFreeDiscsView(activity: Activity) {
-        val discContainer = findViewById<LinearLayout>(R.id.players_discs)
+    private fun updateFreeDiscsView(activity: Activity, playerDiscs: Boolean = true) {
+        val discContainer = if (playerDiscs) {
+            findViewById<LinearLayout>(R.id.players_discs)
+        } else {
+            findViewById<LinearLayout>(R.id.opponents_discs)
+        }
         discContainer.removeAllViews()
 
+        // Set drawable color and parameter to reed free discs from dependant on the players disc color
         var discDrawable = R.drawable.player_piece_brown
         var numDiscsToShow = game.freeDiscsBrown
-        if(playerDiscColor != DiscStack.DiscColor.BROWN) {
+        if (playerDiscColor != DiscStack.DiscColor.BROWN ||
+            (!playerDiscs && playerDiscColor == DiscStack.DiscColor.BROWN)) {
             discDrawable = R.drawable.player_piece_gray
             numDiscsToShow = game.freeDiscsGray
         }
@@ -389,10 +405,10 @@ class GameActivity : AppCompatActivity() {
             val discView = ImageView(this) // Create a new ImageView for each disc
             discView.setImageResource(discDrawable) // Set the image resource for the disc
             val layoutParams = FrameLayout.LayoutParams(
-                (gameBoardSize - 264) / 5,
-                (gameBoardSize - 264) / 5)
+                ((gameBoardSize - 9) / 5) - 66,
+                ((gameBoardSize - 9) / 5) - 66)
             if (i > 0) {
-                layoutParams.marginStart = - screenWidth / 8 // Overlapping margin
+                layoutParams.marginStart = - screenWidth / 10 // Overlapping margin
             }
             discView.layoutParams = layoutParams
             discContainer.addView(discView)
