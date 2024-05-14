@@ -82,8 +82,8 @@
         android:columnCount="5"
         android:rowCount="5"
         android:orientation="vertical"
-        android:background="@color/orange_light"
-        android:padding="@dimen/margin_xxxs">
+        android:background="@drawable/background_game_board"
+        android:padding="@dimen/margin_xs">
 
       <LinearLayout
           android:layout_width="match_parent"
