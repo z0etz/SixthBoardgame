@@ -20,6 +20,9 @@ class PendingInviteAdapter(
     private val inviteList: MutableList<String>,
     private val onDeleteClickListener:
     (Int) -> Unit) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
+    lateinit var gameDao: GameDao
+    lateinit var game: Game
+
 
 
 
@@ -81,6 +84,7 @@ class PendingInviteAdapter(
 
         buttonContinue.setOnClickListener{
             val intent = Intent(context, GameActivity::class.java)
+            gameDao.addGame(game)
             context.startActivity(intent)
 
         }
