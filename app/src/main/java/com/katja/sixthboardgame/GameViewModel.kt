@@ -50,6 +50,7 @@ class GameViewModel {
             game = fetchedGame
         }
 
+        return game
     }
     
         fun loadGame(playerIds: List<String>): Game {
