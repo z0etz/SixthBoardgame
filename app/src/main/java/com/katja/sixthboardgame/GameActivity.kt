@@ -57,8 +57,8 @@ class GameActivity : AppCompatActivity() {
                 val viewSquare = findViewById<FrameLayout>(squareId)
                 viewSquare?.let {
                     val layoutParams = it.layoutParams as ViewGroup.LayoutParams
-                    layoutParams.width = (gameBoardSize - 4) / 5
-                    layoutParams.height = (gameBoardSize - 4) / 5
+                    layoutParams.width = (gameBoardSize - 9) / 5
+                    layoutParams.height = (gameBoardSize - 9) / 5
                     it.layoutParams = layoutParams
                 }
             }
