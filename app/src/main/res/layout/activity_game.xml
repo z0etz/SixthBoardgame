@@ -61,7 +61,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:id="@+id/opponents_discs">
 
         <!-- Add the circle as the background of a View -->
         <View
@@ -70,7 +71,7 @@
             android:background="@drawable/player_piece_gray"
             android:layout_margin="5dp"
             android:elevation="2dp"
-            android:id="@+id/opponents_discs"/>
+            />
     </LinearLayout>
 
   <GridLayout

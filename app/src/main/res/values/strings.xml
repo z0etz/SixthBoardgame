@@ -57,5 +57,6 @@
     <string name="plus">+</string>
     <string name="minus">-</string>
     <string name="discs_to_move">Discs to move:</string>
-    <string name="_2" />
+    <string name="_2">2</string>
+
 </resources>
