@@ -54,5 +54,7 @@
     <string name="pending_invites">Pending invites</string>
     <string name="player_name">Player Name</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
     <string name="discs_to_move">Discs to move:</string>
 </resources>
