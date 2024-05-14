@@ -34,6 +34,7 @@ class StartGameActivity : AppCompatActivity() {
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
     private lateinit var inviteDao: InviteDao
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
+    private var receiverId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,7 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this,selectedUsersList) { position ->
+        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
@@ -77,27 +78,27 @@ class StartGameActivity : AppCompatActivity() {
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
-            val receiverId: String? = userMap[selectedUser]
-
-            receiverId?.let{
+            getReceiverId(selectedUser) // Update receiverId
+            receiverId?.let {
                 val senderId = firebaseAuth.currentUser?.uid
                 if (senderId != null){
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, it, inviteId)
-
                 } else {
                     Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
                 }
             } ?: run {
                 Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
             }
-
             selectedUsersList.add(selectedUser)
             pendingInviteAdapter.notifyDataSetChanged()
-
         }
 
         getAllUsers()
+    }
+
+    private fun getReceiverId(selectedUser: String) {
+        receiverId = userMap[selectedUser]
     }
 
     private fun getAllUsers() {
@@ -131,11 +132,11 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
             val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
             val status = invitation[inviteDao.STATUS_KEY] as String
-            val inviteInfo = "Invitation from: $senderId - Status: $status"
+            // val inviteInfo = "Invitation from: $senderId - Status: $status"
 
             // Check if the current user is either the sender or receiver
             if (currentUserId == senderId || currentUserId == receiverId) {
-                incomingInvites.add(inviteInfo)
+                incomingInvites.add(senderId)
             }
         }
 
