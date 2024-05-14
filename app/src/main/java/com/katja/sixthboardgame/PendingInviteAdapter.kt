@@ -74,6 +74,8 @@ class PendingInviteAdapter(
     }
 
     private fun showGameDialog(playerName: String){
+
+        gameDao = GameDao()
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -83,10 +85,12 @@ class PendingInviteAdapter(
         val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
         buttonContinue.setOnClickListener{
+            // Create a new instance of Game
+            val newGame = Game(UserDao(), listOf(playerName)) // Assuming playerName is the current user's ID
+            gameDao.addGame(newGame) // Add the new game to Firestore
             val intent = Intent(context, GameActivity::class.java)
-            gameDao.addGame(game)
             context.startActivity(intent)
-
+            dialog.dismiss()
         }
         buttonCancel.setOnClickListener(){
             dialog.dismiss()
