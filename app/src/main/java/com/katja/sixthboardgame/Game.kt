@@ -3,7 +3,7 @@ package com.katja.sixthboardgame
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 
-class Game(playerIdsList: List<String>) {
+class Game(userDao: UserDao, playerIdsList: List<String>) {
     var id = UUID.randomUUID().toString()
     val playerIds: List<String> = playerIdsList.shuffled()
     var nextPlayer: String = playerIds.first()
