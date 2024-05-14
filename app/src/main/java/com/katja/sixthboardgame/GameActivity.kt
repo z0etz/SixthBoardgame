@@ -405,10 +405,10 @@ class GameActivity : AppCompatActivity() {
             val discView = ImageView(this) // Create a new ImageView for each disc
             discView.setImageResource(discDrawable) // Set the image resource for the disc
             val layoutParams = FrameLayout.LayoutParams(
-                (gameBoardSize - 264) / 5,
-                (gameBoardSize - 264) / 5)
+                ((gameBoardSize - 9) / 5) - 66,
+                ((gameBoardSize - 9) / 5) - 66)
             if (i > 0) {
-                layoutParams.marginStart = - screenWidth / 8 // Overlapping margin
+                layoutParams.marginStart = - screenWidth / 10 // Overlapping margin
             }
             discView.layoutParams = layoutParams
             discContainer.addView(discView)
