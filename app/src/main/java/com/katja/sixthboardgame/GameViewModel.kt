@@ -50,9 +50,13 @@ class GameViewModel {
             game = fetchedGame
         }
 
-        //TODO: Load existing game from Firebase, change return below to return that game
+    }
+    
+        fun loadGame(playerIds: List<String>): Game {
 
-        return game
+        //TODO: Load existing game from Firebase, change return below to return that game
+        return Game(UserDao(), listOf("1","2"))
+
     }
 
     fun saveGame(game: Game) {
