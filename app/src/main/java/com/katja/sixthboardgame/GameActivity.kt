@@ -57,8 +57,8 @@ class GameActivity : AppCompatActivity() {
                 val viewSquare = findViewById<FrameLayout>(squareId)
                 viewSquare?.let {
                     val layoutParams = it.layoutParams as ViewGroup.LayoutParams
-                    layoutParams.width = (gameBoardSize - 4) / 5
-                    layoutParams.height = (gameBoardSize - 4) / 5
+                    layoutParams.width = (gameBoardSize - 9) / 5
+                    layoutParams.height = (gameBoardSize - 9) / 5
                     it.layoutParams = layoutParams
                 }
             }
@@ -92,8 +92,8 @@ class GameActivity : AppCompatActivity() {
                     //Handle different cases of game logic
 
                     //Place new disc on the board
-                    if(playerDiscStackClicked && game.gameboard[i][j].discs.isEmpty()) {
-                        game.gameboard[i][j].push(playerDiscColor)
+                    if(playerDiscStackClicked && game.gameboard.matrix[i][j].discs.isEmpty()) {
+                        game.gameboard.matrix[i][j].push(playerDiscColor)
                         if(playerDiscColor == DiscStack.DiscColor.BROWN) {
                             game.freeDiscsBrown -= 1
                             println("freeDiscsBrown: ${game.freeDiscsBrown}")
@@ -102,7 +102,7 @@ class GameActivity : AppCompatActivity() {
                             println("freeDiscsGray: ${game.freeDiscsGray}")
                         }
                         println("Added disc")
-                        updateViewSquare(game.gameboard[i][j], squareView)
+                        updateViewSquare(game.gameboard.matrix[i][j], squareView)
                         resetAvailableMoveSquares()
                         updateFreeDiscsView(this)
                     }
@@ -114,7 +114,7 @@ class GameActivity : AppCompatActivity() {
                             println("Removed disc at: " + (index + indexOffsetToRemove))
                             val discColor = discStackSelected!!.discs.removeAt(index + indexOffsetToRemove)
                             println("Removed $discColor disk")
-                            game.gameboard[i][j].push(discColor)
+                            game.gameboard.matrix[i][j].push(discColor)
                             println("Added $discColor disk")
                             indexOffsetToRemove --
                         }
@@ -123,14 +123,14 @@ class GameActivity : AppCompatActivity() {
                        if (discStackSelectedView != null) {
                            updateViewSquare(discStackSelected!!, discStackSelectedView!!)
                        }
-                        updateViewSquare(game.gameboard[i][j], squareView)
+                        updateViewSquare(game.gameboard.matrix[i][j], squareView)
                         resetAvailableMoveSquares()
                     }
 
                     //Select stack on the game board to move discs from
-                    else if(game.gameboard[i][j].discs.isNotEmpty()) {
+                    else if(game.gameboard.matrix[i][j].discs.isNotEmpty()) {
                         resetAvailableMoveSquares()
-                        discStackSelected = game.gameboard[i][j]
+                        discStackSelected = game.gameboard.matrix[i][j]
                         discStackSelectedView = squareView
                         numberOfDiscs = discStackSelected?.discs?.size ?: 0
                         discsToMove = numberOfDiscs
@@ -148,7 +148,7 @@ class GameActivity : AppCompatActivity() {
                                 // Check if adjacent positions are valid and mark corresponding squares as available moves
                                 adjacentPositions.forEach { (row, column) ->
                                     if (row in 0 until 5 && column in 0 until 5) {
-                                        val adjacentStack = game.gameboard[row][column]
+                                        val adjacentStack = game.gameboard.matrix[row][column]
                                         if (adjacentStack.discs.isNotEmpty()) {
                                             val squareId = resources.getIdentifier("square$row$column", "id", packageName)
                                             val adjacentSquareView = findViewById<FrameLayout>(squareId)
@@ -191,7 +191,7 @@ class GameActivity : AppCompatActivity() {
                                     // Checks if the new position is within the game board
                                     if (newRow in 0 until 5 && newColumn in 0 until 5) {
                                         // Check if the square is empty or occupied
-                                        val adjacentStack = game.gameboard[newRow][newColumn]
+                                        val adjacentStack = game.gameboard.matrix[newRow][newColumn]
                                         if (adjacentStack.discs.isNotEmpty()) {
                                             val squareId = resources.getIdentifier("square$newRow$newColumn", "id", packageName)
                                             val adjacentSquareView = findViewById<FrameLayout>(squareId)
@@ -347,7 +347,7 @@ class GameActivity : AppCompatActivity() {
         for (i in 0..4) {
             for (j in 0..4) {
                 // Check if the square is empty and set it as an available move if it is.
-                val notEmpty = game.gameboard[i][j].discs.any { it != null }
+                val notEmpty = game.gameboard.matrix[i][j].discs.any { it != null }
                 if(!notEmpty) {
                     val squareId = resources.getIdentifier("square$i$j", "id", packageName)
                     val squareView = findViewById<FrameLayout>(squareId)
@@ -362,7 +362,7 @@ class GameActivity : AppCompatActivity() {
         var currentColumn = j + dColumn
 
         while (currentRow in 0 until 5 && currentColumn in 0 until 5) {
-            val adjacentStack = game.gameboard[currentRow][currentColumn]
+            val adjacentStack = game.gameboard.matrix[currentRow][currentColumn]
             if (adjacentStack.discs.isNotEmpty()) {
                 val squareId = resources.getIdentifier("square$currentRow$currentColumn", "id", packageName)
                 val adjacentSquareView = findViewById<FrameLayout>(squareId)

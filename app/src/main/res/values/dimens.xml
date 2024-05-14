@@ -22,7 +22,7 @@
     <dimen name="recycle_view_h">400dp</dimen>
     <dimen name="recycle_view_w">350dp</dimen>
     <dimen name="margin_xxxs">2dp</dimen>
-    <dimen name="game_board_size">354dp</dimen>
+    <dimen name="game_board_size">359dp</dimen>
     <dimen name="game_board_square_size">70dp</dimen>
     <dimen name="height_view_medium">1dp</dimen>
     <dimen name="height_view_small">0dp</dimen>
