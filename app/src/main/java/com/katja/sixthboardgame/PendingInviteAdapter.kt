@@ -1,7 +1,9 @@
 package com.katja.sixthboardgame
 
+
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,7 +80,9 @@ class PendingInviteAdapter(
         val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
         buttonContinue.setOnClickListener{
-            dialog.dismiss()
+            val intent = Intent(context, GameActivity::class.java)
+            context.startActivity(intent)
+
         }
         buttonCancel.setOnClickListener(){
             dialog.dismiss()
