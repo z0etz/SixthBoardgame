@@ -1,6 +1,7 @@
 package com.katja.sixthboardgame
 import android.content.ContentValues.TAG
 import android.util.Log
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 
 class InviteDao {
@@ -12,8 +13,9 @@ class InviteDao {
     val RECEIVER_ID_KEY = "receiverId"
     val STATUS_KEY = "status"
 
-    fun sendInvitation(senderId: String, receiverId: String) {
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String) {
         val invitationData = hashMapOf(
+            INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
             STATUS_KEY to "pending"
@@ -62,4 +64,20 @@ class InviteDao {
                 // Hantera eventuellt fel vid uppdatering av inbjudningsstatus här
             }
     }
+    fun deleteInvitation(senderId: String, receiverId: String): Task<Void> {
+        return invitationsCollection
+            .whereEqualTo(SENDER_ID_KEY, senderId)
+            .whereEqualTo(RECEIVER_ID_KEY, receiverId)
+            .get()
+            .continueWith { querySnapshot ->
+                val batch = FirebaseFirestore.getInstance().batch()
+                querySnapshot.result?.forEach { documentSnapshot ->
+                    batch.delete(documentSnapshot.reference)
+                }
+                batch.commit()
+                null
+            }
+    }
+
+
 }

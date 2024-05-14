@@ -58,20 +58,20 @@
     android:textColor="@color/white"
     android:fontFamily="@font/inter_semibold"/>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <!-- Add the circle as the background of a View -->
         <View
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/disc_size"
+            android:layout_height="@dimen/disc_size"
             android:background="@drawable/player_piece_gray"
             android:layout_margin="5dp"
             android:elevation="2dp"
             android:id="@+id/opponents_discs"/>
-    </FrameLayout>
+    </LinearLayout>
 
   <GridLayout
         android:id="@+id/gameBoard"
@@ -152,20 +152,59 @@
 
     </GridLayout>
 
-    <FrameLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/discsTooMoveDialogue"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_marginBottom="@dimen/heading_large"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/discsToMoveText"
+            android:text="@string/discs_to_move"
+            android:fontFamily="@font/inter_bold"
+            android:textColor="@color/green_dark"/>
+        <TextView
+            android:layout_width="@dimen/sqare_button_size"
+            android:layout_height="@dimen/sqare_button_size"
+            android:id="@+id/buttonMinus"
+            android:background="@drawable/gradient_button_green"
+            android:text="@string/minus"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="@dimen/heading_large"
+            android:layout_marginHorizontal="@dimen/margin_medium"/>
+        <TextView
+            android:layout_width="@dimen/sqare_button_size"
+            android:layout_height="@dimen/sqare_button_size"
+            android:id="@+id/buttonPlus"
+            android:background="@drawable/gradient_button_orange"
+            android:text="@string/plus"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="@dimen/heading_small"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:id="@+id/players_discs">
 
 
         <View
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/disc_size"
+            android:layout_height="@dimen/disc_size"
             android:background="@drawable/player_piece_brown"
             android:layout_margin="5dp"
-            android:elevation="2dp"
-            android:id="@+id/players_discs"/>
-    </FrameLayout>
+            android:elevation="2dp" />
+    </LinearLayout>
 
 
     <TextView
