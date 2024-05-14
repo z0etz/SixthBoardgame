@@ -12,6 +12,7 @@
     <string name="time_unavailable">Time unavailable</string>
     <string name="opponent_unavailable">Opponent unavailable</string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign in</string>
     <string name="login">Login</string>
     <string name="let_s_play">LET´S PLAY</string>
     <string name="wooden_background_image_description">Wood image</string>
@@ -35,6 +36,7 @@
     <string name="you_won">YOU WON</string>
     <string name="congratulations">Congratulations!</string>
     <string name="log_in_to_your_account">Login to your account</string>
+    <string name="sign_in_to_your_account">Sign in to your account</string>
     <string name="unfortunately">Unfortunately!</string>
     <string name="you_lost">YOU LOST</string>
     <string name="add_player">Add player…</string>
