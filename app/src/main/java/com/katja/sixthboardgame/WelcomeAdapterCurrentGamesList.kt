@@ -6,14 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.katja.sixthboardgame.databinding.ListItemGameBinding
 
-class WelcomeAdapterCurrentGamesList(private val context: Context, private val dataList: List<String>)  : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
+class WelcomeAdapterCurrentGamesList(private val context: Context, private val dataList: List<String>, private val onItemClick: (String) -> Unit)  : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
 
     // ViewHolder class to hold references to the views in the item layout using View Binding
     class ViewHolder(private val binding: ListItemGameBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(context: Context, data: String) {
-           //TODO: Figure out how to access string resources from adapter, then extract them.
+        fun bind(context: Context, data: String, onItemClick: (String) -> Unit) {
             binding.gamelistOpponent.text = context.getString(R.string.opponent_not_loaded)
             binding.gamelistTimeLeft.text = context.getString(R.string.time_not_loaded)
+            itemView.setOnClickListener {
+                onItemClick(data)
+            }
         }
     }
 
@@ -23,7 +25,7 @@ class WelcomeAdapterCurrentGamesList(private val context: Context, private val d
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(context, dataList[position])
+        holder.bind(context, dataList[position], onItemClick)
     }
 
     override fun getItemCount(): Int {

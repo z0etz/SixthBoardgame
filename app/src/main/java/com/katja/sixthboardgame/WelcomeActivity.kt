@@ -15,7 +15,9 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val ongoingGamesData: List<String> = getOngoingGamesData()
-        var adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData)
+        var adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData) { gameId ->
+            openGame(gameId)
+        }
 
         // Set the adapter to the RecyclerView
         binding.recyclerViewOngoingGames.adapter = adapter
@@ -24,7 +26,6 @@ class WelcomeActivity : AppCompatActivity() {
         binding.textButtonNewGame.setOnClickListener{
             val intent = Intent(this, StartGameActivity::class.java)
             startActivity(intent)
-
         }
 
         binding.textButtonScoreboard.setOnClickListener{
@@ -32,17 +33,21 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         binding.textButtonInstructions.setOnClickListener{
             val intent = Intent(this, GameInstructionActivity::class.java)
             startActivity(intent)
-
         }
+
         binding.textButtonProfile.setOnClickListener{
             val intent = Intent(this, PlayerProfileActivity::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun openGame(gameId: String) {
+        val intent = Intent(this, GameActivity::class.java)
+        intent.putExtra("GAME_ID", gameId)
+        startActivity(intent)
     }
 
     private fun getOngoingGamesData(): List<String> {
