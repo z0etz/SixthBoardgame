@@ -5,7 +5,7 @@ class GameViewModel {
     fun loadGame(playerIds: List<String>): Game {
 
         //TODO: Load existing game from Firebase, change return below to return that game
-        return Game(listOf("1","2"))
+        return Game(UserDao(), listOf("1","2"))
 
     }
 //
