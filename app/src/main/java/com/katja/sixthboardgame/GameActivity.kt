@@ -1,5 +1,6 @@
 package com.katja.sixthboardgame
 
+import android.app.Activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
@@ -21,6 +24,8 @@ class GameActivity : AppCompatActivity() {
     private var playerDiscColor = DiscStack.DiscColor.BROWN
     private var discStackSelected: DiscStack? = null
     private var discStackSelectedView: FrameLayout? = null
+    private var numberOfDiscs = 0
+    private var discsToMove = 0
     private var availableMoveSquares: MutableList<FrameLayout> = mutableListOf()
     private lateinit var game: Game
 
@@ -58,6 +63,8 @@ class GameActivity : AppCompatActivity() {
                 }
             }
         }
+
+        updateFreeDiscsView(this)
 
         binding.gameBackground.setOnClickListener {
             resetAvailableMoveSquares()
@@ -97,22 +104,25 @@ class GameActivity : AppCompatActivity() {
                         println("Added disc")
                         updateViewSquare(game.gameboard.matrix[i][j], squareView)
                         resetAvailableMoveSquares()
+                        updateFreeDiscsView(this)
                     }
 
-                    //Move discs from one stack to another
+                    // Move discs from stackSelected to the clicked stack
                     else if(discStackSelected != null && availableMoveSquares.contains(squareView)) {
-                        // Move discs from stackSelected to the clicked stack
-                        while (discStackSelected!!.discs.isNotEmpty()) {
-                            val discColor = discStackSelected!!.discs.removeFirst()
+                        var indexOffsetToRemove = 0
+                        for (index in (numberOfDiscs - discsToMove) until numberOfDiscs) {
+                            println("Removed disc at: " + (index + indexOffsetToRemove))
+                            val discColor = discStackSelected!!.discs.removeAt(index + indexOffsetToRemove)
                             println("Removed $discColor disk")
                             game.gameboard.matrix[i][j].push(discColor)
                             println("Added $discColor disk")
+                            indexOffsetToRemove --
                         }
 
                         // Update view squares for both stacks
-                       if (discStackSelectedView != null) {
-                           updateViewSquare(discStackSelected!!, discStackSelectedView!!)
-                       }
+                        if (discStackSelectedView != null) {
+                            updateViewSquare(discStackSelected!!, discStackSelectedView!!)
+                        }
                         updateViewSquare(game.gameboard.matrix[i][j], squareView)
                         resetAvailableMoveSquares()
                     }
@@ -122,7 +132,8 @@ class GameActivity : AppCompatActivity() {
                         resetAvailableMoveSquares()
                         discStackSelected = game.gameboard.matrix[i][j]
                         discStackSelectedView = squareView
-                        val numberOfDiscs = discStackSelected?.discs?.size ?: 0
+                        numberOfDiscs = discStackSelected?.discs?.size ?: 0
+                        discsToMove = numberOfDiscs
                         println("Stack selected $i$j contains $numberOfDiscs")
 
                         // Logic to follow the rules of the game in how different stack sizes can move
@@ -161,20 +172,6 @@ class GameActivity : AppCompatActivity() {
                                 }
                             }
                             3 -> {
-                                // Define diagonal direction to move (up-left, up-right, down-left, down-right)
-                                val diagonalDirections = listOf(
-                                    Pair(-1, -1), // Up-left
-                                    Pair(-1, 1),  // Up-right
-                                    Pair(1, -1),  // Down-left
-                                    Pair(1, 1)    // Down-right
-                                )
-
-                                // Iterate over each diagonal direction and find available moves
-                                diagonalDirections.forEach { (dRow, dColumn) ->
-                                    findAvailableMovesInDirection(i, j, dRow, dColumn)
-                                }
-                            }
-                            4 -> {
                                 // Define possible knight moves on the board
                                 val knightMoves = listOf(
                                     Pair(-2, -1),  // Two steps up and one step left
@@ -203,27 +200,46 @@ class GameActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            5 -> {
-                            // Define directions to move (up, down, left, right, and diagonally)
-                            val directions = listOf(
-                                Pair(-1, 0),   // Up
-                                Pair(1, 0),    // Down
-                                Pair(0, -1),   // Left
-                                Pair(0, 1),    // Right
-                                Pair(-1, -1),  // Up-left
-                                Pair(-1, 1),   // Up-right
-                                Pair(1, -1),   // Down-left
-                                Pair(1, 1)     // Down-right
-                            )
+                            4 -> {
+                                // Define diagonal direction to move (up-left, up-right, down-left, down-right)
+                                val diagonalDirections = listOf(
+                                    Pair(-1, -1), // Up-left
+                                    Pair(-1, 1),  // Up-right
+                                    Pair(1, -1),  // Down-left
+                                    Pair(1, 1)    // Down-right
+                                )
 
-                            // Iterate over each direction and find available moves
-                            directions.forEach { (dRow, dColumn) ->
-                                findAvailableMovesInDirection(i, j, dRow, dColumn)
+                                // Iterate over each diagonal direction and find available moves
+                                diagonalDirections.forEach { (dRow, dColumn) ->
+                                    findAvailableMovesInDirection(i, j, dRow, dColumn)
+                                }
+                            }
+                            5 -> {
+                                // Define directions to move (up, down, left, right, and diagonally)
+                                val directions = listOf(
+                                    Pair(-1, 0),   // Up
+                                    Pair(1, 0),    // Down
+                                    Pair(0, -1),   // Left
+                                    Pair(0, 1),    // Right
+                                    Pair(-1, -1),  // Up-left
+                                    Pair(-1, 1),   // Up-right
+                                    Pair(1, -1),   // Down-left
+                                    Pair(1, 1)     // Down-right
+                                )
+
+                                // Iterate over each direction and find available moves
+                                directions.forEach { (dRow, dColumn) ->
+                                    findAvailableMovesInDirection(i, j, dRow, dColumn)
                                 }
                             }
                             else -> {
                                 resetAvailableMoveSquares()
+                            }
                         }
+                        if(numberOfDiscs in 2..5 && !availableMoveSquares.isEmpty()) {
+                            binding.discsTooMoveDialogue.visibility = View.VISIBLE
+                            binding.discsToMoveText.text =
+                                getString(R.string.discs_to_move) + " " + discsToMove
                         }
                     }
                     else {
@@ -233,6 +249,24 @@ class GameActivity : AppCompatActivity() {
                 }
             }
         }
+
+        //Set on-click listeners for buttons in the choose number of discs dialogue
+        binding.buttonMinus.setOnClickListener {
+            if(discsToMove > 1) {
+                discsToMove --
+                binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                println(getString(R.string.discs_to_move) + discsToMove)
+            }
+        }
+        //Set on-click listeners for buttons in the choose number of discs dialogue
+        binding.buttonPlus.setOnClickListener {
+            if(discsToMove < numberOfDiscs) {
+                discsToMove ++
+                binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                println(getString(R.string.discs_to_move) + discsToMove)
+            }
+        }
+
     }
 
 
@@ -304,6 +338,9 @@ class GameActivity : AppCompatActivity() {
         discStackSelected = null
         discStackSelectedView = null
         playerDiscStackClicked = false
+        numberOfDiscs = 0
+        discsToMove = 0
+        binding.discsTooMoveDialogue.visibility = View.GONE
     }
 
     private fun makeEmptySquaresAvailable() {
@@ -334,6 +371,32 @@ class GameActivity : AppCompatActivity() {
             }
             currentRow += dRow
             currentColumn += dColumn
+        }
+    }
+    private fun updateFreeDiscsView(activity: Activity) {
+        val discContainer = findViewById<LinearLayout>(R.id.players_discs)
+        discContainer.removeAllViews()
+
+        var discDrawable = R.drawable.player_piece_brown
+        var numDiscsToShow = game.freeDiscsBrown
+        if(playerDiscColor != DiscStack.DiscColor.BROWN) {
+            discDrawable = R.drawable.player_piece_gray
+            numDiscsToShow = game.freeDiscsGray
+        }
+
+        // Add disc views to the container
+        for (i in 0 until numDiscsToShow) {
+            val discView = ImageView(this) // Create a new ImageView for each disc
+            discView.setImageResource(discDrawable) // Set the image resource for the disc
+            val layoutParams = FrameLayout.LayoutParams(
+                (gameBoardSize - 264) / 5,
+                (gameBoardSize - 264) / 5)
+            if (i > 0) {
+                layoutParams.marginStart = - screenWidth / 8 // Overlapping margin
+            }
+            discView.layoutParams = layoutParams
+            discContainer.addView(discView)
+            println("Player disc $i shown")
         }
     }
 
