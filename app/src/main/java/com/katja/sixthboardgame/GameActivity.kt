@@ -326,7 +326,7 @@ class GameActivity : AppCompatActivity() {
         plusView?.visibility = if (discStack.discs.size > 6) View.VISIBLE else View.GONE
 
         var numberOfdiscsText = squareView.findViewById<TextView>(R.id.text_number_of_discs)
-//        numberOfdiscsText.text = discStack.discs.size.toString()
+        numberOfdiscsText.text = discStack.discs.size.toString()
         if(discStack.discs.size > 1 && numberOfdiscsText != null) {
             numberOfdiscsText.visibility = View.VISIBLE
         } else {
