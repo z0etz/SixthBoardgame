@@ -22,12 +22,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-//        if (auth.currentUser != null){
-//
-//            val intent = Intent(this, WelcomeActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//        }
+        autoLogin()
+
 
         binding.logInButton.setOnClickListener {
             val userMail = binding.etUsermail.text.toString()
@@ -39,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+
 
 
     }
@@ -70,6 +67,14 @@ class LoginActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+    }
+    fun autoLogin(){
+        if (auth.currentUser != null){
+
+            val intent = Intent(this, WelcomeActivity::class.java)
+            startActivity(intent)
+            finish()
+      }
     }
 }
 
