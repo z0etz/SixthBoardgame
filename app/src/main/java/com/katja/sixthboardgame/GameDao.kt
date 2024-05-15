@@ -18,37 +18,27 @@ class GameDao {
 
 
     fun addGame(game: Game) {
-        val dataToStore = HashMap<String, Any>()
-        dataToStore[KEY_ID] = game.id as Any
-        dataToStore[KEY_PLAYERIDS] = game.playerIds as Any
-        dataToStore[KEY_NEXTPLAYER] = game.nextPlayer as Any
-        dataToStore[KEY_FREE_DISCS_GRAY] = game.freeDiscsGray as Any
-        dataToStore[KEY_FREE_DISCS_BROWN] = game.freeDiscsBrown as Any
+        val dataToStore = hashMapOf(
+            KEY_ID to game.id,
+            KEY_PLAYERIDS to game.playerIds,
+            KEY_NEXTPLAYER to game.nextPlayer,
+            KEY_FREE_DISCS_GRAY to game.freeDiscsGray,
+            KEY_FREE_DISCS_BROWN to game.freeDiscsBrown
+        )
 
-        var gameBoard = Gson().toJson(game.gameboard)
-        dataToStore[KEY_GAMEBOARD] = gameBoard as Any
+        val gameBoardJson = Gson().toJson(game.gameboard)
+        dataToStore[KEY_GAMEBOARD] = gameBoardJson
 
-        FirebaseFirestore
-            .getInstance()
+        FirebaseFirestore.getInstance()
             .document("Games/${game.id}")
-
             .set(dataToStore)
             .addOnSuccessListener {
-                Log.i(
-                    "SUCCESS",
-                    "Added a new Game to Firestore with id: ${game.id}"
-                )
+                Log.i("SUCCESS", "Added a new Game to Firestore with id: ${game.id}")
             }
             .addOnFailureListener { exception ->
-                Log.i(
-                    "error",
-                    "failed to add game to FireStore with exception: ${exception.message}"
-                )
+                Log.i("error", "failed to add game to FireStore with exception: ${exception.message}")
             }
-
-
     }
-
 
     // need to filter the required games from the big list
     fun fetchGamesAgainstOpponent(
