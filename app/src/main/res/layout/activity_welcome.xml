@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WelcomeActivity"
+    android:background="@drawable/wooden_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_large">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_semibold"
+            android:textSize="@dimen/heading_large" />
+
+        <TextView
+            android:id="@+id/textViewExclamation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exclamation_mark_with_front_space"
+            android:textColor="@color/orange_light"
+            android:fontFamily="@font/inter_semibold"
+            android:textSize="@dimen/heading_large" />
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textButtonNewGame"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:background="@drawable/gradient_button_orange"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center"
+        android:elevation="@dimen/elevation_small"
+        android:text="@string/new_game"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/textButtonScoreboard"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/scoreboard"
+        android:elevation="@dimen/elevation_small"
+        android:background="@drawable/button_white"
+        android:textColor="@color/orange_light"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:fontFamily="@font/inter_bold"/>
+
+    <TextView
+        android:id="@+id/textButtonInstructions"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/instructions"
+        android:background="@drawable/gradient_button_green"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:elevation="@dimen/elevation_small"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:fontFamily="@font/inter_bold" />
+
+    <TextView
+        android:id="@+id/textButtonProfile"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/profile"
+        android:background="@drawable/gradient_button_blue"
+        android:textColor="@color/blue_dark"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:elevation="@dimen/elevation_small"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:fontFamily="@font/inter_bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewOngoingGames"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_medium" />
+
+</LinearLayout>

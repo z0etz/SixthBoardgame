@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".PlayerProfileActivity"
     android:background="@drawable/wooden_background"
     android:orientation="vertical"
     android:gravity="center">
@@ -11,10 +11,10 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/sixth_text_image"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/margin_xl"
-        android:contentDescription="@string/wooden_background_image_description"/>
+        android:contentDescription="@string/wooden_background_image_description"
+        android:src="@drawable/bye_text_image" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -22,13 +22,15 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textViewLetsPlay"
+            android:id="@+id/textViewUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/let_s_play"
+            android:text="@string/username"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_semibold"
-            android:textSize="@dimen/heading_large" />
+            android:textSize="@dimen/heading_large"
+            android:textAllCaps="true" />
+
 
         <TextView
             android:id="@+id/textViewExclamation"
@@ -49,10 +51,10 @@
         android:layout_marginTop="@dimen/margin_xxl">
 
         <TextView
-            android:id="@+id/textButtonSignUp"
+            android:id="@+id/textButtonSignOut"
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
-            android:text="@string/sign_up"
+            android:text="@string/sign_out"
             android:elevation="@dimen/elevation_small"
             android:background="@drawable/gradient_button_orange"
             android:textColor="@color/white"
@@ -62,13 +64,13 @@
             android:fontFamily="@font/inter_bold" />
 
         <TextView
-            android:id="@+id/textButtonLogin"
+            android:id="@+id/textButtonDeleteAccount"
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
-            android:text="@string/login"
+            android:text="@string/delete_account"
             android:elevation="@dimen/elevation_small"
-            android:background="@drawable/button_white"
-            android:textColor="@color/orange_light"
+            android:background="@drawable/gradient_button_red"
+            android:textColor="@color/white"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:fontFamily="@font/inter_bold"
