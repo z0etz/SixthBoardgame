@@ -28,6 +28,8 @@
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
+    <string name="game_accept">Accept</string>
+    <string name="game_decline">Decline</string>
     <string name="gotit">Got It</string>
     <string name="rules">The rules are simple</string>
     <string name="game_instructions">Your goal is to build a tower of six or more disks with your color on top.
@@ -60,5 +62,7 @@
     <string name="minus">-</string>
     <string name="discs_to_move">Discs to move:</string>
     <string name="_2">2</string>
-
+    <string name="pop_up_invite">Send an invite?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
 </resources>
