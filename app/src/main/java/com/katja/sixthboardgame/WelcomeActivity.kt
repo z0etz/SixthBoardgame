@@ -1,9 +1,14 @@
 package com.katja.sixthboardgame
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
@@ -11,6 +16,8 @@ class WelcomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityWelcomeBinding
     lateinit var adapter: WelcomeAdapterCurrentGamesList
     private val ongoingGamesData = mutableListOf<String>()
+    lateinit var firestore: FirebaseFirestore
+    lateinit var currentUser: FirebaseUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +51,9 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        firestore = FirebaseFirestore.getInstance()
+        currentUser = FirebaseAuth.getInstance().currentUser!!
+
         // Load ongoing games data initially
         loadOngoingGamesData()
     }
@@ -71,11 +81,38 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun getOngoingGamesData(): List<String> {
-        return listOf("Game 1", "Game 2", "Game 3")
+        val gamesData = mutableListOf<String>()
+
+        // Fetch games data from Firestore
+        firestore.collection("games")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val senderId = document.getString("senderId")
+                    val receiverId = document.getString("receiverId")
+
+                    // Check if the current user is either the sender or receiver
+                    if (senderId == currentUser.uid || receiverId == currentUser.uid) {
+                        // Add game ID or relevant data to the list
+                        val gameId = document.id
+                        gamesData.add(gameId)
+
+
+                    }
+                }
+                adapter.notifyDataSetChanged()
+            }
+            .addOnSuccessListener {
+                Log.i("Success", "Success getting ongoing games data")
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting ongoing games data: ", exception)
+            }
+
+        return gamesData
     }
 
     companion object {
         const val NEW_GAME_REQUEST = 1
     }
-
 }
