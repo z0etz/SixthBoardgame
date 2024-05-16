@@ -89,7 +89,7 @@ class GameDao {
     }
 
 
-    fun fetchAllUserGmes(currentId: String?, callback: (MutableList<Game>) -> Unit) {
+    fun fetchAllUserGames(currentId: String?, callback: (MutableList<Game>) -> Unit) {
         val gameList = mutableListOf<Game>()
 
         FirebaseFirestore
