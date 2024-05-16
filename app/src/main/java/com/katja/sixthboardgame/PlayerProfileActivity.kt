@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
 
 
@@ -34,6 +36,11 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
                 user?.delete()
                     ?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+
+                            val userId = user.uid
+                            val userDocRef = FirebaseFirestore.getInstance().
+                            collection("users").document(userId)
+                            userDocRef.delete()
                             Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
