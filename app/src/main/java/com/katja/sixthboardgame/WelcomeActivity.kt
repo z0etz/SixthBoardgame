@@ -9,6 +9,8 @@ import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
 
+    //Hej
+
     lateinit var binding: ActivityWelcomeBinding
     lateinit var adapter: WelcomeAdapterCurrentGamesList
     private val ongoingGamesData = mutableListOf<String>()
