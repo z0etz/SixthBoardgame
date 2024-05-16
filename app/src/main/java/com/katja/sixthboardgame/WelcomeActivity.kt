@@ -60,12 +60,14 @@ class WelcomeActivity : AppCompatActivity() {
     private fun loadOngoingGamesData() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val currentUserId = currentUser?.uid
+
+
         gameDao = GameDao()
         // Clear the ongoing games data list
         ongoingGamesData.clear()
 
         // Fetch all user games and add them to the list
-        gameDao.fetchAllUserGames(currentUserId) { gameList ->
+        gameDao.fetchAllCurrentUserGames(currentUserId) { gameList ->
             ongoingGamesData.addAll(gameList.map { it.id }) // Or any other property of the game you want to display
             adapter.notifyDataSetChanged()
         }
