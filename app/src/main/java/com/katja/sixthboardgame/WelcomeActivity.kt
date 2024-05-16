@@ -77,4 +77,5 @@ class WelcomeActivity : AppCompatActivity() {
     companion object {
         const val NEW_GAME_REQUEST = 1
     }
+
 }
