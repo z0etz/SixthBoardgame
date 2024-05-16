@@ -31,7 +31,7 @@ class GameViewModel {
     fun loadAllUserGames(currentId: String?): MutableList<Game> {
         var gameList = mutableListOf<Game>()
 
-        gameDao.fetchAllUserGames(currentId) {
+        gameDao.fetchAllCurrentUserGames(currentId) {
 
             gameList = it
         }

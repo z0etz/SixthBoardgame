@@ -60,17 +60,17 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun loadOngoingGamesData() {
+        gameDao = GameDao()
         val currentUser = FirebaseAuth.getInstance().currentUser
         val currentUserId = currentUser?.uid
 
-
-        gameDao = GameDao()
         // Clear the ongoing games data list
         ongoingGamesData.clear()
 
-        // Fetch all user games and add them to the list
-        gameDao.fetchAllCurrentUserGames(currentUserId) { gameList ->
-            ongoingGamesData.addAll(gameList.map { it.id }) // Or any other property of the game you want to display
+        // Listen for real-time updates
+        gameDao.listenForCurrentUserGamesUpdates(currentUserId) { updatedGameList ->
+            ongoingGamesData.clear()
+            ongoingGamesData.addAll(updatedGameList.map { it.id })
             adapter.notifyDataSetChanged()
         }
     }
@@ -81,13 +81,9 @@ class WelcomeActivity : AppCompatActivity() {
         if (requestCode == NEW_GAME_REQUEST && resultCode == RESULT_OK) {
             // Reload ongoing games data
             ongoingGamesData.clear()
-            ongoingGamesData.addAll(getOngoingGamesData())
+
             adapter.notifyDataSetChanged()
         }
-    }
-
-    private fun getOngoingGamesData(): List<String> {
-        return listOf("Game 1", "Game 2", "Game 3")
     }
 
     companion object {
