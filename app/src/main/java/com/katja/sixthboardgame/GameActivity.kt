@@ -23,6 +23,8 @@ import com.katja.sixthboardgame.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
 
+    //Hej
+
     private lateinit var binding: ActivityGameBinding
     private var gameBoardSize = 354
     private var screenWidth = 0
