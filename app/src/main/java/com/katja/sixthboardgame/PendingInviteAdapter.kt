@@ -15,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.withContext
 
     class PendingInviteAdapter(
@@ -25,10 +24,6 @@ import kotlinx.coroutines.withContext
         private val onDeleteClickListener: (Int) -> Unit
     ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 
-        lateinit var gameDao: GameDao
-        lateinit var firestore: FirebaseFirestore
-        lateinit var game: Game
-        lateinit var userDao: UserDao
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
@@ -83,47 +78,32 @@ import kotlinx.coroutines.withContext
             val currentUser = FirebaseAuth.getInstance().currentUser
             val currentUserId = currentUser?.uid
 
-            if (!this::game.isInitialized) {
-                Log.e("InviteAdapter", "Game property not initialized")
-                // Handle this situation appropriately
-                Toast.makeText(context, "Game property is not initialized", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            gameDao = GameDao()
-            userDao = UserDao()
-            val gameId = FirebaseFirestore.getInstance().document("Games/${game.id}").toString()
-
-            if (currentUserId != null) {
-                Log.d("InviteAdapter", "Showing game dialog for receiver ID: $receiverId")
-                val dialog = Dialog(context)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setCancelable(false)
-                dialog.setContentView(R.layout.activity_game_dialog)
+        if (currentUserId != null) {
+            val dialog = Dialog(context)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.activity_game_dialog)
 
                 val buttonContinue = dialog.findViewById<TextView>(R.id.textButtonContinue)
                 val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
-                buttonContinue.setOnClickListener {
-                    Log.d("InviteAdapter", "Continue button clicked. Creating and adding new game.")
-                    val newGame = Game(UserDao(), listOf(currentUserId, receiverId))
-                    GameDao().addGame(newGame)
-                    gameDao.fetchGameById(gameId) { game ->
-                        openGame(game.id)
-                    }
-                    dialog.dismiss()
-                }
-
-                buttonCancel.setOnClickListener {
-                    Log.d("InviteAdapter", "Cancel button clicked. Dismissing dialog.")
-                    dialog.dismiss()
-                }
-
-                dialog.show()
-            } else {
-                Log.e("InviteAdapter", "Current user ID is null. Cannot show game dialog.")
-                Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
+            buttonContinue.setOnClickListener {
+                // Create a new instance of Game with both sender and receiver IDs
+                val newGame = Game(UserDao(), listOf(currentUserId, receiverId))
+                // Add the new game to Firestore
+                GameDao().addGame(newGame)
+                // Start the GameActivity
+                dialog.dismiss()
             }
+
+            buttonCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        } else {
+            // Handle case when current user ID is null
+            Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
         }
     }
-
+}
