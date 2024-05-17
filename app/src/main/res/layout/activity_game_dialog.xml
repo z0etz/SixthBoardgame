@@ -16,7 +16,12 @@
         android:fontFamily="@font/inter_semibold"
         android:text="@string/are_you_ready"
         android:textColor="@color/orange_light"
-        android:textSize="@dimen/heading_large" />
+        android:textSize="@dimen/heading_large"
+        android:shadowColor="@color/orange_light"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="8"
+        />
 
     <LinearLayout
         android:id="@+id/opponentsLayout"
@@ -38,14 +43,18 @@
 
         <TextView
             android:id="@+id/vsDialogTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/margin_xl"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_small"
             android:fontFamily="@font/inter_semibold"
             android:text="@string/vs"
             android:textColor="@color/orange_light"
-            android:textSize="@dimen/heading_large" />
+            android:textSize="@dimen/heading_large"
+            android:shadowColor="@color/orange_light"
+            android:shadowDx="4"
+            android:shadowDy="10"
+            android:shadowRadius="15"/>
 
         <TextView
             android:id="@+id/opponentsDialogTextView"
@@ -86,6 +95,7 @@
         android:fontFamily="@font/inter_semibold"
         android:gravity="center"
         android:text="@string/cancel"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        />
 
 </RelativeLayout>

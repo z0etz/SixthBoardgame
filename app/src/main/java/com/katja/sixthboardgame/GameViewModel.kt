@@ -64,4 +64,17 @@ class GameViewModel {
 
         gameDao.addGame(game)
     }
+
+    fun endGame(winnerId: String, looserId: String ) {
+        if (winnerId != "Unknown") {
+            //TODO: database -> user.winnerId.score += 1, om spelaren finns
+            println("$winnerId won")
+        }
+        if (looserId != "Unknown") {
+            //TODO: database -> user.winnerId.score -= 1, om spelaren finns
+            println("$looserId lost")
+        }
+
+        //TODO: Make sure the the finished game does not show up in current games lists anymore
+    }
 }
