@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.katja.sixthboardgame.databinding.FragmentLooseDialogBinding
+import com.katja.sixthboardgame.databinding.FragmentWinDialogBinding
 
-class LooseDialogFragment : DialogFragment() {
+class WinDialogFragment : DialogFragment() {
 
-    private lateinit var binding: FragmentLooseDialogBinding
+    private lateinit var binding: FragmentWinDialogBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class LooseDialogFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentLooseDialogBinding.inflate(inflater, container, false)
+        binding = FragmentWinDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 

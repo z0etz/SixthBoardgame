@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:elevation="8dp"
-    android:layout_margin="@dimen/margin_medium"
-    android:background="@drawable/background_game_dialog">
+    android:layout_margin="@dimen/margin_medium">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="8dp"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/background_game_dialog">
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/congratulations"
-        android:textColor="@color/green_dark"
+        android:text="@string/unfortunately"
+        android:textColor="@color/orange_dark"
         android:fontFamily="@font/inter_semibold"
         android:textSize="@dimen/heading_large"
         android:layout_centerHorizontal="true"
@@ -41,8 +48,8 @@
             android:id="@+id/vsDialogTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/you_won"
-            android:textColor="@color/green_dark"
+            android:text="@string/you_lost"
+            android:textColor="@color/orange_dark"
             android:fontFamily="@font/inter_semibold"
             android:textSize="@dimen/heading_large"
             android:layout_gravity="center_horizontal"
@@ -59,7 +66,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/margin_large"
         android:layout_marginEnd="@dimen/margin_medium"
-        android:background="@drawable/gradient_button_green"
+        android:background="@drawable/gradient_button_red"
         android:fontFamily="@font/inter_semibold"
         android:gravity="center"
         android:layout_centerHorizontal="true"
@@ -68,3 +75,4 @@
         android:textColor="@color/white" />
 
 </RelativeLayout>
+</FrameLayout>

@@ -441,11 +441,12 @@ class GameActivity : AppCompatActivity() {
     private fun showGameEndDialogue() {
         val dialog = Dialog(this)
         if(winnerId == currentUserId) {
-            dialog.setContentView(R.layout.activity_win_dialog)
+            val winDialogFragment = WinDialogFragment()
+            winDialogFragment.show(supportFragmentManager, "WinDialogFragment")
         } else {
-            dialog.setContentView(R.layout.activity_lose_dialog)
+            dialog.setContentView(R.layout.fragment_loose_dialog)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.show()
         }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
     }
 }
