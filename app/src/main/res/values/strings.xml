@@ -12,6 +12,7 @@
     <string name="time_unavailable">Time unavailable</string>
     <string name="opponent_unavailable">Opponent unavailable</string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign in</string>
     <string name="login">Login</string>
     <string name="let_s_play">LET´S PLAY</string>
     <string name="wooden_background_image_description">Wood image</string>
@@ -27,6 +28,8 @@
     <string name="opponents">Opponents</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
+    <string name="game_accept">Accept</string>
+    <string name="game_decline">Decline</string>
     <string name="gotit">Got It</string>
     <string name="rules">The rules are simple</string>
     <string name="game_instructions">Your goal is to build a tower of six or more disks with your color on top.
@@ -35,6 +38,7 @@
     <string name="you_won">YOU WON</string>
     <string name="congratulations">Congratulations!</string>
     <string name="log_in_to_your_account">Login to your account</string>
+    <string name="sign_in_to_your_account">Sign in to your account</string>
     <string name="unfortunately">Unfortunately!</string>
     <string name="you_lost">YOU LOST</string>
     <string name="add_player">Add player…</string>
@@ -58,5 +62,7 @@
     <string name="minus">-</string>
     <string name="discs_to_move">Discs to move:</string>
     <string name="_2">2</string>
-
+    <string name="pop_up_invite">Send an invite?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
 </resources>

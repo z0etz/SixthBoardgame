@@ -65,7 +65,7 @@
             android:id="@+id/textButtonLogin"
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
-            android:text="@string/login"
+            android:text="@string/sign_in"
             android:elevation="@dimen/elevation_small"
             android:background="@drawable/button_white"
             android:textColor="@color/orange_light"
