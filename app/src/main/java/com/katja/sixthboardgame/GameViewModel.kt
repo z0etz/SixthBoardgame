@@ -66,22 +66,36 @@ class GameViewModel {
         gameDao.addGame(game)
     }
 
-    fun endGame(winnerId: String, looserId: String ) {
+    fun endGame(winnerId: String, loserId: String ) {
         if (winnerId != "Unknown") {
             println("$winnerId won")
             userDao.updateUserScoreById(winnerId, 1) { success ->
                 if (success) {
                     println("Score incremented successfully.")
+                    userDao.fetchUserScoreById(winnerId) { score ->
+                        if (score != null) {
+                            println("Winners new total score is $score")
+                        } else {
+                            println("Failed to fetch new score")
+                        }
+                    }
                 } else {
                     println("Failed to decrement score.")
                 }
             }
         }
-        if (looserId != "Unknown") {
-            println("$looserId lost")
-            userDao.updateUserScoreById(winnerId, -1) { success ->
+        if (loserId != "Unknown") {
+            println("$loserId lost")
+            userDao.updateUserScoreById(loserId, -1) { success ->
                 if (success) {
                     println("Score decremented successfully.")
+                    userDao.fetchUserScoreById(loserId) { score ->
+                        if (score != null) {
+                            println("Losers new total score is $score")
+                        } else {
+                            println("Failed to fetch new score")
+                        }
+                    }
                 } else {
                     println("Failed to decrement score.")
                 }

@@ -145,14 +145,26 @@ class UserDao {
     fun updateUserScoreById(userId: String, increment: Int, completion: (Boolean) -> Unit) {
         val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
 
-        FirebaseFirestore.getInstance().runTransaction { transaction ->
-            val snapshot = transaction.get(userRef)
-            val newScore = (snapshot.getLong(LEADERBOARD_KEY)?.toInt() ?: 0) + increment
-            transaction.update(userRef, LEADERBOARD_KEY, newScore)
-        }.addOnSuccessListener {
-            completion(true)
+        userRef.get().addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                // User exists, proceed with the update
+                FirebaseFirestore.getInstance().runTransaction { transaction ->
+                    val snapshot = transaction.get(userRef)
+                    val newScore = (snapshot.getLong(LEADERBOARD_KEY)?.toInt() ?: 0) + increment
+                    transaction.update(userRef, LEADERBOARD_KEY, newScore)
+                }.addOnSuccessListener {
+                    completion(true)
+                }.addOnFailureListener { exception ->
+                    Log.e(ContentValues.TAG, "Failed to update user score in Firestore", exception)
+                    completion(false)
+                }
+            } else {
+                // Document does not exist
+                Log.e(ContentValues.TAG, "User does not exist")
+                completion(false)
+            }
         }.addOnFailureListener { exception ->
-            Log.e(ContentValues.TAG, "Failed to update user score in Firestore", exception)
+            Log.e(ContentValues.TAG, "Failed to check if user exists in Firestore", exception)
             completion(false)
         }
     }
