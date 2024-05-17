@@ -454,9 +454,8 @@ class GameActivity : AppCompatActivity() {
             val winDialogFragment = WinDialogFragment()
             winDialogFragment.show(supportFragmentManager, "WinDialogFragment")
         } else {
-            dialog.setContentView(R.layout.fragment_loose_dialog)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.show()
+            val looseDialogFragment = LooseDialogFragment()
+            looseDialogFragment.show(supportFragmentManager, "LooseDialogFragment")
         }
     }
 }
