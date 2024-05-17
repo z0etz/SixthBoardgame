@@ -58,5 +58,6 @@
     <string name="minus">-</string>
     <string name="discs_to_move">Discs to move:</string>
     <string name="_2">2</string>
+    <string name="username_not_loaded">Username not loaded</string>
 
 </resources>

@@ -16,11 +16,22 @@ class WinDialogActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val auth = FirebaseAuth.getInstance()
+        val dao = UserDao()
         val currentUserId = auth.currentUser?.uid
+        var currentUserName = getString(R.string.username_not_loaded)
 
         println(currentUserId)
-        //TODO: Change text below to show the name of the user instead of ID
-        binding.usernameDialogTextView.text = currentUserId
+
+        dao.fetchUsernameById(currentUserId?: "Unknown") { username ->
+            if (username != null) {
+                currentUserName = username
+                println("Username: $username")
+            } else {
+                println("Failed to get username")
+            }
+        }
+
+        binding.usernameDialogTextView.text = currentUserName
 
         binding.textButtonContinue.setOnClickListener {
             val intent = Intent(this, WelcomeActivity::class.java)
