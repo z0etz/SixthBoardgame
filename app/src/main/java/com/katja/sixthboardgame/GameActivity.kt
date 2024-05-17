@@ -451,11 +451,11 @@ class GameActivity : AppCompatActivity() {
     private fun showGameEndDialogue() {
         val dialog = Dialog(this)
         if(winnerId == currentUserId) {
-            dialog.setContentView(R.layout.activity_win_dialog)
+            val winDialogFragment = WinDialogFragment()
+            winDialogFragment.show(supportFragmentManager, "WinDialogFragment")
         } else {
-            dialog.setContentView(R.layout.activity_lose_dialog)
+            val looseDialogFragment = LooseDialogFragment()
+            looseDialogFragment.show(supportFragmentManager, "LooseDialogFragment")
         }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
     }
 }
