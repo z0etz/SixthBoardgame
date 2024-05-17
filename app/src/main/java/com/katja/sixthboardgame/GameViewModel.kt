@@ -1,5 +1,7 @@
 package com.katja.sixthboardgame
 
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import javax.security.auth.callback.Callback
 
 class GameViewModel {
@@ -25,8 +27,6 @@ class GameViewModel {
 
         return gameList
     }
-
-
 
     fun loadAllUserGames(currentId: String?): MutableList<Game> {
         var gameList = mutableListOf<Game>()

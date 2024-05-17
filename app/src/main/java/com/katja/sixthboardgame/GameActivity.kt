@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -59,9 +60,22 @@ class GameActivity : AppCompatActivity() {
         getScreenSize()
         calcGameBoardSize()
 
+
+
+
+
         Id = intent.getStringExtra("GAME_ID") ?: return
         gameRef = FirebaseFirestore.getInstance().document("Games/$Id")
         println("current games id = $Id")
+
+        fetchPlayerIdsForGame(Id) { playerIds ->
+            if (playerIds.isNotEmpty()) {
+                println("Player IDs for game $Id: $playerIds")
+                // Do something with the player IDs
+            } else {
+                println("No player IDs found for game $Id")
+            }
+        }
 
         //TODO: change initiation of game to load the current game from Firebase via the view model by correct game id
         game = viewModel.loadGame(listOf("1", "2"))
@@ -457,5 +471,26 @@ class GameActivity : AppCompatActivity() {
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
+    }
+
+    fun fetchPlayerIdsForGame(gameId: String, callback: (List<String>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("Games")
+            .whereEqualTo("id", gameId)
+            .get()
+            .addOnSuccessListener { documents ->
+                val playerIds = mutableListOf<String>()
+                for (document in documents) {
+                    val playerIdsFromDoc = document.get("player_ids") as? List<String>
+                    if (playerIdsFromDoc != null) {
+                        playerIds.addAll(playerIdsFromDoc)
+                    }
+                }
+                callback(playerIds)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("GameActivity", "Error getting documents: ", exception)
+                callback(emptyList())
+            }
     }
 }
