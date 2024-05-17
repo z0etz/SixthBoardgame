@@ -16,10 +16,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
+
+    //Hej
 
     private lateinit var binding: ActivityGameBinding
     private var gameBoardSize = 354
@@ -33,6 +37,8 @@ class GameActivity : AppCompatActivity() {
     private var discsToMove = 0
     private var availableMoveSquares: MutableList<FrameLayout> = mutableListOf()
     private lateinit var game: Game
+    private lateinit var Id: String
+    private lateinit var gameRef: DocumentReference
     private var gameEnded = false
     private var winnerId = "Unknown"
     private lateinit var auth: FirebaseAuth
@@ -52,6 +58,10 @@ class GameActivity : AppCompatActivity() {
 
         getScreenSize()
         calcGameBoardSize()
+
+        Id = intent.getStringExtra("GAME_ID") ?: return
+        gameRef = FirebaseFirestore.getInstance().document("Games/$Id")
+        println("current games id = $Id")
 
         //TODO: change initiation of game to load the current game from Firebase via the view model by correct game id
         game = viewModel.loadGame(listOf("1", "2"))

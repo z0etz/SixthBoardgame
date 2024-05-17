@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
@@ -11,14 +12,18 @@ class WelcomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityWelcomeBinding
     lateinit var adapter: WelcomeAdapterCurrentGamesList
     private val ongoingGamesData = mutableListOf<String>()
+    lateinit var gameDao: GameDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData) { gameId ->
-            openGame(gameId)
+            gameDao.fetchGameById(gameId) { game ->
+                openGame(game.id) // Use the gameId fetched from fetchGameById in openGame
+            }
         }
 
         binding.recyclerViewOngoingGames.adapter = adapter
@@ -55,8 +60,19 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun loadOngoingGamesData() {
-        ongoingGamesData.addAll(getOngoingGamesData())
-        adapter.notifyDataSetChanged()
+        gameDao = GameDao()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val currentUserId = currentUser?.uid
+
+        // Clear the ongoing games data list
+        ongoingGamesData.clear()
+
+        // Listen for real-time updates
+        gameDao.listenForCurrentUserGamesUpdates(currentUserId) { updatedGameList ->
+            ongoingGamesData.clear()
+            ongoingGamesData.addAll(updatedGameList.map { it.id })
+            adapter.notifyDataSetChanged()
+        }
     }
 
     // Called after starting a new game to update ongoing games data
@@ -65,13 +81,9 @@ class WelcomeActivity : AppCompatActivity() {
         if (requestCode == NEW_GAME_REQUEST && resultCode == RESULT_OK) {
             // Reload ongoing games data
             ongoingGamesData.clear()
-            ongoingGamesData.addAll(getOngoingGamesData())
+
             adapter.notifyDataSetChanged()
         }
-    }
-
-    private fun getOngoingGamesData(): List<String> {
-        return listOf("Game 1", "Game 2", "Game 3")
     }
 
     companion object {

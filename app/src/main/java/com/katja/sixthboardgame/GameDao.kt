@@ -89,7 +89,7 @@ class GameDao {
     }
 
 
-    fun fetchAllUserGmes(currentId: String?, callback: (MutableList<Game>) -> Unit) {
+    fun fetchAllUserGames(currentId: String?, callback: (MutableList<Game>) -> Unit) {
         val gameList = mutableListOf<Game>()
 
         FirebaseFirestore
@@ -131,8 +131,100 @@ class GameDao {
                 )
             }
 
-
     }
+
+    fun fetchAllCurrentUserGames(currentId: String?, callback: (MutableList<Game>) -> Unit) {
+        val gameList = mutableListOf<Game>()
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("Games")
+            .get()
+            .addOnSuccessListener { result ->
+
+                for (document in result) {
+                    val data = document.data
+                    if (data != null) {
+
+                        val id = data.get(KEY_ID) as String
+                        val playerIds = data[KEY_PLAYERIDS] as List<String>
+                        val nextPlayer = data[KEY_NEXTPLAYER] as String
+                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
+                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
+                        val gameBoardJson = data[KEY_GAMEBOARD] as String
+                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
+
+                        // Check if currentId is in the list of playerIds
+                        if (currentId in playerIds) {
+                            val game = Game(UserDao(), playerIds)
+                            game.id = id
+                            game.nextPlayer = nextPlayer
+                            game.freeDiscsGray = freeDiscsGray
+                            game.freeDiscsBrown = freeDiscsBrown
+                            game.gameboard = gameBoard
+
+                            gameList.add(game)
+                        }
+                    }
+                }
+
+                callback(gameList)
+            }
+            .addOnFailureListener { exception ->
+                callback(mutableListOf())
+                Log.i(
+                    "error",
+                    "failed to fetch games from FireStore with exception: ${exception.message}"
+                )
+            }
+    }
+
+    fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
+        FirebaseFirestore
+            .getInstance()
+            .collection("Games")
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    Log.i(
+                        "error",
+                        "Failed to fetch games from Firestore with exception: ${exception.message}"
+                    )
+                    callback(emptyList())
+                    return@addSnapshotListener
+                }
+
+                val gameList = mutableListOf<Game>()
+
+                snapshot?.documents?.forEach { document ->
+                    val data = document.data
+                    if (data != null) {
+                        val id = data.get(KEY_ID) as String
+                        val playerIds = data[KEY_PLAYERIDS] as List<String>
+                        val nextPlayer = data[KEY_NEXTPLAYER] as String
+                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
+                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
+                        val gameBoardJson = data[KEY_GAMEBOARD] as String
+                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
+
+                        if (currentId in playerIds) {
+                            val game = Game(UserDao(), playerIds)
+                            game.id = id
+                            game.nextPlayer = nextPlayer
+                            game.freeDiscsGray = freeDiscsGray
+                            game.freeDiscsBrown = freeDiscsBrown
+                            game.gameboard = gameBoard
+
+                            gameList.add(game)
+                        }
+                    }
+                }
+
+                callback(gameList)
+            }
+    }
+
+
+
 
     fun fetchGameById(gameId: String?, callback: (Game) -> Unit) {
 
