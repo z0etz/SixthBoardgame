@@ -3,6 +3,7 @@ package com.katja.sixthboardgame;
 import android.app.Activity;
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View.OnClickListener
 import android.view.Window
 import android.widget.ArrayAdapter
@@ -161,6 +162,7 @@ class StartGameActivity : AppCompatActivity() {
                 ).show()
             }
             .addOnFailureListener { exception ->
+                Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
                 Toast.makeText(
                     this,
                     "Failed to delete invitation: ${exception.message}",
@@ -168,6 +170,7 @@ class StartGameActivity : AppCompatActivity() {
                 ).show()
             }
     }
+
 
 
 

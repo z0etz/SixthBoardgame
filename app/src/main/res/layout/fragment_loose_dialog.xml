@@ -23,7 +23,11 @@
         android:fontFamily="@font/inter_semibold"
         android:textSize="@dimen/heading_large"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_medium"/>
+        android:layout_marginTop="@dimen/margin_medium"
+        android:shadowColor="@color/red_light"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="8"/>
 
     <LinearLayout
         android:id="@+id/opponentsLayout"
@@ -53,7 +57,11 @@
             android:fontFamily="@font/inter_semibold"
             android:textSize="@dimen/heading_large"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_small" />
+            android:layout_marginTop="@dimen/margin_small"
+            android:shadowColor="@color/red_light"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="8"/>
 
 
     </LinearLayout>

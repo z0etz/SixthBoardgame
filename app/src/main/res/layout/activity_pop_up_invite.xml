@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/margin_medium"
+    android:layout_marginHorizontal="@dimen/margin_medium">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:padding="@dimen/margin_medium">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/margin_medium"
+            android:textStyle="bold"
+            android:text="@string/pop_up_invite"
+            android:gravity="center"
+            android:textColor="@color/green_dark"/>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/margin_medium">
+            
+            <Button
+                android:id="@+id/btn_yes"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/Yes"
+                android:textAllCaps="false"
+                android:background="@drawable/gradient_button_green"
+                android:elevation="@dimen/margin_small"
+                android:layout_margin="@dimen/margin_medium"/>
+
+            <Button
+                android:id="@+id/btn_no"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:text="@string/No"
+                android:background="@drawable/gradient_button_red"
+                android:elevation="@dimen/margin_small"
+                android:layout_margin="@dimen/margin_medium"/>
+
+            
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
