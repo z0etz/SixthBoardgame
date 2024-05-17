@@ -9,8 +9,6 @@ import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
 
-    //Hej
-
     lateinit var binding: ActivityWelcomeBinding
     lateinit var adapter: WelcomeAdapterCurrentGamesList
     private val ongoingGamesData = mutableListOf<String>()
@@ -23,7 +21,9 @@ class WelcomeActivity : AppCompatActivity() {
 
 
         adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData) { gameId ->
-            openGame(gameId)
+            gameDao.fetchGameById(gameId) { game ->
+                openGame(game.id) // Use the gameId fetched from fetchGameById in openGame
+            }
         }
 
         binding.recyclerViewOngoingGames.adapter = adapter
