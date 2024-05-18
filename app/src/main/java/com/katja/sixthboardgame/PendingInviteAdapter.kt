@@ -11,11 +11,16 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.AdapterView.inflate
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.graphics.drawable.toDrawable
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.katja.sixthboardgame.R.color.transparent
 import kotlinx.coroutines.withContext
+
 
     class PendingInviteAdapter(
         private val context: Context,
@@ -23,6 +28,15 @@ import kotlinx.coroutines.withContext
         private val receiverId: String,
         private val onDeleteClickListener: (Int) -> Unit
     ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
+
+
+
+        interface OnItemInteractionListener {
+            fun onSendButtonClick(position: Int)
+        }
+
+        private var listener: OnItemInteractionListener? = null
+
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
@@ -40,7 +54,18 @@ import kotlinx.coroutines.withContext
 
         inner class InviteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val playerNameTextView: TextView = itemView.findViewById(R.id.invitePlayerName)
+            val button = itemView.findViewById<Button>(R.id.invite_send_button)
 
+
+            init {
+                button.setOnClickListener {
+                    button.text = "invitation sent"
+                    button.background =  R.color.transparent.toDrawable() // R.drawable.button_white.toDrawable()
+                    val position = adapterPosition
+                    listener?.onSendButtonClick(position)
+
+                }
+            }
             init {
                 itemView.setOnClickListener {
                     val position = adapterPosition
@@ -60,6 +85,10 @@ import kotlinx.coroutines.withContext
             fun bind(playerName: String) {
                 playerNameTextView.text = playerName
             }
+        }
+
+        fun setOnItemInteractionListener(listener: OnItemInteractionListener) {
+            this.listener = listener
         }
 
         fun updateInvitationsList(newInvites: List<String>) {

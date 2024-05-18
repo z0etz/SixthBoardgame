@@ -19,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
-class StartGameActivity : AppCompatActivity() {
+class StartGameActivity : AppCompatActivity(), PendingInviteAdapter.OnItemInteractionListener {
 
 
     private lateinit var binding: ActivityStartGameBinding
@@ -36,11 +36,13 @@ class StartGameActivity : AppCompatActivity() {
     private lateinit var inviteDao: InviteDao
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
+    private lateinit var selectedUser: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         firebaseAuth = Firebase.auth
         userDao = UserDao()
@@ -52,12 +54,14 @@ class StartGameActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
         pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
+            // this lamda is only executed when the adapter returns the position by a callback
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
         }
+        pendingInviteAdapter.setOnItemInteractionListener(this)
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -79,18 +83,6 @@ class StartGameActivity : AppCompatActivity() {
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
-            getReceiverId(selectedUser) // Update receiverId
-            receiverId?.let {
-                val senderId = firebaseAuth.currentUser?.uid
-                if (senderId != null){
-                    val inviteId = invitationsCollection.document().id
-                    InviteDao().sendInvitation(senderId, it, inviteId)
-                } else {
-                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
-                }
-            } ?: run {
-                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-            }
             selectedUsersList.add(selectedUser)
             pendingInviteAdapter.notifyDataSetChanged()
         }
@@ -178,5 +170,28 @@ class StartGameActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         autoCompleteTextView.setText("")
+    }
+
+    override fun onSendButtonClick(position: Int) {
+
+        println("the sending button function is being executed!!!!")
+
+        val  selectedUser = selectedUsersList.get(position)
+        getReceiverId(selectedUser) // Update receiverId
+        receiverId?.let {
+            val senderId = firebaseAuth.currentUser?.uid
+            if (senderId != null){
+                val inviteId = invitationsCollection.document().id
+                InviteDao().sendInvitation(senderId, it, inviteId)
+            } else {
+                Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+            }
+        } ?: run {
+            Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun sendInvitation(position: Int, senderId: String, receiverId: String){
+
     }
 }

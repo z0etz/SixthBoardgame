@@ -3,6 +3,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.math.log
 
 class InviteDao {
 
@@ -31,6 +32,8 @@ class InviteDao {
             }
             .addOnFailureListener { e ->
                 // Hantera eventuellt fel vid skickning av inbjudning här
+
+                Log.d(TAG, "Failed to send invitation with $inviteId")
             }
     }
     // Metod för att lyssna på inkommande spelinbjudningar för en specifik användare
