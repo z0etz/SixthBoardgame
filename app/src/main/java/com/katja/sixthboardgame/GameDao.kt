@@ -16,6 +16,7 @@ class GameDao {
     private val KEY_FREE_DISCS_BROWN = "free_discs_brown"
     private val KEY_GAMEBOARD = "gameboard"
 
+    private val db = FirebaseFirestore.getInstance()
 
     fun addGame(game: Game) {
         val dataToStore = hashMapOf(
@@ -37,6 +38,23 @@ class GameDao {
             }
             .addOnFailureListener { exception ->
                 Log.i("error", "failed to add game to FireStore with exception: ${exception.message}")
+            }
+    }
+
+    fun fetchGameById(gameId: String, callback: (Game?) -> Unit) {
+        val gameRef = db.collection("Games").document(gameId)
+        gameRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val game = document.toObject(Game::class.java)
+                    callback(game)
+                } else {
+                    callback(null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("GameDao", "Error getting game document", exception)
+                callback(null)
             }
     }
 
@@ -226,7 +244,7 @@ class GameDao {
 
 
 
-    fun fetchGameById(gameId: String?, callback: (Game) -> Unit) {
+    fun getGameById(gameId: String?, callback: (Game) -> Unit) {
 
         FirebaseFirestore
             .getInstance()

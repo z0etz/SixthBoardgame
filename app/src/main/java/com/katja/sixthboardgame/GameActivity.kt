@@ -38,7 +38,7 @@ class GameActivity : AppCompatActivity() {
     private var discsToMove = 0
     private var availableMoveSquares: MutableList<FrameLayout> = mutableListOf()
     private lateinit var game: Game
-    private lateinit var Id: String
+    private lateinit var gameId: String
     private lateinit var gameRef: DocumentReference
     private var gameEnded = false
     private var winnerId = "Unknown"
@@ -61,25 +61,25 @@ class GameActivity : AppCompatActivity() {
         calcGameBoardSize()
 
 
+        gameId = intent.getStringExtra("GAME_ID") ?: return
+        gameRef = FirebaseFirestore.getInstance().document("Games/$gameId")
+        println("current game's id = $gameId")
 
+        // Load the game by ID
+        viewModel.loadGameById(gameId) { loadedGame ->
+            if (loadedGame != null) {
+                game = loadedGame
 
+                //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
+//                setupGame()
 
-        Id = intent.getStringExtra("GAME_ID") ?: return
-        gameRef = FirebaseFirestore.getInstance().document("Games/$Id")
-        println("current games id = $Id")
-
-        fetchPlayerIdsForGame(Id) { playerIds ->
-            if (playerIds.isNotEmpty()) {
-                println("Player IDs for game $Id: $playerIds")
-                // Do something with the player IDs
             } else {
-                println("No player IDs found for game $Id")
+                // Handle the case where the game could not be loaded
+                Log.e("GameActivity", "Failed to load game with ID $gameId")
+                // Optionally, show an error message to the user and close the activity
+                finish()
             }
         }
-
-        //TODO: change initiation of game to load the current game from Firebase via the view model by correct game id
-        game = viewModel.loadGame(listOf("1", "2"))
-        //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
 
         // Set size of game board and the square views on it according to screen size
         binding.gameBoard.layoutParams.apply {
@@ -108,11 +108,12 @@ class GameActivity : AppCompatActivity() {
         }
 
         binding.playersDiscs.setOnClickListener {
-            if(!gameEnded) {
+            if (!gameEnded) {
                 println("Clicked player disc stack")
                 resetAvailableMoveSquares()
-                if(playerDiscColor == DiscStack.DiscColor.BROWN && game.freeDiscsBrown > 0 && !gameEnded ||
-                    playerDiscColor == DiscStack.DiscColor.GRAY && game.freeDiscsGray > 0 && !gameEnded ) {
+                if (playerDiscColor == DiscStack.DiscColor.BROWN && game.freeDiscsBrown > 0 && !gameEnded ||
+                    playerDiscColor == DiscStack.DiscColor.GRAY && game.freeDiscsGray > 0 && !gameEnded
+                ) {
                     playerDiscStackClicked = true
                     makeEmptySquaresAvailable()
                 }
@@ -132,9 +133,9 @@ class GameActivity : AppCompatActivity() {
                         println("Clicked square: Row $i, Column $j")
 
                         //Place new disc on the board
-                        if(playerDiscStackClicked && game.gameboard.matrix[i][j].discs.isEmpty()) {
+                        if (playerDiscStackClicked && game.gameboard.matrix[i][j].discs.isEmpty()) {
                             game.gameboard.matrix[i][j].push(playerDiscColor)
-                            if(playerDiscColor == DiscStack.DiscColor.BROWN) {
+                            if (playerDiscColor == DiscStack.DiscColor.BROWN) {
                                 game.freeDiscsBrown -= 1
                                 println("freeDiscsBrown: ${game.freeDiscsBrown}")
                             } else {
@@ -148,15 +149,19 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         // Move discs from stackSelected to the clicked stack
-                        else if(discStackSelected != null && availableMoveSquares.contains(squareView)) {
+                        else if (discStackSelected != null && availableMoveSquares.contains(
+                                squareView
+                            )
+                        ) {
                             var indexOffsetToRemove = 0
                             for (index in (numberOfDiscs - discsToMove) until numberOfDiscs) {
                                 println("Removed disc at: " + (index + indexOffsetToRemove))
-                                val discColor = discStackSelected!!.discs.removeAt(index + indexOffsetToRemove)
+                                val discColor =
+                                    discStackSelected!!.discs.removeAt(index + indexOffsetToRemove)
                                 println("Removed $discColor disk")
                                 game.gameboard.matrix[i][j].push(discColor)
                                 println("Added $discColor disk")
-                                indexOffsetToRemove --
+                                indexOffsetToRemove--
                             }
                             // Update view squares for both stacks
                             if (discStackSelectedView != null) {
@@ -165,12 +170,14 @@ class GameActivity : AppCompatActivity() {
                             updateViewSquare(game.gameboard.matrix[i][j], squareView)
                             resetAvailableMoveSquares()
                             // Check if the game ended
-                            if(game.gameboard.matrix[i][j].discs.size >= 6) {
-                                val winnerColor = game.gameboard.matrix[i][j].discs.lastOrNull() ?: DiscStack.DiscColor.GRAY
+                            if (game.gameboard.matrix[i][j].discs.size >= 6) {
+                                val winnerColor = game.gameboard.matrix[i][j].discs.lastOrNull()
+                                    ?: DiscStack.DiscColor.GRAY
                                 val winnerColorString = winnerColor.name
                                 println("$winnerColorString won!")
-                                winnerId = if(playerDiscColor == winnerColor) currentUserId ?: "Unknown"
-                                else game.playerIds.find { it != currentUserId } ?: "Unknown"
+                                winnerId =
+                                    if (playerDiscColor == winnerColor) currentUserId ?: "Unknown"
+                                    else game.playerIds.find { it != currentUserId } ?: "Unknown"
                                 val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
                                 gameEnded = true
                                 viewModel.endGame(winnerId, looserId)
@@ -179,7 +186,7 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         //Select stack on the game board to move discs from
-                        else if(game.gameboard.matrix[i][j].discs.isNotEmpty()) {
+                        else if (game.gameboard.matrix[i][j].discs.isNotEmpty()) {
                             resetAvailableMoveSquares()
                             discStackSelected = game.gameboard.matrix[i][j]
                             discStackSelectedView = squareView
@@ -201,13 +208,19 @@ class GameActivity : AppCompatActivity() {
                                         if (row in 0 until 5 && column in 0 until 5) {
                                             val adjacentStack = game.gameboard.matrix[row][column]
                                             if (adjacentStack.discs.isNotEmpty()) {
-                                                val squareId = resources.getIdentifier("square$row$column", "id", packageName)
-                                                val adjacentSquareView = findViewById<FrameLayout>(squareId)
+                                                val squareId = resources.getIdentifier(
+                                                    "square$row$column",
+                                                    "id",
+                                                    packageName
+                                                )
+                                                val adjacentSquareView =
+                                                    findViewById<FrameLayout>(squareId)
                                                 setAvailableMoveSquare(adjacentSquareView)
                                             }
                                         }
                                     }
                                 }
+
                                 2 -> {
                                     // Define directions to move (up, down, left, right)
                                     val directions = listOf(
@@ -222,6 +235,7 @@ class GameActivity : AppCompatActivity() {
                                         findAvailableMovesInDirection(i, j, dRow, dColumn)
                                     }
                                 }
+
                                 3 -> {
                                     // Define possible knight moves on the board
                                     val knightMoves = listOf(
@@ -242,15 +256,22 @@ class GameActivity : AppCompatActivity() {
                                         // Checks if the new position is within the game board
                                         if (newRow in 0 until 5 && newColumn in 0 until 5) {
                                             // Check if the square is empty or occupied
-                                            val adjacentStack = game.gameboard.matrix[newRow][newColumn]
+                                            val adjacentStack =
+                                                game.gameboard.matrix[newRow][newColumn]
                                             if (adjacentStack.discs.isNotEmpty()) {
-                                                val squareId = resources.getIdentifier("square$newRow$newColumn", "id", packageName)
-                                                val adjacentSquareView = findViewById<FrameLayout>(squareId)
+                                                val squareId = resources.getIdentifier(
+                                                    "square$newRow$newColumn",
+                                                    "id",
+                                                    packageName
+                                                )
+                                                val adjacentSquareView =
+                                                    findViewById<FrameLayout>(squareId)
                                                 setAvailableMoveSquare(adjacentSquareView)
                                             }
                                         }
                                     }
                                 }
+
                                 4 -> {
                                     // Define diagonal direction to move (up-left, up-right, down-left, down-right)
                                     val diagonalDirections = listOf(
@@ -265,6 +286,7 @@ class GameActivity : AppCompatActivity() {
                                         findAvailableMovesInDirection(i, j, dRow, dColumn)
                                     }
                                 }
+
                                 5 -> {
                                     // Define directions to move (up, down, left, right, and diagonally)
                                     val directions = listOf(
@@ -283,17 +305,17 @@ class GameActivity : AppCompatActivity() {
                                         findAvailableMovesInDirection(i, j, dRow, dColumn)
                                     }
                                 }
+
                                 else -> {
                                     resetAvailableMoveSquares()
                                 }
                             }
-                            if(numberOfDiscs in 2..5 && !availableMoveSquares.isEmpty()) {
+                            if (numberOfDiscs in 2..5 && !availableMoveSquares.isEmpty()) {
                                 binding.discsTooMoveDialogue.visibility = View.VISIBLE
                                 binding.discsToMoveText.text =
                                     getString(R.string.discs_to_move) + " " + discsToMove
                             }
-                        }
-                        else {
+                        } else {
                             resetAvailableMoveSquares()
                         }
                     }
@@ -303,16 +325,16 @@ class GameActivity : AppCompatActivity() {
 
         //Set on-click listeners for buttons in the choose number of discs dialogue
         binding.buttonMinus.setOnClickListener {
-            if(discsToMove > 1 && !gameEnded) {
-                discsToMove --
+            if (discsToMove > 1 && !gameEnded) {
+                discsToMove--
                 binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
                 println(getString(R.string.discs_to_move) + discsToMove)
             }
         }
         //Set on-click listeners for buttons in the choose number of discs dialogue
         binding.buttonPlus.setOnClickListener {
-            if(discsToMove < numberOfDiscs && !gameEnded) {
-                discsToMove ++
+            if (discsToMove < numberOfDiscs && !gameEnded) {
+                discsToMove++
                 binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
                 println(getString(R.string.discs_to_move) + discsToMove)
             }
@@ -375,7 +397,7 @@ class GameActivity : AppCompatActivity() {
 
         var numberOfdiscsText = squareView.findViewById<TextView>(R.id.text_number_of_discs)
         numberOfdiscsText.text = discStack.discs.size.toString()
-        if(discStack.discs.size > 1 && numberOfdiscsText != null) {
+        if (discStack.discs.size > 1 && numberOfdiscsText != null) {
             numberOfdiscsText.visibility = View.VISIBLE
         } else {
             numberOfdiscsText?.visibility = View.GONE
@@ -387,6 +409,7 @@ class GameActivity : AppCompatActivity() {
         squareBackgroundView.setBackgroundColor(ContextCompat.getColor(this, R.color.green_dark))
         availableMoveSquares.add(squareView)
     }
+
     private fun resetAvailableMoveSquares() {
         availableMoveSquares.forEach { squareView ->
             val squareBackgroundView = squareView.findViewById<View>(R.id.square_background)
@@ -406,7 +429,7 @@ class GameActivity : AppCompatActivity() {
             for (j in 0..4) {
                 // Check if the square is empty and set it as an available move if it is.
                 val notEmpty = game.gameboard.matrix[i][j].discs.any { it != null }
-                if(!notEmpty) {
+                if (!notEmpty) {
                     val squareId = resources.getIdentifier("square$i$j", "id", packageName)
                     val squareView = findViewById<FrameLayout>(squareId)
                     setAvailableMoveSquare(squareView)
@@ -422,7 +445,8 @@ class GameActivity : AppCompatActivity() {
         while (currentRow in 0 until 5 && currentColumn in 0 until 5) {
             val adjacentStack = game.gameboard.matrix[currentRow][currentColumn]
             if (adjacentStack.discs.isNotEmpty()) {
-                val squareId = resources.getIdentifier("square$currentRow$currentColumn", "id", packageName)
+                val squareId =
+                    resources.getIdentifier("square$currentRow$currentColumn", "id", packageName)
                 val adjacentSquareView = findViewById<FrameLayout>(squareId)
                 setAvailableMoveSquare(adjacentSquareView)
                 break
@@ -431,6 +455,7 @@ class GameActivity : AppCompatActivity() {
             currentColumn += dColumn
         }
     }
+
     private fun updateFreeDiscsView(activity: Activity, playerDiscs: Boolean = true) {
         val discContainer = if (playerDiscs) {
             findViewById<LinearLayout>(R.id.players_discs)
@@ -443,7 +468,8 @@ class GameActivity : AppCompatActivity() {
         var discDrawable = R.drawable.player_piece_brown
         var numDiscsToShow = game.freeDiscsBrown
         if (playerDiscColor != DiscStack.DiscColor.BROWN ||
-            (!playerDiscs && playerDiscColor == DiscStack.DiscColor.BROWN)) {
+            (!playerDiscs && playerDiscColor == DiscStack.DiscColor.BROWN)
+        ) {
             discDrawable = R.drawable.player_piece_gray
             numDiscsToShow = game.freeDiscsGray
         }
@@ -454,17 +480,19 @@ class GameActivity : AppCompatActivity() {
             discView.setImageResource(discDrawable) // Set the image resource for the disc
             val layoutParams = FrameLayout.LayoutParams(
                 ((gameBoardSize - 9) / 5) - 66,
-                ((gameBoardSize - 9) / 5) - 66)
+                ((gameBoardSize - 9) / 5) - 66
+            )
             if (i > 0) {
-                layoutParams.marginStart = - screenWidth / 10 // Overlapping margin
+                layoutParams.marginStart = -screenWidth / 10 // Overlapping margin
             }
             discView.layoutParams = layoutParams
             discContainer.addView(discView)
         }
     }
+
     private fun showGameEndDialogue() {
         val dialog = Dialog(this)
-        if(winnerId == currentUserId) {
+        if (winnerId == currentUserId) {
             val winDialogFragment = WinDialogFragment()
             winDialogFragment.show(supportFragmentManager, "WinDialogFragment")
         } else {
@@ -492,5 +520,22 @@ class GameActivity : AppCompatActivity() {
                 Log.w("GameActivity", "Error getting documents: ", exception)
                 callback(emptyList())
             }
+    }
+
+    private fun setupGame() {
+        // Your existing code to setup the game UI and logic
+        fetchPlayerIdsForGame(gameId) { playerIds ->
+            if (playerIds.isNotEmpty()) {
+                println("Player IDs for game $gameId: $playerIds")
+                // Do something with the player IDs
+            } else {
+                println("No player IDs found for game $gameId")
+            }
+        }
+
+        // Set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first in the list of playerIds of the game
+        if (game.playerIds.isNotEmpty() && game.playerIds[0] == currentUserId) {
+            playerDiscColor = DiscStack.DiscColor.GRAY
+        }
     }
 }

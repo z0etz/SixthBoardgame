@@ -42,23 +42,29 @@ class GameViewModel {
     }
 
 
-    fun getGameById(gameId: String?): Game{
-
-        var game = Game(UserDao(), listOf("1", "2"))
-
-        gameDao.fetchGameById(gameId) { fetchedGame ->
-
-            game = fetchedGame
-        }
-
-        return game
-    }
+//    fun getGameById(gameId: String?): Game{
+//
+//        var game = Game(UserDao(), listOf("1", "2"))
+//
+//        gameDao.fetchGameById(gameId) { fetchedGame ->
+//
+//            game = fetchedGame
+//        }
+//
+//        return game
+//    }
     
         fun loadGame(playerIds: List<String>): Game {
 
         //TODO: Load existing game from Firebase, change return below to return that game
         return Game(UserDao(), listOf("1","2"))
 
+    }
+
+    fun loadGameById(gameId: String, callback: (Game?) -> Unit) {
+        gameDao.fetchGameById(gameId) { fetchedGame ->
+            callback(fetchedGame)
+        }
     }
 
     fun saveGame(game: Game) {
