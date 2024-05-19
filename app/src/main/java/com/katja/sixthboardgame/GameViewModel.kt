@@ -7,6 +7,7 @@ import javax.security.auth.callback.Callback
 class GameViewModel {
 
     val gameDao = GameDao()
+    val userDao = UserDao()
     var game: Game = Game(UserDao(),mutableListOf("1", "2", "3"))
 
     fun createNewGame(playerIdsList: List<String>): Game {
@@ -65,14 +66,40 @@ class GameViewModel {
         gameDao.addGame(game)
     }
 
-    fun endGame(winnerId: String, looserId: String ) {
+    fun endGame(winnerId: String, loserId: String ) {
         if (winnerId != "Unknown") {
-            //TODO: database -> user.winnerId.score += 1, om spelaren finns
             println("$winnerId won")
+            userDao.updateUserScoreById(winnerId, 1) { success ->
+                if (success) {
+                    println("Score incremented successfully.")
+                    userDao.fetchUserScoreById(winnerId) { score ->
+                        if (score != null) {
+                            println("Winners new total score is $score")
+                        } else {
+                            println("Failed to fetch new score")
+                        }
+                    }
+                } else {
+                    println("Failed to decrement score.")
+                }
+            }
         }
-        if (looserId != "Unknown") {
-            //TODO: database -> user.winnerId.score -= 1, om spelaren finns
-            println("$looserId lost")
+        if (loserId != "Unknown") {
+            println("$loserId lost")
+            userDao.updateUserScoreById(loserId, -1) { success ->
+                if (success) {
+                    println("Score decremented successfully.")
+                    userDao.fetchUserScoreById(loserId) { score ->
+                        if (score != null) {
+                            println("Losers new total score is $score")
+                        } else {
+                            println("Failed to fetch new score")
+                        }
+                    }
+                } else {
+                    println("Failed to decrement score.")
+                }
+            }
         }
 
         //TODO: Make sure the the finished game does not show up in current games lists anymore

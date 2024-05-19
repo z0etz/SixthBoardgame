@@ -52,9 +52,6 @@ class UserDao {
             }
     }
 
-
-
-
     fun fetchUserNames(completion: (List<String>) -> Unit) {
         FirebaseFirestore.getInstance()
             .collection("users")
@@ -115,4 +112,63 @@ class UserDao {
             }
     }
 
+    fun fetchUsernameById(userId: String, completion: (String?) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val username = documentSnapshot.getString(USER_NAME_KEY)
+                completion(username)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(ContentValues.TAG, "Failed to fetch username from Firestore", exception)
+                completion(null)
+            }
+    }
+
+    fun fetchUserScoreById(userId: String, completion: (Int?) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val score = documentSnapshot.getLong(LEADERBOARD_KEY)?.toInt()
+                completion(score)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(ContentValues.TAG, "Failed to fetch user score from Firestore", exception)
+                completion(null)
+            }
+    }
+
+    fun updateUserScoreById(userId: String, increment: Int, completion: (Boolean) -> Unit) {
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
+
+        userRef.get().addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                // User exists, proceed with the update
+                FirebaseFirestore.getInstance().runTransaction { transaction ->
+                    val snapshot = transaction.get(userRef)
+                    val newScore = (snapshot.getLong(LEADERBOARD_KEY)?.toInt() ?: 0) + increment
+                    transaction.update(userRef, LEADERBOARD_KEY, newScore)
+                }.addOnSuccessListener {
+                    completion(true)
+                }.addOnFailureListener { exception ->
+                    Log.e(ContentValues.TAG, "Failed to update user score in Firestore", exception)
+                    completion(false)
+                }
+            } else {
+                // Document does not exist
+                Log.e(ContentValues.TAG, "User does not exist")
+                completion(false)
+            }
+        }.addOnFailureListener { exception ->
+            Log.e(ContentValues.TAG, "Failed to check if user exists in Firestore", exception)
+            completion(false)
+        }
+    }
+    
 }
+
+

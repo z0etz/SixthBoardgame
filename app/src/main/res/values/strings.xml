@@ -62,6 +62,7 @@
     <string name="minus">-</string>
     <string name="discs_to_move">Discs to move:</string>
     <string name="_2">2</string>
+    <string name="username_not_loaded">Username not loaded</string>
     <string name="pop_up_invite">Send an invite?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
