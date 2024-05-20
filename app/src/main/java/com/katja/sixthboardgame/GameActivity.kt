@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -43,6 +44,8 @@ class GameActivity : AppCompatActivity() {
     private var winnerId = "Unknown"
     private lateinit var auth: FirebaseAuth
     private var currentUserId: String? = null
+    private var opponentId: String? = null
+    private lateinit var userDao: UserDao
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,11 +53,12 @@ class GameActivity : AppCompatActivity() {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val userDaoInstance = UserDao()
+        userDao = UserDao()
         val viewModel = GameViewModel()
 
         auth = FirebaseAuth.getInstance()
         currentUserId = auth.currentUser?.uid
+        opponentId = game.playerIds.firstOrNull { it != currentUserId }
 
         getScreenSize()
         calcGameBoardSize()
@@ -89,6 +93,27 @@ class GameActivity : AppCompatActivity() {
         updateFreeDiscsView(this)
         updateFreeDiscsView(this, playerDiscs = false)
 
+        // Show players username
+        userDao.fetchUsernameById(currentUserId ?: "Unknown") { username ->
+            if (username != null) {
+                Log.d("PlayerProfileActivity", "Player username: $username")
+                binding.textPlayerName.text = username
+            } else {
+                Log.e("PlayerProfileActivity", "Failed to get player username")
+            }
+        }
+
+        // Show opponents username
+        userDao.fetchUsernameById(opponentId ?: "Unknown") { username ->
+            if (username != null) {
+                Log.d("PlayerProfileActivity", "Opponent username: $username")
+                binding.textOpponentName.text = username
+            } else {
+                Log.e("PlayerProfileActivity", "Failed to get opponent username")
+            }
+        }
+
+        // Handle glicks and game logic
         binding.gameBackground.setOnClickListener {
             resetAvailableMoveSquares()
         }

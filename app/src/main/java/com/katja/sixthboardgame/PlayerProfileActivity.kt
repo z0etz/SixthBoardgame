@@ -14,7 +14,7 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
     class PlayerProfileActivity : AppCompatActivity() {
 
         lateinit var auth: FirebaseAuth
-        lateinit var dao: UserDao
+        private lateinit var dao: UserDao
         lateinit var binding: ActivityPlayerProfileBinding
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)

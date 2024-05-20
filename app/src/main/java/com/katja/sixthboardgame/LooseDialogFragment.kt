@@ -24,7 +24,7 @@ class LooseDialogFragment : DialogFragment() {
 
         println(currentUserId)
 
-        // Show username in dialog
+        // Show player username in dialog
         dao.fetchUsernameById(currentUserId ?: "Unknown") { username ->
             if (username != null) {
                 Log.d("WinDialogFragment", "Username: $username")
