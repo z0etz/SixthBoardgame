@@ -72,10 +72,12 @@ class StartGameActivity : AppCompatActivity() {
 
         }
 
-        userDao.fetchUserNames { names ->
-            userNameList = names
-            adapter.addAll(names ?: emptyList())
-        }
+
+        //Gjorde så att namn visades två gånger i listan, behövs den till annat?
+        //userDao.fetchUserNames { names ->
+        //            userNameList = names
+        //            adapter.addAll(names ?: emptyList())
+        //        }
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
