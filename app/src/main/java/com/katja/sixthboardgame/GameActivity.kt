@@ -1,5 +1,7 @@
 package com.katja.sixthboardgame
 
+import DiscStack
+import Game
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
@@ -64,7 +66,7 @@ class GameActivity : AppCompatActivity() {
 
         gameId = intent.getStringExtra("GAME_ID") ?: return
         gameRef = FirebaseFirestore.getInstance().document("Games/$gameId")
-        println("current game's id = $gameId")
+        println("Current game's id = $gameId")
 
         // Set size of game board and the square views on it according to screen size
         binding.gameBoard.layoutParams.apply {
@@ -72,11 +74,16 @@ class GameActivity : AppCompatActivity() {
             height = gameBoardSize
         }
 
+        // Handle background clicks
+        binding.gameBackground.setOnClickListener {
+            resetAvailableMoveSquares()
+        }
+
         // Load the game by ID
-        viewModel.loadGameById(gameId) { loadedGame ->
+        viewModel.loadGameById(gameId) { loadedGame: Game? ->
             if (loadedGame != null) {
                 game = loadedGame
-                println(gameId)
+                println("Game $gameId loaded")
 
                 for (i in 0..4) {
                     for (j in 0..4) {
@@ -90,6 +97,9 @@ class GameActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+                //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
+//                setupGame()
 
                 updateFreeDiscsView(this)
                 updateFreeDiscsView(this, playerDiscs = false)
@@ -115,11 +125,7 @@ class GameActivity : AppCompatActivity() {
                     }
                 }
 
-                // Handle glicks and game logic
-                binding.gameBackground.setOnClickListener {
-                    resetAvailableMoveSquares()
-                }
-
+                // Handle gameboard clicks and game logic
                 binding.playersDiscs.setOnClickListener {
                     if (!gameEnded) {
                         println("Clicked player disc stack")
@@ -336,31 +342,26 @@ class GameActivity : AppCompatActivity() {
                     }
                 }
 
-                //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
-//                setupGame()
+                //Set on-click listeners for buttons in the choose number of discs dialogue
+                binding.buttonMinus.setOnClickListener {
+                    if (discsToMove > 1 && !gameEnded) {
+                        discsToMove--
+                        binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                        println(getString(R.string.discs_to_move) + discsToMove)
+                    }
+                }
+                binding.buttonPlus.setOnClickListener {
+                    if (discsToMove < numberOfDiscs && !gameEnded) {
+                        discsToMove++
+                        binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
+                        println(getString(R.string.discs_to_move) + discsToMove)
+                    }
+                }
 
             } else {
-                // Handle the case where the game could not be loaded
+                // Close game activity if the game could not be loaded
                 Log.e("GameActivity", "Failed to load game with ID $gameId")
-                // Optionally, show an error message to the user and close the activity
                 finish()
-            }
-        }
-
-        //Set on-click listeners for buttons in the choose number of discs dialogue
-        binding.buttonMinus.setOnClickListener {
-            if (discsToMove > 1 && !gameEnded) {
-                discsToMove--
-                binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
-                println(getString(R.string.discs_to_move) + discsToMove)
-            }
-        }
-        //Set on-click listeners for buttons in the choose number of discs dialogue
-        binding.buttonPlus.setOnClickListener {
-            if (discsToMove < numberOfDiscs && !gameEnded) {
-                discsToMove++
-                binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
-                println(getString(R.string.discs_to_move) + discsToMove)
             }
         }
 

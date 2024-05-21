@@ -1,9 +1,9 @@
 package com.katja.sixthboardgame
 
+import Game
+import GameBoard
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import javax.security.auth.callback.Callback
 import com.google.gson.Gson
 
 
@@ -24,14 +24,12 @@ class GameDao {
             KEY_PLAYERIDS to game.playerIds,
             KEY_NEXTPLAYER to game.nextPlayer,
             KEY_FREE_DISCS_GRAY to game.freeDiscsGray,
-            KEY_FREE_DISCS_BROWN to game.freeDiscsBrown
+            KEY_FREE_DISCS_BROWN to game.freeDiscsBrown,
+            KEY_GAMEBOARD to game.gameboardToJson()
         )
 
-        val gameBoardJson = Gson().toJson(game.gameboard)
-        dataToStore[KEY_GAMEBOARD] = gameBoardJson
-
-        FirebaseFirestore.getInstance()
-            .document("Games/${game.id}")
+        db.collection("games")
+            .document(game.id)
             .set(dataToStore)
             .addOnSuccessListener {
                 Log.i("SUCCESS", "Added a new Game to Firestore with id: ${game.id}")
@@ -47,6 +45,8 @@ class GameDao {
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val game = document.toObject(Game::class.java)
+                    println("Trying to load game ${game?.id}")
+                    game?.gameboardFromJson(document.getString(KEY_GAMEBOARD) ?: "")
                     callback(game)
                 } else {
                     callback(null)
@@ -58,7 +58,7 @@ class GameDao {
             }
     }
 
-    // need to filter the required games from the big list
+    // Need to filter the required games from the big list
     fun fetchGamesAgainstOpponent(
         currentId: String?,
         opponentId: String?,
@@ -66,17 +66,12 @@ class GameDao {
     ) {
         val gameList = mutableListOf<Game>()
 
-        FirebaseFirestore
-            .getInstance()
-            .collection("Games")
-            .get()
+        db.collection("Games").get()
             .addOnSuccessListener { result ->
-
                 for (document in result) {
                     val data = document.data
                     if (data != null) {
-
-                        val id = data.get(KEY_ID) as String
+                        val id = data[KEY_ID] as String
                         val playerIds = data[KEY_PLAYERIDS] as List<String>
                         val nextPlayer = data[KEY_NEXTPLAYER] as String
                         val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
@@ -94,15 +89,11 @@ class GameDao {
                         gameList.add(game)
                     }
                 }
-
                 callback(filterUserOpponentGames(currentId, opponentId, gameList))
             }
             .addOnFailureListener { exception ->
                 callback(mutableListOf())
-                Log.i(
-                    "error",
-                    "failed to fetch games from FireStore with exception: ${exception.message}"
-                )
+                Log.i("error", "failed to fetch games from FireStore with exception: ${exception.message}")
             }
     }
 

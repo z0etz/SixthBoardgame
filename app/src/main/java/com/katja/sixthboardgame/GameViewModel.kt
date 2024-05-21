@@ -1,5 +1,6 @@
 package com.katja.sixthboardgame
 
+import Game
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.security.auth.callback.Callback
