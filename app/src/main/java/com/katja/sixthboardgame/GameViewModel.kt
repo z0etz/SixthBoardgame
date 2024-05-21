@@ -8,14 +8,6 @@ class GameViewModel {
 
     val gameDao = GameDao()
     val userDao = UserDao()
-    var game: Game = Game(UserDao(),mutableListOf("1", "2", "3"))
-
-    fun createNewGame(playerIdsList: List<String>): Game {
-        val game = Game(UserDao(), playerIdsList)
-        gameDao.addGame(game)
-
-        return game
-    }
 
     fun loadUserOpponentGames(currentId: String?, opponentId: String?): MutableList<Game> {
         var gameList = mutableListOf<Game>()
@@ -54,22 +46,17 @@ class GameViewModel {
 //        return game
 //    }
     
-        fun loadGame(playerIds: List<String>): Game {
-
-        //TODO: Load existing game from Firebase, change return below to return that game
-        return Game(UserDao(), listOf("1","2"))
-
-    }
+//        fun loadGame(playerIds: List<String>): Game {
+//
+//        //TODO: Remove once p vs. p works
+//        return Game(UserDao(), listOf("1","2"))
+//
+//    }
 
     fun loadGameById(gameId: String, callback: (Game?) -> Unit) {
         gameDao.fetchGameById(gameId) { fetchedGame ->
             callback(fetchedGame)
         }
-    }
-
-    fun saveGame(game: Game) {
-
-        gameDao.addGame(game)
     }
 
     fun endGame(winnerId: String, loserId: String ) {

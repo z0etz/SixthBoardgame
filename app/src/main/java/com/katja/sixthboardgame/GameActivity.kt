@@ -46,6 +46,7 @@ class GameActivity : AppCompatActivity() {
     private var currentUserId: String? = null
     private var opponentId: String? = null
     private lateinit var userDao: UserDao
+    private lateinit var gameDao: GameDao
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +55,7 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         userDao = UserDao()
+        gameDao = GameDao()
         val viewModel = GameViewModel()
 
         auth = FirebaseAuth.getInstance()
@@ -88,6 +90,7 @@ class GameActivity : AppCompatActivity() {
                             layoutParams.height = (gameBoardSize - 9) / 5
                             it.layoutParams = layoutParams
                         }
+                        updateViewSquare(game.gameboard.matrix[i][j], viewSquare)
                     }
                 }
 
@@ -159,6 +162,7 @@ class GameActivity : AppCompatActivity() {
                                     updateViewSquare(game.gameboard.matrix[i][j], squareView)
                                     resetAvailableMoveSquares()
                                     updateFreeDiscsView(this)
+                                    gameDao.updateGame(game)
                                 }
 
                                 // Move discs from stackSelected to the clicked stack
@@ -196,6 +200,7 @@ class GameActivity : AppCompatActivity() {
                                         viewModel.endGame(winnerId, looserId)
                                         showGameEndDialogue()
                                     }
+                                    gameDao.updateGame(game)
                                 }
 
                                 //Select stack on the game board to move discs from
@@ -446,6 +451,10 @@ class GameActivity : AppCompatActivity() {
         numberOfDiscs = 0
         discsToMove = 0
         binding.discsTooMoveDialogue.visibility = View.GONE
+    }
+
+    private fun syncToFirebase() {
+
     }
 
     private fun makeEmptySquaresAvailable() {
