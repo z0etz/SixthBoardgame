@@ -21,7 +21,7 @@ class WelcomeActivity : AppCompatActivity() {
 
 
         adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData) { gameId ->
-            gameDao.fetchGameById(gameId) { game ->
+            gameDao.getGameById(gameId) { game ->
                 openGame(game.id) // Use the gameId fetched from fetchGameById in openGame
             }
         }

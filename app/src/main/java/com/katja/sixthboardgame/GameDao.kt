@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import javax.security.auth.callback.Callback
 import com.google.gson.Gson
+import java.util.UUID
 
 
 class GameDao {
@@ -16,8 +17,15 @@ class GameDao {
     private val KEY_FREE_DISCS_BROWN = "free_discs_brown"
     private val KEY_GAMEBOARD = "gameboard"
 
+    private val db = FirebaseFirestore.getInstance()
 
-    fun addGame(game: Game) {
+    fun addGame(currentUserId: String, receiverId: String) {
+        val game = Game()
+        game.playerIds = listOf(currentUserId, receiverId)
+        updateGame(game)
+    }
+
+    fun updateGame(game: Game) {
         val dataToStore = hashMapOf(
             KEY_ID to game.id,
             KEY_PLAYERIDS to game.playerIds,
@@ -37,6 +45,30 @@ class GameDao {
             }
             .addOnFailureListener { exception ->
                 Log.i("error", "failed to add game to FireStore with exception: ${exception.message}")
+            }
+    }
+
+    fun fetchGameById(gameId: String, callback: (Game?) -> Unit) {
+        val gameRef = db.collection("Games").document(gameId)
+        gameRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val gameData = document.toObject(GameDataObject::class.java)
+                    val game = Game()
+                    game.id = gameData!!.id
+                    game.playerIds = gameData.player_ids
+                    game.nextPlayer = gameData.next_player
+                    game.freeDiscsGray = gameData.free_discs_gray
+                    game.freeDiscsBrown = gameData.free_discs_brown
+                    game.gameboard = Gson().fromJson(gameData.gameboard, GameBoard::class.java)
+                    callback(game)
+                } else {
+                    callback(null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("GameDao", "Error getting game document", exception)
+                callback(null)
             }
     }
 
@@ -66,8 +98,9 @@ class GameDao {
                         val gameBoardJson = data[KEY_GAMEBOARD] as String
                         val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                        val game = Game(UserDao(), playerIds)
+                        val game = Game()
                         game.id = id
+                        game.playerIds = playerIds
                         game.nextPlayer = nextPlayer
                         game.freeDiscsGray = freeDiscsGray
                         game.freeDiscsBrown = freeDiscsBrown
@@ -110,8 +143,9 @@ class GameDao {
                         val gameBoardJson = data[KEY_GAMEBOARD] as String
                         val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                        val game = Game(UserDao(), playerIds)
+                        val game = Game()
                         game.id = id
+                        game.playerIds = playerIds
                         game.nextPlayer = nextPlayer
                         game.freeDiscsGray = freeDiscsGray
                         game.freeDiscsBrown = freeDiscsBrown
@@ -156,8 +190,9 @@ class GameDao {
 
                         // Check if currentId is in the list of playerIds
                         if (currentId in playerIds) {
-                            val game = Game(UserDao(), playerIds)
+                            val game = Game()
                             game.id = id
+                            game.playerIds = playerIds
                             game.nextPlayer = nextPlayer
                             game.freeDiscsGray = freeDiscsGray
                             game.freeDiscsBrown = freeDiscsBrown
@@ -207,8 +242,9 @@ class GameDao {
                         val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
                         if (currentId in playerIds) {
-                            val game = Game(UserDao(), playerIds)
+                            val game = Game()
                             game.id = id
+                            game.playerIds = playerIds
                             game.nextPlayer = nextPlayer
                             game.freeDiscsGray = freeDiscsGray
                             game.freeDiscsBrown = freeDiscsBrown
@@ -226,7 +262,7 @@ class GameDao {
 
 
 
-    fun fetchGameById(gameId: String?, callback: (Game) -> Unit) {
+    fun getGameById(gameId: String?, callback: (Game) -> Unit) {
 
         FirebaseFirestore
             .getInstance()
@@ -244,8 +280,9 @@ class GameDao {
                     val gameBoardJson = data[KEY_GAMEBOARD] as String
                     val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                    val game = Game(UserDao(), playerIds)
+                    val game = Game()
                     game.id = id
+                    game.playerIds = playerIds
                     game.nextPlayer = nextPlayer
                     game.freeDiscsGray = freeDiscsGray
                     game.freeDiscsBrown = freeDiscsBrown
@@ -307,4 +344,6 @@ class GameDao {
         return newGameList
 
     }
+
+
 }

@@ -1,19 +1,13 @@
 package com.katja.sixthboardgame
 
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import javax.security.auth.callback.Callback
 
 class GameViewModel {
 
     val gameDao = GameDao()
     val userDao = UserDao()
-    var game: Game = Game(UserDao(),mutableListOf("1", "2", "3"))
-
-    fun createNewGame(playerIdsList: List<String>): Game {
-        val game = Game(UserDao(), playerIdsList)
-        gameDao.addGame(game)
-
-        return game
-    }
 
     fun loadUserOpponentGames(currentId: String?, opponentId: String?): MutableList<Game> {
         var gameList = mutableListOf<Game>()
@@ -26,8 +20,6 @@ class GameViewModel {
 
         return gameList
     }
-
-
 
     fun loadAllUserGames(currentId: String?): MutableList<Game> {
         var gameList = mutableListOf<Game>()
@@ -42,28 +34,29 @@ class GameViewModel {
     }
 
 
-    fun getGameById(gameId: String?): Game{
-
-        var game = Game(UserDao(), listOf("1", "2"))
-
-        gameDao.fetchGameById(gameId) { fetchedGame ->
-
-            game = fetchedGame
-        }
-
-        return game
-    }
+//    fun getGameById(gameId: String?): Game{
+//
+//        var game = Game(UserDao(), listOf("1", "2"))
+//
+//        gameDao.fetchGameById(gameId) { fetchedGame ->
+//
+//            game = fetchedGame
+//        }
+//
+//        return game
+//    }
     
-        fun loadGame(playerIds: List<String>): Game {
+//        fun loadGame(playerIds: List<String>): Game {
+//
+//        //TODO: Remove once p vs. p works
+//        return Game(UserDao(), listOf("1","2"))
+//
+//    }
 
-        //TODO: Load existing game from Firebase, change return below to return that game
-        return Game(UserDao(), listOf("1","2"))
-
-    }
-
-    fun saveGame(game: Game) {
-
-        gameDao.addGame(game)
+    fun loadGameById(gameId: String, callback: (Game?) -> Unit) {
+        gameDao.fetchGameById(gameId) { fetchedGame ->
+            callback(fetchedGame)
+        }
     }
 
     fun endGame(winnerId: String, loserId: String ) {

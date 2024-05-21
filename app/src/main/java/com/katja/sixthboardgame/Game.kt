@@ -1,15 +1,26 @@
 package com.katja.sixthboardgame
 
+import com.google.gson.annotations.SerializedName
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 
-class Game(userDao: UserDao, playerIdsList: List<String>) {
+class Game() {
     var id = UUID.randomUUID().toString()
-    val playerIds: List<String> = playerIdsList.shuffled()
-    var nextPlayer: String = playerIds.first()
+    var playerIds= listOf("")
+    var nextPlayer = ""
     var freeDiscsGray = 15
     var freeDiscsBrown = 15
     var gameboard = GameBoard()
+}
+
+data class GameDataObject(
+    val id: String = "",
+    val player_ids: List<String> = listOf(),
+    val next_player: String = "",
+    val free_discs_gray: Int = 0,
+    val free_discs_brown: Int = 0,
+    val gameboard: String = ""
+)
 
 //    constructor(userDao: UserDao, gameId: String, playerIdsList: List<String>) : this(userDao, playerIdsList) {
 //        this.id = gameId
@@ -31,4 +42,3 @@ class Game(userDao: UserDao, playerIdsList: List<String>) {
 //        countDownLatch.await()
 //        completion(usernames)
 //    }
-}
