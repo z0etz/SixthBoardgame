@@ -5,9 +5,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 
 class InviteDao {
-
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
-
     val INVITE_ID_KEY = "inviteId"
     val SENDER_ID_KEY = "senderId"
     val RECEIVER_ID_KEY = "receiverId"

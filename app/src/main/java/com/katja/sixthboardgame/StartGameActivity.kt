@@ -72,7 +72,6 @@ class StartGameActivity : AppCompatActivity() {
 
         }
 
-
         //Gjorde så att namn visades två gånger i listan, behövs den till annat?
         //userDao.fetchUserNames { names ->
         //            userNameList = names
