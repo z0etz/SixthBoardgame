@@ -10,6 +10,7 @@ class Game(userDao: UserDao, playerIdsList: List<String>) {
     var freeDiscsGray = 15
     var freeDiscsBrown = 15
     var gameboard = GameBoard()
+}
 
 //    constructor(userDao: UserDao, gameId: String, playerIdsList: List<String>) : this(userDao, playerIdsList) {
 //        this.id = gameId
@@ -31,4 +32,3 @@ class Game(userDao: UserDao, playerIdsList: List<String>) {
 //        countDownLatch.await()
 //        completion(usernames)
 //    }
-}
