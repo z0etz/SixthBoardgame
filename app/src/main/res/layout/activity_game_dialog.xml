@@ -16,7 +16,7 @@ android:layout_gravity="center_horizontal"
 android:fontFamily="@font/inter_semibold"
 android:text="@string/are_you_ready"
 android:textColor="@color/orange_light"
-android:textSize="24sp"
+android:textSize="@dimen/heading_small"
 android:shadowColor="@color/orange_light"
 android:shadowDx="5"
 android:shadowDy="5"
@@ -38,18 +38,18 @@ android:orientation="vertical">
     android:fontFamily="@font/inter_bold"
     android:text="@string/username"
     android:textColor="@color/grey"
-    android:textSize="18sp" />
+    android:textSize="@dimen/heading_small" />
 
 <TextView
     android:id="@+id/vsDialogTextView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="@dimen/elevation_small"
     android:fontFamily="@font/inter_semibold"
     android:text="@string/vs"
     android:textColor="@color/orange_light"
-    android:textSize="32sp"
+    android:textSize="@dimen/heading_large"
     android:shadowColor="@color/orange_light"
     android:shadowDx="4"
     android:shadowDy="10"
@@ -59,39 +59,38 @@ android:orientation="vertical">
     android:id="@+id/opponentsDialogTextView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="@dimen/elevation_small"
     android:fontFamily="@font/inter_bold"
     android:text="@string/opponents"
     android:textColor="@color/grey"
-    android:textSize="18sp" />
+    android:textSize="@dimen/heading_small"/>
 </LinearLayout>
 
 <LinearLayout
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:layout_gravity="center_horizontal"
-android:layout_marginTop="24dp"
+android:layout_marginTop="@dimen/margin_medium"
 android:orientation="horizontal"
 android:weightSum="2">
 
 <TextView
     android:id="@+id/textButtonCancel"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/buttons_xs_width"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:layout_marginEnd="8dp"
+    android:layout_marginEnd="@dimen/elevation_small"
     android:minWidth="100dp"
     android:background="@drawable/gradient_button_red"
     android:fontFamily="@font/inter_semibold"
     android:gravity="center"
     android:text="@string/cancel"
     android:textColor="@color/white"
-    android:textSize="14sp"
-    android:padding="8dp" />
+    android:padding="@dimen/elevation_small" />
 
 <TextView
     android:id="@+id/textButtonContinue"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/buttons_xs_width"
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:layout_marginStart="8dp"
@@ -101,8 +100,7 @@ android:weightSum="2">
     android:gravity="center"
     android:text="@string/accept"
     android:textColor="@color/white"
-    android:textSize="14sp"
-    android:padding="8dp" />
+    android:padding="@dimen/elevation_small" />
 </LinearLayout>
 
 </LinearLayout>
