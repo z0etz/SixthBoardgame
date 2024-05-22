@@ -2,10 +2,8 @@ package com.katja.sixthboardgame
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import javax.security.auth.callback.Callback
 import com.google.gson.Gson
-import java.util.UUID
+import java.util.Date
 
 
 class GameDao {
@@ -16,6 +14,8 @@ class GameDao {
     private val KEY_FREE_DISCS_GRAY = "free_discs_gray"
     private val KEY_FREE_DISCS_BROWN = "free_discs_brown"
     private val KEY_GAMEBOARD = "gameboard"
+    private val KEY_TIMESTAMP = "timestamp"
+    private val KEY_LASTTURNTIME = "timeSinceLastTurn"
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -31,9 +31,11 @@ class GameDao {
             KEY_PLAYERIDS to game.playerIds,
             KEY_NEXTPLAYER to game.nextPlayer,
             KEY_FREE_DISCS_GRAY to game.freeDiscsGray,
-            KEY_FREE_DISCS_BROWN to game.freeDiscsBrown
+            KEY_FREE_DISCS_BROWN to game.freeDiscsBrown,
+            KEY_TIMESTAMP to game.timestamp,
+            KEY_LASTTURNTIME to game.lastTurnTime
         )
-
+        println("Last turn taken at ${game.lastTurnTime}")
         val gameBoardJson = Gson().toJson(game.gameboard)
         dataToStore[KEY_GAMEBOARD] = gameBoardJson
 
@@ -41,10 +43,13 @@ class GameDao {
             .document("Games/${game.id}")
             .set(dataToStore)
             .addOnSuccessListener {
-                Log.i("SUCCESS", "Added a new Game to Firestore with id: ${game.id}")
+                Log.i("SUCCESS", "Updated game in Firestore with id: ${game.id}")
             }
             .addOnFailureListener { exception ->
-                Log.i("error", "failed to add game to FireStore with exception: ${exception.message}")
+                Log.i(
+                    "error",
+                    "Failed to update game in FireStore with exception: ${exception.message}"
+                )
             }
     }
 
@@ -61,6 +66,8 @@ class GameDao {
                     game.freeDiscsGray = gameData.free_discs_gray
                     game.freeDiscsBrown = gameData.free_discs_brown
                     game.gameboard = Gson().fromJson(gameData.gameboard, GameBoard::class.java)
+                    game.timestamp = gameData.timestamp
+                    game.lastTurnTime = gameData.last_turn_time
                     callback(game)
                 } else {
                     callback(null)
@@ -72,147 +79,6 @@ class GameDao {
             }
     }
 
-    // need to filter the required games from the big list
-    fun fetchGamesAgainstOpponent(
-        currentId: String?,
-        opponentId: String?,
-        callback: (MutableList<Game>) -> Unit
-    ) {
-        val gameList = mutableListOf<Game>()
-
-        FirebaseFirestore
-            .getInstance()
-            .collection("Games")
-            .get()
-            .addOnSuccessListener { result ->
-
-                for (document in result) {
-                    val data = document.data
-                    if (data != null) {
-
-                        val id = data.get(KEY_ID) as String
-                        val playerIds = data[KEY_PLAYERIDS] as List<String>
-                        val nextPlayer = data[KEY_NEXTPLAYER] as String
-                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
-                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
-                        val gameBoardJson = data[KEY_GAMEBOARD] as String
-                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
-
-                        val game = Game()
-                        game.id = id
-                        game.playerIds = playerIds
-                        game.nextPlayer = nextPlayer
-                        game.freeDiscsGray = freeDiscsGray
-                        game.freeDiscsBrown = freeDiscsBrown
-                        game.gameboard = gameBoard
-
-                        gameList.add(game)
-                    }
-                }
-
-                callback(filterUserOpponentGames(currentId, opponentId, gameList))
-            }
-            .addOnFailureListener { exception ->
-                callback(mutableListOf())
-                Log.i(
-                    "error",
-                    "failed to fetch games from FireStore with exception: ${exception.message}"
-                )
-            }
-    }
-
-
-    fun fetchAllUserGames(currentId: String?, callback: (MutableList<Game>) -> Unit) {
-        val gameList = mutableListOf<Game>()
-
-        FirebaseFirestore
-            .getInstance()
-            .collection("Games")
-            .get()
-            .addOnSuccessListener { result ->
-
-                for (document in result) {
-                    val data = document.data
-                    if (data != null) {
-
-                        val id = data.get(KEY_ID) as String
-                        val playerIds = data[KEY_PLAYERIDS] as List<String>
-                        val nextPlayer = data[KEY_NEXTPLAYER] as String
-                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
-                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
-                        val gameBoardJson = data[KEY_GAMEBOARD] as String
-                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
-
-                        val game = Game()
-                        game.id = id
-                        game.playerIds = playerIds
-                        game.nextPlayer = nextPlayer
-                        game.freeDiscsGray = freeDiscsGray
-                        game.freeDiscsBrown = freeDiscsBrown
-                        game.gameboard = gameBoard
-
-                        gameList.add(game)
-                    }
-                }
-
-                callback(filterCurrentUserGames(currentId, gameList))
-            }
-            .addOnFailureListener { exception ->
-                callback(mutableListOf())
-                Log.i(
-                    "error",
-                    "failed to fetch games from FireStore with exception: ${exception.message}"
-                )
-            }
-
-    }
-
-    fun fetchAllCurrentUserGames(currentId: String?, callback: (MutableList<Game>) -> Unit) {
-        val gameList = mutableListOf<Game>()
-
-        FirebaseFirestore
-            .getInstance()
-            .collection("Games")
-            .get()
-            .addOnSuccessListener { result ->
-
-                for (document in result) {
-                    val data = document.data
-                    if (data != null) {
-
-                        val id = data.get(KEY_ID) as String
-                        val playerIds = data[KEY_PLAYERIDS] as List<String>
-                        val nextPlayer = data[KEY_NEXTPLAYER] as String
-                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
-                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
-                        val gameBoardJson = data[KEY_GAMEBOARD] as String
-                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
-
-                        // Check if currentId is in the list of playerIds
-                        if (currentId in playerIds) {
-                            val game = Game()
-                            game.id = id
-                            game.playerIds = playerIds
-                            game.nextPlayer = nextPlayer
-                            game.freeDiscsGray = freeDiscsGray
-                            game.freeDiscsBrown = freeDiscsBrown
-                            game.gameboard = gameBoard
-
-                            gameList.add(game)
-                        }
-                    }
-                }
-
-                callback(gameList)
-            }
-            .addOnFailureListener { exception ->
-                callback(mutableListOf())
-                Log.i(
-                    "error",
-                    "failed to fetch games from FireStore with exception: ${exception.message}"
-                )
-            }
-    }
 
     fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
         FirebaseFirestore
@@ -257,92 +123,6 @@ class GameDao {
 
                 callback(gameList)
             }
-    }
-
-
-
-
-    fun getGameById(gameId: String?, callback: (Game) -> Unit) {
-
-        FirebaseFirestore
-            .getInstance()
-            .document("Games/${gameId}")
-            .get()
-            .addOnSuccessListener { result ->
-                val data = result.data
-                if (data != null) {
-                    println(data)
-                    val id = data.get(KEY_ID) as String
-                    val playerIds = data[KEY_PLAYERIDS] as List<String>
-                    val nextPlayer = data[KEY_NEXTPLAYER] as String
-                    val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
-                    val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
-                    val gameBoardJson = data[KEY_GAMEBOARD] as String
-                    val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
-
-                    val game = Game()
-                    game.id = id
-                    game.playerIds = playerIds
-                    game.nextPlayer = nextPlayer
-                    game.freeDiscsGray = freeDiscsGray
-                    game.freeDiscsBrown = freeDiscsBrown
-                    game.gameboard = gameBoard
-
-                    callback(game)
-
-
-                }
-
-            }
-            .addOnFailureListener { exception ->
-                Log.i(
-                    "error",
-                    "failed to fetch games from FireStore with exception: ${exception.message}"
-                )
-            }
-    }
-
-
-    fun filterCurrentUserGames(
-        currentUserId: String?,
-        oldGameList: MutableList<Game>
-    ): MutableList<Game> {
-
-        val newGameList = mutableListOf<Game>()
-
-        for (game in oldGameList) {
-
-            if (currentUserId in game.playerIds) {
-                newGameList.add(game)
-            }
-
-        }
-
-
-
-
-        return newGameList
-
-    }
-
-    fun filterUserOpponentGames(
-        currentUserId: String?,
-        opponentId: String?,
-        oldGameList: MutableList<Game>
-    ): MutableList<Game> {
-
-        val newGameList = mutableListOf<Game>()
-
-        for (game in oldGameList) {
-
-            if (currentUserId in game.playerIds && opponentId in game.playerIds) {
-                newGameList.add(game)
-            }
-
-        }
-
-        return newGameList
-
     }
 
 

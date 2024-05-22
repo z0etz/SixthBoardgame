@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
+import java.util.Date
 
 class GameActivity : AppCompatActivity() {
 
@@ -162,7 +163,7 @@ class GameActivity : AppCompatActivity() {
                                     updateViewSquare(game.gameboard.matrix[i][j], squareView)
                                     resetAvailableMoveSquares()
                                     updateFreeDiscsView(this)
-                                    gameDao.updateGame(game)
+                                    finishTurn()
                                 }
 
                                 // Move discs from stackSelected to the clicked stack
@@ -200,7 +201,7 @@ class GameActivity : AppCompatActivity() {
                                         viewModel.endGame(winnerId, looserId)
                                         showGameEndDialogue()
                                     }
-                                    gameDao.updateGame(game)
+                                    finishTurn()
                                 }
 
                                 //Select stack on the game board to move discs from
@@ -571,4 +572,10 @@ class GameActivity : AppCompatActivity() {
             playerDiscColor = DiscStack.DiscColor.GRAY
         }
     }
+
+    private fun finishTurn() {
+        game.lastTurnTime = Date()
+        gameDao.updateGame(game)
+    }
+
 }
