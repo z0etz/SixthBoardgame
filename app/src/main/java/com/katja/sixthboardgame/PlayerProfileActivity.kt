@@ -14,6 +14,7 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
     class PlayerProfileActivity : AppCompatActivity() {
 
         lateinit var auth: FirebaseAuth
+        private lateinit var dao: UserDao
         lateinit var binding: ActivityPlayerProfileBinding
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -21,6 +22,30 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
             setContentView(binding.root)
 
             auth = FirebaseAuth.getInstance()
+            dao = UserDao()
+
+            val currentUserId = auth.currentUser?.uid
+            println(currentUserId)
+
+            // Show username
+            dao.fetchUsernameById(currentUserId ?: "Unknown") { username ->
+                if (username != null) {
+                    Log.d("PlayerProfileActivity", "Username: $username")
+                    binding.textViewUsername.text = username
+                } else {
+                    Log.e("PlayerProfileActivity", "Failed to get username")
+                }
+            }
+
+            //Show current score
+            dao.fetchUserScoreById(currentUserId?: "Unknown") { score ->
+                if (score != null) {
+                    Log.d("PlayerProfileActivity", "Score: $score")
+                    binding.textViewScore.text = score.toString()
+                } else {
+                    Log.e("PlayerProfileActivity", "Failed to get score")
+                }
+            }
 
             binding.textButtonSignOut.setOnClickListener {
                 auth.signOut()
