@@ -197,7 +197,7 @@ class GameActivity : AppCompatActivity() {
                                             else game.playerIds.find { it != currentUserId } ?: "Unknown"
                                         val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
                                         game.gameEnded = true
-                                        viewModel.endGame(winnerId, looserId)
+                                        viewModel.endGame(game.id, winnerId, looserId)
                                         finishTurn()
                                         showGameEndDialogue()
                                     }
@@ -574,7 +574,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun finishTurn() {
+        println("Finised turn")
         game.lastTurnTime = Date()
+        game.nextPlayer = game.playerIds.firstOrNull { it != game.nextPlayer }.toString()
+        println("${game.nextPlayer}´s turn")
         gameDao.updateGame(game)
     }
 
