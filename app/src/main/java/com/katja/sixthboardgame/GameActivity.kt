@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ListenerRegistration
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
 import java.util.Date
 
@@ -47,6 +48,7 @@ class GameActivity : AppCompatActivity() {
     private var opponentId: String? = null
     private lateinit var userDao: UserDao
     private lateinit var gameDao: GameDao
+    private var gameListener: ListenerRegistration? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +81,7 @@ class GameActivity : AppCompatActivity() {
             if (loadedGame != null) {
                 game = loadedGame
                 println(gameId)
+                setupPlayerDiscColor()
 
                 for (i in 0..4) {
                     for (j in 0..4) {
@@ -93,6 +96,9 @@ class GameActivity : AppCompatActivity() {
                         updateViewSquare(game.gameboard.matrix[i][j], viewSquare)
                     }
                 }
+
+                // Add Firestore listener to sync the game data
+                addGameListener()
 
                 updateFreeDiscsView(this)
                 updateFreeDiscsView(this, playerDiscs = false)
@@ -197,6 +203,7 @@ class GameActivity : AppCompatActivity() {
                                             else game.playerIds.find { it != currentUserId } ?: "Unknown"
                                         val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
                                         game.gameEnded = true
+                                        gameDao.updateGame(game)
                                         viewModel.endGame(game.id, winnerId, looserId)
                                         finishTurn()
                                         showGameEndDialogue()
@@ -341,10 +348,6 @@ class GameActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-                //TODO: set playerDiscColor to Stack.DiscColor.GRAY if the current player is the first (id) in the list of playerIds of the game
-//                setupGame()
-
             } else {
                 // Handle the case where the game could not be loaded
                 Log.e("GameActivity", "Failed to load game with ID $gameId")
@@ -454,10 +457,6 @@ class GameActivity : AppCompatActivity() {
         binding.discsTooMoveDialogue.visibility = View.GONE
     }
 
-    private fun syncToFirebase() {
-
-    }
-
     private fun makeEmptySquaresAvailable() {
         for (i in 0..4) {
             for (j in 0..4) {
@@ -556,12 +555,13 @@ class GameActivity : AppCompatActivity() {
             }
     }
 
-    private fun setupGame() {
-        // Your existing code to setup the game UI and logic
+    private fun setupPlayerDiscColor() {
         fetchPlayerIdsForGame(gameId) { playerIds ->
             if (playerIds.isNotEmpty()) {
                 println("Player IDs for game $gameId: $playerIds")
-                // Do something with the player IDs
+                if(playerIds[0] == currentUserId) {
+                    playerDiscColor = DiscStack.DiscColor.GRAY
+                }
             } else {
                 println("No player IDs found for game $gameId")
             }
@@ -579,6 +579,52 @@ class GameActivity : AppCompatActivity() {
         game.nextPlayer = game.playerIds.firstOrNull { it != game.nextPlayer }.toString()
         println("${game.nextPlayer}´s turn")
         gameDao.updateGame(game)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Remove Firestore listener when the activity is destroyed
+        gameListener?.remove()
+    }
+
+    private fun addGameListener() {
+        gameListener = gameRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w("GameActivity", "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val gameId = snapshot.id // Get the ID of the game from the snapshot
+                // Fetch the game data by its ID
+                gameDao.fetchGameById(gameId) { loadedGame ->
+                    if (loadedGame != null) {
+                        game = loadedGame
+                        println("Game data updated: $game")
+
+                        // Update UI with the new game data
+                        updateGameBoard()
+                        updateFreeDiscsView(this)
+                        updateFreeDiscsView(this, playerDiscs = false)
+                    } else {
+                        Log.d("GameActivity", "Failed to fetch game data.")
+                    }
+                }
+            } else {
+                Log.d("GameActivity", "Current data: null")
+            }
+        }
+    }
+
+    private fun updateGameBoard() {
+        for (i in 0..4) {
+            for (j in 0..4) {
+                val discStack = game.gameboard.matrix[i][j]
+                val squareViewId = resources.getIdentifier("square$i$j", "id", packageName)
+                val squareView = findViewById<FrameLayout>(squareViewId)
+                updateViewSquare(discStack, squareView)
+            }
+        }
     }
 
 }
