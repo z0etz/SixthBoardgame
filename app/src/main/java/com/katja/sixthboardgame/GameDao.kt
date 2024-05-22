@@ -90,50 +90,52 @@ class GameDao {
     }
 
 // TODO: This function will not currently load a game correctly, change to the same structure as the fetchGameById function
-    fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
-        FirebaseFirestore
-            .getInstance()
-            .collection("Games")
-            .addSnapshotListener { snapshot, exception ->
-                if (exception != null) {
-                    Log.i(
-                        "error",
-                        "Failed to fetch games from Firestore with exception: ${exception.message}"
-                    )
-                    callback(emptyList())
-                    return@addSnapshotListener
-                }
+fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
+    FirebaseFirestore
+        .getInstance()
+        .collection("Games")
+        .addSnapshotListener { snapshot, exception ->
+            if (exception != null) {
+                Log.i(
+                    "error",
+                    "Failed to fetch games from Firestore with exception: ${exception.message}"
+                )
+                callback(emptyList())
+                return@addSnapshotListener
+            }
 
-                val gameList = mutableListOf<Game>()
+            val gameList = mutableListOf<Game>()
 
-                snapshot?.documents?.forEach { document ->
-                    val data = document.data
-                    if (data != null) {
-                        val id = data.get(KEY_ID) as String
-                        val playerIds = data[KEY_PLAYERIDS] as List<String>
-                        val nextPlayer = data[KEY_NEXTPLAYER] as String
-                        val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
-                        val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
-                        val gameBoardJson = data[KEY_GAMEBOARD] as String
-                        val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
+            snapshot?.documents?.forEach { document ->
+                val data = document.data
+                if (data != null) {
+                    val id = data[KEY_ID] as String
+                    val playerIds = data[KEY_PLAYERIDS] as List<String>
+                    val nextPlayer = data[KEY_NEXTPLAYER] as String
+                    val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
+                    val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
+                    val gameBoardJson = data[KEY_GAMEBOARD] as String
 
-                        if (currentId in playerIds) {
-                            val game = Game()
-                            game.id = id
-                            game.playerIds = playerIds
-                            game.nextPlayer = nextPlayer
-                            game.freeDiscsGray = freeDiscsGray
-                            game.freeDiscsBrown = freeDiscsBrown
-                            game.gameboard = gameBoard
+                    // Deserialize gameboard from JSON string to GameBoard object
+                    val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
 
-                            gameList.add(game)
-                        }
+                    if (currentId in playerIds) {
+                        val game = Game()
+                        game.id = id
+                        game.playerIds = playerIds
+                        game.nextPlayer = nextPlayer
+                        game.freeDiscsGray = freeDiscsGray
+                        game.freeDiscsBrown = freeDiscsBrown
+                        game.gameboard = gameBoard
+
+                        gameList.add(game)
                     }
                 }
-
-                callback(gameList)
             }
-    }
+
+            callback(gameList)
+        }
+}
 
 
 }
