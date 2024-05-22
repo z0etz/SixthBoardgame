@@ -16,7 +16,7 @@ class GameViewModel {
         }
     }
 
-    fun endGame(winnerId: String, loserId: String ) {
+    fun endGame(gameId: String, winnerId: String, loserId: String ) {
         if (winnerId != "Unknown") {
             println("$winnerId won")
             userDao.updateUserScoreById(winnerId, 1) { success ->
@@ -51,7 +51,6 @@ class GameViewModel {
                 }
             }
         }
-
-        //TODO: Make sure the the finished game does not show up in current games lists anymore
+        gameDao.removeGameFromFirebase(gameId)
     }
 }

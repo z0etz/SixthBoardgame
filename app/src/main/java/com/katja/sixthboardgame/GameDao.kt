@@ -85,6 +85,10 @@ class GameDao {
             }
     }
 
+    fun removeGameFromFirebase(gameId: String) {
+
+    }
+
 // TODO: This function will not currently load a game correctly, change to the same structure as the fetchGameById function
     fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
         FirebaseFirestore
