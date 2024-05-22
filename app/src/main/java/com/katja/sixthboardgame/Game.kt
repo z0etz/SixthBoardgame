@@ -13,6 +13,8 @@ class Game() {
     var gameboard = GameBoard()
 }
 
+//Separate game object needed to retrieve data from Firebase in order to decode game board as it contains nested arrays.
+//TODO: See it is possible to use Camel case in the GameDataObject and cast it by keys to Firebase like in the the Game object.
 data class GameDataObject(
     val id: String = "",
     val player_ids: List<String> = listOf(),
