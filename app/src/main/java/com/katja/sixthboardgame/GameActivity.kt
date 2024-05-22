@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ActivityGameBinding
+import java.util.Date
 
 class GameActivity : AppCompatActivity() {
 
@@ -40,7 +41,6 @@ class GameActivity : AppCompatActivity() {
     private lateinit var game: Game
     private lateinit var gameId: String
     private lateinit var gameRef: DocumentReference
-    private var gameEnded = false
     private var winnerId = "Unknown"
     private lateinit var auth: FirebaseAuth
     private var currentUserId: String? = null
@@ -124,11 +124,11 @@ class GameActivity : AppCompatActivity() {
                 }
 
                 binding.playersDiscs.setOnClickListener {
-                    if (!gameEnded) {
+                    if (!game.gameEnded) {
                         println("Clicked player disc stack")
                         resetAvailableMoveSquares()
-                        if (playerDiscColor == DiscStack.DiscColor.BROWN && game.freeDiscsBrown > 0 && !gameEnded ||
-                            playerDiscColor == DiscStack.DiscColor.GRAY && game.freeDiscsGray > 0 && !gameEnded
+                        if (playerDiscColor == DiscStack.DiscColor.BROWN && game.freeDiscsBrown > 0 ||
+                            playerDiscColor == DiscStack.DiscColor.GRAY && game.freeDiscsGray > 0
                         ) {
                             playerDiscStackClicked = true
                             makeEmptySquaresAvailable()
@@ -144,7 +144,7 @@ class GameActivity : AppCompatActivity() {
                         squareView?.setOnClickListener {
 
                             //Handle different cases of game logic as long as the game has not ended
-                            if (!gameEnded) {
+                            if (!game.gameEnded) {
                                 // Identify connection between the view square and the parameters for it in the game board of the game object
                                 println("Clicked square: Row $i, Column $j")
 
@@ -162,7 +162,7 @@ class GameActivity : AppCompatActivity() {
                                     updateViewSquare(game.gameboard.matrix[i][j], squareView)
                                     resetAvailableMoveSquares()
                                     updateFreeDiscsView(this)
-                                    gameDao.updateGame(game)
+                                    finishTurn()
                                 }
 
                                 // Move discs from stackSelected to the clicked stack
@@ -196,11 +196,12 @@ class GameActivity : AppCompatActivity() {
                                             if (playerDiscColor == winnerColor) currentUserId ?: "Unknown"
                                             else game.playerIds.find { it != currentUserId } ?: "Unknown"
                                         val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
-                                        gameEnded = true
+                                        game.gameEnded = true
                                         viewModel.endGame(winnerId, looserId)
+                                        finishTurn()
                                         showGameEndDialogue()
                                     }
-                                    gameDao.updateGame(game)
+                                    finishTurn()
                                 }
 
                                 //Select stack on the game board to move discs from
@@ -354,7 +355,7 @@ class GameActivity : AppCompatActivity() {
 
         //Set on-click listeners for buttons in the choose number of discs dialogue
         binding.buttonMinus.setOnClickListener {
-            if (discsToMove > 1 && !gameEnded) {
+            if (discsToMove > 1 && !game.gameEnded) {
                 discsToMove--
                 binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
                 println(getString(R.string.discs_to_move) + discsToMove)
@@ -362,7 +363,7 @@ class GameActivity : AppCompatActivity() {
         }
         //Set on-click listeners for buttons in the choose number of discs dialogue
         binding.buttonPlus.setOnClickListener {
-            if (discsToMove < numberOfDiscs && !gameEnded) {
+            if (discsToMove < numberOfDiscs && !game.gameEnded) {
                 discsToMove++
                 binding.discsToMoveText.text = getString(R.string.discs_to_move) + " " + discsToMove
                 println(getString(R.string.discs_to_move) + discsToMove)
@@ -571,4 +572,10 @@ class GameActivity : AppCompatActivity() {
             playerDiscColor = DiscStack.DiscColor.GRAY
         }
     }
+
+    private fun finishTurn() {
+        game.lastTurnTime = Date()
+        gameDao.updateGame(game)
+    }
+
 }
