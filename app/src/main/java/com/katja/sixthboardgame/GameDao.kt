@@ -17,6 +17,7 @@ class GameDao {
     private val KEY_TIMESTAMP = "timestamp"
     private val KEY_LASTTURNTIME = "timeSinceLastTurn"
     private val KEY_GAMEENDED = "gameEnded"
+    private val KEY_TURNTIME = "turnTime"
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -35,7 +36,8 @@ class GameDao {
             KEY_FREE_DISCS_BROWN to game.freeDiscsBrown,
             KEY_TIMESTAMP to game.timestamp,
             KEY_LASTTURNTIME to game.lastTurnTime,
-            KEY_GAMEENDED to game.gameEnded
+            KEY_GAMEENDED to game.gameEnded,
+            KEY_TURNTIME to game.turnTime
         )
         println("Last turn taken at ${game.lastTurnTime}")
         val gameBoardJson = Gson().toJson(game.gameboard)
@@ -71,6 +73,7 @@ class GameDao {
                     game.timestamp = gameData.timestamp
                     game.lastTurnTime = gameData.last_turn_time
                     game.gameEnded = gameData.game_ended
+                    game.turnTime = gameData.turn_time
                     callback(game)
                 } else {
                     callback(null)
