@@ -16,6 +16,7 @@ class Game() {
     var timestamp = Date()
     var lastTurnTime = Date()
     var gameEnded = false
+    var turnTime = 172800000 //Turn time in millis, defaulted to 48 hours
 }
 
 //Separate game object needed to retrieve data from Firebase in order to decode game board as it contains nested arrays.
@@ -29,6 +30,7 @@ data class GameDataObject(
     val gameboard: String = "",
     var timestamp: Date = Date(),
     var last_turn_time: Date = Date(),
-    var game_ended: Boolean = false
+    var game_ended: Boolean = false,
+    var turn_time: Int = 172800000
 )
 
