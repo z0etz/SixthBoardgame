@@ -15,6 +15,7 @@ class Game() {
     var gameboard = GameBoard()
     var timestamp = Date()
     var lastTurnTime = Date()
+    var gameEnded = false
 }
 
 //Separate game object needed to retrieve data from Firebase in order to decode game board as it contains nested arrays.
@@ -27,6 +28,7 @@ data class GameDataObject(
     val free_discs_brown: Int = 0,
     val gameboard: String = "",
     var timestamp: Date = Date(),
-    var last_turn_time: Date = Date()
+    var last_turn_time: Date = Date(),
+    var game_ended: Boolean = false
 )
 

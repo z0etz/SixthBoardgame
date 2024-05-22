@@ -16,6 +16,7 @@ class GameDao {
     private val KEY_GAMEBOARD = "gameboard"
     private val KEY_TIMESTAMP = "timestamp"
     private val KEY_LASTTURNTIME = "timeSinceLastTurn"
+    private val KEY_GAMEENDED = "gameEnded"
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -33,7 +34,8 @@ class GameDao {
             KEY_FREE_DISCS_GRAY to game.freeDiscsGray,
             KEY_FREE_DISCS_BROWN to game.freeDiscsBrown,
             KEY_TIMESTAMP to game.timestamp,
-            KEY_LASTTURNTIME to game.lastTurnTime
+            KEY_LASTTURNTIME to game.lastTurnTime,
+            KEY_GAMEENDED to game.gameEnded
         )
         println("Last turn taken at ${game.lastTurnTime}")
         val gameBoardJson = Gson().toJson(game.gameboard)
@@ -68,6 +70,7 @@ class GameDao {
                     game.gameboard = Gson().fromJson(gameData.gameboard, GameBoard::class.java)
                     game.timestamp = gameData.timestamp
                     game.lastTurnTime = gameData.last_turn_time
+                    game.gameEnded = gameData.game_ended
                     callback(game)
                 } else {
                     callback(null)
@@ -79,7 +82,7 @@ class GameDao {
             }
     }
 
-
+// TODO: This function will not currently load a game correctly, change to the same structure as the fetchGameById function
     fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
         FirebaseFirestore
             .getInstance()
