@@ -13,7 +13,7 @@
         android:fontFamily="@font/inter_semibold"
         android:text="@string/are_you_ready"
         android:textColor="@color/orange_light"
-        android:textSize="24sp"
+        android:textSize="@dimen/heading_small"
         android:shadowColor="@color/orange_light"
         android:shadowDx="5"
         android:shadowDy="5"
@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_medium"
+        android
         android:orientation="vertical">
 
         <TextView
