@@ -172,9 +172,7 @@ class StartGameActivity : AppCompatActivity(), PendingInviteAdapter.OnItemIntera
         autoCompleteTextView.setText("")
     }
 
-    override fun onSendButtonClick(position: Int) {
-
-        println("the sending button function is being executed!!!!")
+    override fun onSendButtonClick(position: Int, minutes: Int, seconds: Int) {
 
         val  selectedUser = selectedUsersList.get(position)
         getReceiverId(selectedUser) // Update receiverId
@@ -182,7 +180,7 @@ class StartGameActivity : AppCompatActivity(), PendingInviteAdapter.OnItemIntera
             val senderId = firebaseAuth.currentUser?.uid
             if (senderId != null){
                 val inviteId = invitationsCollection.document().id
-                InviteDao().sendInvitation(senderId, it, inviteId)
+                InviteDao().sendInvitation(senderId, it, inviteId, minutes, seconds)
             } else {
                 Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
             }

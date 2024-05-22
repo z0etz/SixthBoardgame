@@ -9,12 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.AdapterView.inflate
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.drawable.toDrawable
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +36,7 @@ import kotlinx.coroutines.withContext
 
 
         interface OnItemInteractionListener {
-            fun onSendButtonClick(position: Int)
+            fun onSendButtonClick(position: Int, minutes: Int, seconds: Int)
         }
 
         private var listener: OnItemInteractionListener? = null
@@ -55,16 +59,65 @@ import kotlinx.coroutines.withContext
         inner class InviteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val playerNameTextView: TextView = itemView.findViewById(R.id.invitePlayerName)
             val button = itemView.findViewById<Button>(R.id.invite_send_button)
+            val spinnerMinutes: Spinner = itemView.findViewById(R.id.spinner_minutes)
+            val spinnerSeconds: Spinner = itemView.findViewById(R.id.spinner_seconds)
+            var selectedMinutes = 0
+            var selectedSeconds = 0
 
 
             init {
+
+                val minutesList = mutableListOf(0,1,2,3)
+                val minutesAdapter = ArrayAdapter<Int>(context , android.R.layout.simple_spinner_item, minutesList)
+                minutesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerMinutes.adapter = minutesAdapter
+
+                spinnerMinutes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                        selectedMinutes = minutesList[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+
+                }
+
+
+
+
+
+                val secondsList = (0..59).toList()
+                val secondsAdapter = ArrayAdapter<Int>(context, android.R.layout.simple_spinner_item, secondsList)
+                secondsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerSeconds.adapter = secondsAdapter
+
+                spinnerSeconds.onItemSelectedListener =object : AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                        selectedSeconds = secondsList[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+
+                }
+
+
+
                 button.setOnClickListener {
                     button.text = "invitation sent"
                     button.background =  R.color.transparent.toDrawable() // R.drawable.button_white.toDrawable()
                     val position = adapterPosition
-                    listener?.onSendButtonClick(position)
+                    println("minutes are: $selectedMinutes")
+                    println("seconds are: $selectedSeconds")
+                    listener?.onSendButtonClick(position, selectedMinutes,selectedSeconds)
+                    button.isEnabled = false
 
                 }
+
             }
             init {
                 itemView.setOnClickListener {

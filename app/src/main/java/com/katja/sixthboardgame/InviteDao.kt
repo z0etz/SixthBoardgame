@@ -13,13 +13,18 @@ class InviteDao {
     val SENDER_ID_KEY = "senderId"
     val RECEIVER_ID_KEY = "receiverId"
     val STATUS_KEY = "status"
+    val  MINUTES_KEY = "time_in_minutes"
+    val  SECONDS_KEY = "time_in_seconds"
 
-    fun sendInvitation(senderId: String, receiverId: String, inviteId: String) {
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String, minutes: Int, seconds: Int) {
         val invitationData = hashMapOf(
             INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
-            STATUS_KEY to "pending"
+            STATUS_KEY to "pending",
+            MINUTES_KEY to minutes,
+            SECONDS_KEY to seconds
+
             // Lägg till andra relevanta attribut för spelinbjudningar här
         )
 
