@@ -88,11 +88,9 @@ import kotlinx.coroutines.withContext§
                 val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
             buttonContinue.setOnClickListener {
-                // Create a new instance of Game with both sender and receiver IDs
-                val newGame = Game(UserDao(), listOf(currentUserId, receiverId))
-                // Add the new game to Firestore
-                GameDao().addGame(newGame)
-                // Start the GameActivity
+                // Create a new a new game and add it to Firestore
+                GameDao().addGame(currentUserId, receiverId)
+                // Close dialog
                 dialog.dismiss()
             }
 

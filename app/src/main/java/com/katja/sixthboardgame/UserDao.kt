@@ -118,8 +118,13 @@ class UserDao {
             .document(userId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
-                val username = documentSnapshot.getString(USER_NAME_KEY)
-                completion(username)
+                if (documentSnapshot.exists()) {
+                    val username = documentSnapshot.getString(USER_NAME_KEY)
+                    completion(username)
+                } else {
+                    Log.e(ContentValues.TAG, "User document does not exist")
+                    completion(null)
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e(ContentValues.TAG, "Failed to fetch username from Firestore", exception)
@@ -133,8 +138,13 @@ class UserDao {
             .document(userId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
-                val score = documentSnapshot.getLong(LEADERBOARD_KEY)?.toInt()
-                completion(score)
+                if (documentSnapshot.exists()) {
+                    val score = documentSnapshot.getLong(LEADERBOARD_KEY)?.toInt()
+                    completion(score)
+                } else {
+                    Log.e(ContentValues.TAG, "User document does not exist")
+                    completion(null)
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e(ContentValues.TAG, "Failed to fetch user score from Firestore", exception)
