@@ -67,4 +67,5 @@
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="s_turn">\'s turn</string>
+    <string name="game_ended">\Game has ended</string>
 </resources>
