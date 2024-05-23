@@ -1,14 +1,8 @@
-package com.katja.sixthboardgame;
+package com.katja.sixthboardgame
 
-import android.app.Activity;
-import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
-import android.view.View.OnClickListener
-import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +15,6 @@ import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
 class StartGameActivity : AppCompatActivity() {
 
-
     private lateinit var binding: ActivityStartGameBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var userDao: UserDao
@@ -31,8 +24,8 @@ class StartGameActivity : AppCompatActivity() {
     private val userMap = mutableMapOf<String?, String?>()
     private lateinit var firestore: FirebaseFirestore
     private var selectedUsersList = mutableListOf<String>()
-    private lateinit var recyclerView: RecyclerView
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
+    private lateinit var pendingSentInviteAdapter: PendingSentInviteAdapter
     private lateinit var inviteDao: InviteDao
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
@@ -50,40 +43,45 @@ class StartGameActivity : AppCompatActivity() {
         adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
         autoCompleteTextView.setAdapter(adapter)
 
-        recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
+        // RecyclerView for received invites
+        val receivedInvitesRecyclerView = findViewById<RecyclerView>(R.id.invitesRecyclerView)
+        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList) { position ->
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
         }
-        recyclerView.adapter = pendingInviteAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        receivedInvitesRecyclerView.adapter = pendingInviteAdapter
+        receivedInvitesRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        // RecyclerView for sent invites
+        val sentInvitesRecyclerView = findViewById<RecyclerView>(R.id.sentInvitesRecyclerView)
+        pendingSentInviteAdapter = PendingSentInviteAdapter(this, selectedUsersList) { position ->
+            val receiverName = selectedUsersList[position]
+            val receiverId = userMap[receiverName]
+            receiverId?.let {
+                deleteInvite(firebaseAuth.currentUser?.uid!!, it)
+            }
+        }
+        sentInvitesRecyclerView.adapter = pendingSentInviteAdapter
+        sentInvitesRecyclerView.layoutManager = LinearLayoutManager(this)
 
         firestore = FirebaseFirestore.getInstance()
 
         val currentUser = firebaseAuth.currentUser
-        if (currentUser != null){
+        if (currentUser != null) {
             inviteDao.listenForInvitations(currentUser.uid) { invitations ->
                 processInvitations(invitations)
-
             }
-
         }
-
-        //Gjorde så att namn visades två gånger i listan, behövs den till annat?
-        //userDao.fetchUserNames { names ->
-        //            userNameList = names
-        //            adapter.addAll(names ?: emptyList())
-        //        }
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
             getReceiverId(selectedUser) // Update receiverId
             receiverId?.let {
                 val senderId = firebaseAuth.currentUser?.uid
-                if (senderId != null){
+                if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, it, inviteId)
                 } else {
@@ -94,6 +92,7 @@ class StartGameActivity : AppCompatActivity() {
             }
             selectedUsersList.add(selectedUser)
             pendingInviteAdapter.notifyDataSetChanged()
+            pendingSentInviteAdapter.notifyDataSetChanged()
         }
 
         getAllUsers()
@@ -127,6 +126,7 @@ class StartGameActivity : AppCompatActivity() {
 
     private fun processInvitations(invitations: List<Map<String, Any>>) {
         val incomingInvites = mutableListOf<String>()
+        val sentInvites = mutableListOf<String>()
         val currentUser = firebaseAuth.currentUser
         val currentUserId = currentUser?.uid
 
@@ -134,18 +134,18 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
             val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
             val status = invitation[inviteDao.STATUS_KEY] as String
-            // val inviteInfo = "Invitation from: $senderId - Status: $status"
 
-            // Check if the current user is either the sender or receiver
-            if (currentUserId == senderId || currentUserId == receiverId) {
+            // Check if the current user is the sender or receiver
+            if (currentUserId == senderId) {
+                sentInvites.add(receiverId)
+            } else if (currentUserId == receiverId) {
                 incomingInvites.add(senderId)
             }
         }
 
-        // Add all invites to the list, both sent and received
         pendingInviteAdapter.updateInvitationsList(incomingInvites)
+        pendingSentInviteAdapter.updateInvitationsList(sentInvites)
     }
-
 
     private fun deleteInvite(senderId: String, receiverId: String) {
         // Delete invitation from Firestore
@@ -155,6 +155,7 @@ class StartGameActivity : AppCompatActivity() {
                 if (position != -1) {
                     selectedUsersList.removeAt(position)
                     pendingInviteAdapter.notifyItemRemoved(position)
+                    pendingSentInviteAdapter.notifyItemRemoved(position)
                 }
                 Toast.makeText(
                     this,
@@ -163,7 +164,6 @@ class StartGameActivity : AppCompatActivity() {
                 ).show()
             }
             .addOnFailureListener { exception ->
-                Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
                 Toast.makeText(
                     this,
                     "Failed to delete invitation: ${exception.message}",
@@ -171,10 +171,6 @@ class StartGameActivity : AppCompatActivity() {
                 ).show()
             }
     }
-
-
-
-
 
     override fun onResume() {
         super.onResume()
