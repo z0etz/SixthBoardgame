@@ -5,7 +5,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import java.util.Date
 
-
+interface GameDeletionCallback {
+    fun onGameDeleted(success: Boolean)
+}
 class GameDao {
 
     private val KEY_ID = "id"
@@ -85,9 +87,35 @@ class GameDao {
             }
     }
 
-    fun removeGameFromFirebase(gameId: String) {
 
+    fun removeGameFromFirebase(gameId: String, callback: GameDeletionCallback) {
+        val gameRef = FirebaseFirestore.getInstance().collection("Games").document(gameId)
+
+        // Verify if the document exists before attempting deletion
+        gameRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                println("Document with ID: $gameId exists. Proceeding to delete.")
+
+                // Proceed with deletion
+                gameRef.delete()
+                    .addOnSuccessListener {
+                        println("Game deleted successfully with ID: $gameId")
+                        callback.onGameDeleted(true)
+                    }
+                    .addOnFailureListener { e ->
+                        println("Error deleting game with ID $gameId: $e")
+                        callback.onGameDeleted(false)
+                    }
+            } else {
+                println("Document with ID: $gameId does not exist.")
+                callback.onGameDeleted(false)
+            }
+        }.addOnFailureListener { e ->
+            println("Error fetching game with ID $gameId: $e")
+            callback.onGameDeleted(false)
+        }
     }
+
 
 // TODO: This function will not currently load a game correctly, change to the same structure as the fetchGameById function
     fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
