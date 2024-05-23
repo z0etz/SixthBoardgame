@@ -140,7 +140,7 @@ class GameActivity : AppCompatActivity() {
 
                 binding.textButtonGiveUp.setOnClickListener {
                     if(!game.gameEnded) {
-                        showGameEndDialogue()
+                        showGiveUpConfirmationDialog()
                     }
                 }
 
@@ -218,12 +218,11 @@ class GameActivity : AppCompatActivity() {
                                         val winnerColorString = winnerColor.name
                                         println("$winnerColorString won!")
                                         winnerId =
-                                            if (playerDiscColor == winnerColor) currentUserId
-                                                ?: "Unknown"
-                                            else game.playerIds.find { it != currentUserId }
-                                                ?: "Unknown"
-                                        val looserId =
-                                            game.playerIds.find { it != winnerId } ?: "Unknown"
+                                            if (playerDiscColor == winnerColor) currentUserId ?: "Unknown"
+                                            else game.playerIds.find { it != currentUserId } ?: "Unknown"
+                                        println("Winner id: $winnerId")
+                                        val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
+                                        println("Looser id: $looserId")
                                         game.gameEnded = true
                                         gameDao.updateGame(game)
                                         viewModel.endGame(game.id, winnerId, looserId)
@@ -549,6 +548,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showGameEndDialogue() {
+        println("From showGameEndDialogue: WinnerId = $winnerId")
         val dialog = Dialog(this)
         if (winnerId == currentUserId) {
             val winDialogFragment = WinDialogFragment()
@@ -560,7 +560,7 @@ class GameActivity : AppCompatActivity() {
         gameListener?.remove()
     }
 
-    fun fetchPlayerIdsForGame(gameId: String, callback: (List<String>) -> Unit) {
+    private fun fetchPlayerIdsForGame(gameId: String, callback: (List<String>) -> Unit) {
         val db = FirebaseFirestore.getInstance()
         db.collection("Games")
             .whereEqualTo("id", gameId)
@@ -628,6 +628,7 @@ class GameActivity : AppCompatActivity() {
                     if (loadedGame != null) {
                         game = loadedGame
                         println("Game data updated: $game")
+                        println("From GameListener: Winner id = $game.")
 
                         // Update UI with the new game data
                         updateGameBoard()

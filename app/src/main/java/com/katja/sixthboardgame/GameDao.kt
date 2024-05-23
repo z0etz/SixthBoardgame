@@ -13,6 +13,7 @@ class GameDao {
     private val KEY_ID = "id"
     private val KEY_PLAYERIDS = "player_ids"
     private val KEY_NEXTPLAYER = "next_player"
+    private val KEY_WINNERID = "winner_id"
     private val KEY_FREE_DISCS_GRAY = "free_discs_gray"
     private val KEY_FREE_DISCS_BROWN = "free_discs_brown"
     private val KEY_GAMEBOARD = "gameboard"
@@ -36,6 +37,7 @@ class GameDao {
             KEY_ID to game.id,
             KEY_PLAYERIDS to game.playerIds,
             KEY_NEXTPLAYER to game.nextPlayer,
+            KEY_WINNERID to game.winnerId,
             KEY_FREE_DISCS_GRAY to game.freeDiscsGray,
             KEY_FREE_DISCS_BROWN to game.freeDiscsBrown,
             KEY_TIMESTAMP to game.timestamp,
@@ -71,6 +73,7 @@ class GameDao {
                     game.id = gameData!!.id
                     game.playerIds = gameData.player_ids
                     game.nextPlayer = gameData.next_player
+                    game.winnerId = gameData.winner_id
                     game.freeDiscsGray = gameData.free_discs_gray
                     game.freeDiscsBrown = gameData.free_discs_brown
                     game.gameboard = Gson().fromJson(gameData.gameboard, GameBoard::class.java)
