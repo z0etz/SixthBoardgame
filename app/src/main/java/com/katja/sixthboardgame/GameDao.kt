@@ -15,9 +15,9 @@ class GameDao {
     private val KEY_FREE_DISCS_BROWN = "free_discs_brown"
     private val KEY_GAMEBOARD = "gameboard"
     private val KEY_TIMESTAMP = "timestamp"
-    private val KEY_LASTTURNTIME = "timeSinceLastTurn"
-    private val KEY_GAMEENDED = "gameEnded"
-    private val KEY_TURNTIME = "turnTime"
+    private val KEY_LASTTURNTIME = "time_since_last_turn"
+    private val KEY_GAMEENDED = "game_ended"
+    private val KEY_TURNTIME = "turn_time"
 
     private val db = FirebaseFirestore.getInstance()
 

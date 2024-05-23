@@ -500,7 +500,7 @@ class GameActivity : AppCompatActivity() {
         // Set drawable color and parameter to reed free discs from dependant on the players disc color
         var discDrawable = R.drawable.player_piece_brown
         var numDiscsToShow = game.freeDiscsBrown
-        if (playerDiscColor != DiscStack.DiscColor.BROWN ||
+        if (playerDiscs && playerDiscColor != DiscStack.DiscColor.BROWN ||
             (!playerDiscs && playerDiscColor == DiscStack.DiscColor.BROWN)
         ) {
             discDrawable = R.drawable.player_piece_gray
