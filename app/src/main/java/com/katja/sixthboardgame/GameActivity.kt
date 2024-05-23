@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -49,6 +50,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var userDao: UserDao
     private lateinit var gameDao: GameDao
     private var gameListener: ListenerRegistration? = null
+    private var countDownTimer: CountDownTimer? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +84,7 @@ class GameActivity : AppCompatActivity() {
                 game = loadedGame
                 println(gameId)
                 setupPlayerDiscColor()
+                startTimer()
 
                 for (i in 0..4) {
                     for (j in 0..4) {
@@ -102,14 +105,15 @@ class GameActivity : AppCompatActivity() {
 
                 updateFreeDiscsView(this)
                 updateFreeDiscsView(this, playerDiscs = false)
+                updateWhosTurn()
 
                 // Show players username
                 userDao.fetchUsernameById(currentUserId ?: "Unknown") { username ->
                     if (username != null) {
-                        Log.d("PlayerProfileActivity", "Player username: $username")
+                        Log.d("GameActivity", "Player username: $username")
                         binding.textPlayerName.text = username
                     } else {
-                        Log.e("PlayerProfileActivity", "Failed to get player username")
+                        Log.e("GameActivity", "Failed to get player username")
                     }
                 }
 
@@ -117,10 +121,10 @@ class GameActivity : AppCompatActivity() {
                 opponentId = game.playerIds.firstOrNull { it != currentUserId }
                 userDao.fetchUsernameById(opponentId ?: "Unknown") { username ->
                     if (username != null) {
-                        Log.d("PlayerProfileActivity", "Opponent username: $username")
+                        Log.d("GameActivity", "Opponent username: $username")
                         binding.textOpponentName.text = username
                     } else {
-                        Log.e("PlayerProfileActivity", "Failed to get opponent username")
+                        Log.e("GameActivity", "Failed to get opponent username")
                     }
                 }
 
@@ -130,7 +134,7 @@ class GameActivity : AppCompatActivity() {
                 }
 
                 binding.playersDiscs.setOnClickListener {
-                    if (!game.gameEnded) {
+                    if (!game.gameEnded && game.nextPlayer == currentUserId) {
                         println("Clicked player disc stack")
                         resetAvailableMoveSquares()
                         if (playerDiscColor == DiscStack.DiscColor.BROWN && game.freeDiscsBrown > 0 ||
@@ -150,7 +154,7 @@ class GameActivity : AppCompatActivity() {
                         squareView?.setOnClickListener {
 
                             //Handle different cases of game logic as long as the game has not ended
-                            if (!game.gameEnded) {
+                            if (!game.gameEnded && game.nextPlayer == currentUserId) {
                                 // Identify connection between the view square and the parameters for it in the game board of the game object
                                 println("Clicked square: Row $i, Column $j")
 
@@ -188,24 +192,32 @@ class GameActivity : AppCompatActivity() {
                                     }
                                     // Update view squares for both stacks
                                     if (discStackSelectedView != null) {
-                                        updateViewSquare(discStackSelected!!, discStackSelectedView!!)
+                                        updateViewSquare(
+                                            discStackSelected!!,
+                                            discStackSelectedView!!
+                                        )
                                     }
                                     updateViewSquare(game.gameboard.matrix[i][j], squareView)
                                     resetAvailableMoveSquares()
                                     // Check if the game ended
                                     if (game.gameboard.matrix[i][j].discs.size >= 6) {
-                                        val winnerColor = game.gameboard.matrix[i][j].discs.lastOrNull()
-                                            ?: DiscStack.DiscColor.GRAY
+                                        val winnerColor =
+                                            game.gameboard.matrix[i][j].discs.lastOrNull()
+                                                ?: DiscStack.DiscColor.GRAY
                                         val winnerColorString = winnerColor.name
                                         println("$winnerColorString won!")
                                         winnerId =
-                                            if (playerDiscColor == winnerColor) currentUserId ?: "Unknown"
-                                            else game.playerIds.find { it != currentUserId } ?: "Unknown"
-                                        val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
+                                            if (playerDiscColor == winnerColor) currentUserId
+                                                ?: "Unknown"
+                                            else game.playerIds.find { it != currentUserId }
+                                                ?: "Unknown"
+                                        val looserId =
+                                            game.playerIds.find { it != winnerId } ?: "Unknown"
                                         game.gameEnded = true
                                         gameDao.updateGame(game)
                                         viewModel.endGame(game.id, winnerId, looserId)
                                         finishTurn()
+                                        stopTimer()
                                         showGameEndDialogue()
                                     }
                                     finishTurn()
@@ -232,7 +244,8 @@ class GameActivity : AppCompatActivity() {
                                             // Check if adjacent positions are valid and mark corresponding squares as available moves
                                             adjacentPositions.forEach { (row, column) ->
                                                 if (row in 0 until 5 && column in 0 until 5) {
-                                                    val adjacentStack = game.gameboard.matrix[row][column]
+                                                    val adjacentStack =
+                                                        game.gameboard.matrix[row][column]
                                                     if (adjacentStack.discs.isNotEmpty()) {
                                                         val squareId = resources.getIdentifier(
                                                             "square$row$column",
@@ -559,7 +572,7 @@ class GameActivity : AppCompatActivity() {
         fetchPlayerIdsForGame(gameId) { playerIds ->
             if (playerIds.isNotEmpty()) {
                 println("Player IDs for game $gameId: $playerIds")
-                if(playerIds[0] == currentUserId) {
+                if (playerIds[0] == currentUserId) {
                     playerDiscColor = DiscStack.DiscColor.GRAY
                 }
             } else {
@@ -578,6 +591,7 @@ class GameActivity : AppCompatActivity() {
         game.lastTurnTime = Date()
         game.nextPlayer = game.playerIds.firstOrNull { it != game.nextPlayer }.toString()
         println("${game.nextPlayer}´s turn")
+        startTimer()
         gameDao.updateGame(game)
     }
 
@@ -606,6 +620,11 @@ class GameActivity : AppCompatActivity() {
                         updateGameBoard()
                         updateFreeDiscsView(this)
                         updateFreeDiscsView(this, playerDiscs = false)
+                        updateWhosTurn()
+                        startTimer()
+                        if (game.gameEnded) {
+                            showGameEndDialogue()
+                        }
                     } else {
                         Log.d("GameActivity", "Failed to fetch game data.")
                     }
@@ -625,6 +644,41 @@ class GameActivity : AppCompatActivity() {
                 updateViewSquare(discStack, squareView)
             }
         }
+    }
+
+    private fun updateWhosTurn() {
+        userDao.fetchUsernameById(game.nextPlayer ?: "Unknown") { username ->
+            if (username != null) {
+                Log.d("GameActivity", "Next player: $username")
+                binding.playersTurn.text = username + getString(R.string.s_turn)
+            } else {
+                Log.e("GameActivity", "Failed to get next players username")
+            }
+        }
+    }
+
+    private fun startTimer() {
+        countDownTimer?.cancel() // Cancel any existing timer
+        val timeSinceLastTurn = Date().time - game.lastTurnTime.time
+        val turnTimeLeft = game.turnTime - timeSinceLastTurn
+
+        countDownTimer = object : CountDownTimer(turnTimeLeft, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val hours = millisUntilFinished / (1000 * 60 * 60)
+                val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
+                val seconds = (millisUntilFinished % (1000 * 60)) / 1000
+                binding.timeLeft.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            }
+
+            override fun onFinish() {
+                binding.timeLeft.text = "00:00:00"
+                // Handle timer finish event
+            }
+        }.start()
+    }
+    private fun stopTimer() {
+        countDownTimer?.cancel()
+        countDownTimer = null
     }
 
 }
