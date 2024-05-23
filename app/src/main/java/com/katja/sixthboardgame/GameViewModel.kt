@@ -16,7 +16,7 @@ class GameViewModel {
         }
     }
 
-    fun endGame(gameId: String, winnerId: String, loserId: String ) {
+    fun endGame(gameId: String, winnerId: String, loserId: String) {
         if (winnerId != "Unknown") {
             println("$winnerId won")
             userDao.updateUserScoreById(winnerId, 1) { success ->
@@ -24,13 +24,13 @@ class GameViewModel {
                     println("Score incremented successfully.")
                     userDao.fetchUserScoreById(winnerId) { score ->
                         if (score != null) {
-                            println("Winners new total score is $score")
+                            println("Winner's new total score is $score")
                         } else {
                             println("Failed to fetch new score")
                         }
                     }
                 } else {
-                    println("Failed to decrement score.")
+                    println("Failed to increment score.")
                 }
             }
         }
@@ -41,7 +41,7 @@ class GameViewModel {
                     println("Score decremented successfully.")
                     userDao.fetchUserScoreById(loserId) { score ->
                         if (score != null) {
-                            println("Losers new total score is $score")
+                            println("Loser's new total score is $score")
                         } else {
                             println("Failed to fetch new score")
                         }
@@ -51,6 +51,16 @@ class GameViewModel {
                 }
             }
         }
-        gameDao.removeGameFromFirebase(gameId)
+
+        println("Attempting to delete game with ID: $gameId")
+        gameDao.removeGameFromFirebase(gameId, object : GameDeletionCallback {
+            override fun onGameDeleted(success: Boolean) {
+                if (success) {
+                   // refreshGameList()
+                } else {
+                    println("Failed to delete the game from Firebase.")
+                }
+            }
+        })
     }
 }
