@@ -51,6 +51,6 @@ class GameViewModel {
                 }
             }
         }
-        gameDao.removeGameFromFirebase(gameId)
+//        gameDao.removeGameFromFirebase(gameId)
     }
 }
