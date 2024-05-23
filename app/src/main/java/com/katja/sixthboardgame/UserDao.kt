@@ -59,7 +59,8 @@ class UserDao {
                 val highscoreList = mutableListOf<Leaderboard>()
                 for (document in result) {
                     val userName = document.getString("UserName") ?: ""
-                    val leaderboard = document.getLong("leaderboard")?.toInt() ?: 0
+                    val leaderboard = document.getLong("leaderboard") ?: 0
+                   // val userId = document.getString("userId")
                     val leaderboardEntry = Leaderboard(userName, leaderboard)
                     highscoreList.add(leaderboardEntry)
                 }
