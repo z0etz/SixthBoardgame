@@ -24,7 +24,9 @@ class GameDao {
     fun addGame(currentUserId: String, receiverId: String) {
         val game = Game()
         game.playerIds = listOf(currentUserId, receiverId)
+        game.nextPlayer = game.playerIds[0]
         updateGame(game)
+        println("Timestamp: ${game.timestamp} Last turn time: ${game.lastTurnTime}")
     }
 
     fun updateGame(game: Game) {
@@ -89,7 +91,8 @@ class GameDao {
 
     }
 
-// TODO: This function will not currently load a game correctly, change to the same structure as the fetchGameById function
+// TODO: This function will not currently load a game correctly, change to the same structure as the fetchGameById function if needed,
+//       it may not be as only id and playerIds seem to be used.
 fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
     FirebaseFirestore
         .getInstance()
