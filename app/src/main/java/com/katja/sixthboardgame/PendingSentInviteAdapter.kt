@@ -17,9 +17,10 @@ class PendingSentInviteAdapter(
     private val onDeleteClickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<PendingSentInviteAdapter.InviteViewHolder>() {
 
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var auth: FirebaseAuth
 
     init {
+        auth = FirebaseAuth.getInstance()
         filterSenderInvite()
     }
 

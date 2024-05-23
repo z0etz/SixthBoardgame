@@ -126,26 +126,23 @@ class StartGameActivity : AppCompatActivity() {
 
     private fun processInvitations(invitations: List<Map<String, Any>>) {
         val incomingInvites = mutableListOf<String>()
-        val sentInvites = mutableListOf<String>()
         val currentUser = firebaseAuth.currentUser
         val currentUserId = currentUser?.uid
 
         for (invitation in invitations) {
             val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
             val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
-            val status = invitation[inviteDao.STATUS_KEY] as String
 
-            // Check if the current user is the sender or receiver
-            if (currentUserId == senderId) {
-                sentInvites.add(receiverId)
-            } else if (currentUserId == receiverId) {
+            // Check if the current user is the receiver and sender is not current user
+            if (currentUserId == receiverId && currentUserId != senderId) {
                 incomingInvites.add(senderId)
             }
         }
 
+        // Update the adapter with the new list of incoming invites
         pendingInviteAdapter.updateInvitationsList(incomingInvites)
-        pendingSentInviteAdapter.updateInvitationsList(sentInvites)
     }
+
 
     private fun deleteInvite(senderId: String, receiverId: String) {
         // Delete invitation from Firestore

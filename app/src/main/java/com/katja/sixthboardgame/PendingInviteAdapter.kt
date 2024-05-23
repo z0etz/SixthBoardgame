@@ -11,12 +11,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PendingInviteAdapter(
     private val context: Context,
     private val inviteList: MutableList<String>,
     private val onDeleteClickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
+
+    val firestore = FirebaseFirestore.getInstance()
+    val invitationsCollection = firestore.collection("game_invitations")
+    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
@@ -59,6 +65,8 @@ class PendingInviteAdapter(
         inviteList.addAll(newInvites)
         notifyDataSetChanged()
     }
+
+
 
     private fun showGameDialog(receiverId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
