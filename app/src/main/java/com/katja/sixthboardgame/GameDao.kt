@@ -93,7 +93,7 @@ class GameDao {
 fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) -> Unit) {
     FirebaseFirestore
         .getInstance()
-        .collection("games")
+        .collection("Games")
         .addSnapshotListener { snapshot, exception ->
             if (exception != null) {
                 Log.i(
