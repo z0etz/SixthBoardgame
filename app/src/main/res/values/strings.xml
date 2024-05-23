@@ -68,4 +68,9 @@
     <string name="No">No</string>
     <string name="s_turn">\'s turn</string>
     <string name="game_ended">\Game has ended</string>
+    <string name="give_up_game">Give up game</string>
+    <string name="confirm_give_up_title">Confirm Give Up</string>
+    <string name="confirm_give_up_message">Are you sure you want to give up?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

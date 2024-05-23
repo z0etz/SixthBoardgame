@@ -10,6 +10,7 @@ class Game() {
     var id = UUID.randomUUID().toString()
     var playerIds= listOf("")
     var nextPlayer = ""
+    var winnerId = "Unknown"
     var freeDiscsGray = 15
     var freeDiscsBrown = 15
     var gameboard = GameBoard()
@@ -25,6 +26,7 @@ data class GameDataObject(
     val id: String = "",
     val player_ids: List<String> = listOf(),
     val next_player: String = "",
+    val winner_id: String = "Unknown",
     val free_discs_gray: Int = 0,
     val free_discs_brown: Int = 0,
     val gameboard: String = "",

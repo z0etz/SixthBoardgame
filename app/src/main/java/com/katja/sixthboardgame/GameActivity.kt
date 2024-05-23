@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentReference
@@ -132,9 +133,15 @@ class GameActivity : AppCompatActivity() {
                     }
                 }
 
-                // Handle glicks and game logic
+                // Handle clicks and game logic
                 binding.gameBackground.setOnClickListener {
                     resetAvailableMoveSquares()
+                }
+
+                binding.textButtonGiveUp.setOnClickListener {
+                    if(!game.gameEnded) {
+                        showGiveUpConfirmationDialog()
+                    }
                 }
 
                 binding.playersDiscs.setOnClickListener {
@@ -211,12 +218,11 @@ class GameActivity : AppCompatActivity() {
                                         val winnerColorString = winnerColor.name
                                         println("$winnerColorString won!")
                                         winnerId =
-                                            if (playerDiscColor == winnerColor) currentUserId
-                                                ?: "Unknown"
-                                            else game.playerIds.find { it != currentUserId }
-                                                ?: "Unknown"
-                                        val looserId =
-                                            game.playerIds.find { it != winnerId } ?: "Unknown"
+                                            if (playerDiscColor == winnerColor) currentUserId ?: "Unknown"
+                                            else game.playerIds.find { it != currentUserId } ?: "Unknown"
+                                        println("Winner id: $winnerId")
+                                        val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
+                                        println("Looser id: $looserId")
                                         game.gameEnded = true
                                         gameDao.updateGame(game)
                                         viewModel.endGame(game.id, winnerId, looserId)
@@ -542,6 +548,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showGameEndDialogue() {
+        println("From showGameEndDialogue: WinnerId = $winnerId")
         val dialog = Dialog(this)
         if (winnerId == currentUserId) {
             val winDialogFragment = WinDialogFragment()
@@ -553,7 +560,7 @@ class GameActivity : AppCompatActivity() {
         gameListener?.remove()
     }
 
-    fun fetchPlayerIdsForGame(gameId: String, callback: (List<String>) -> Unit) {
+    private fun fetchPlayerIdsForGame(gameId: String, callback: (List<String>) -> Unit) {
         val db = FirebaseFirestore.getInstance()
         db.collection("Games")
             .whereEqualTo("id", gameId)
@@ -621,6 +628,7 @@ class GameActivity : AppCompatActivity() {
                     if (loadedGame != null) {
                         game = loadedGame
                         println("Game data updated: $game")
+                        println("From GameListener: Winner id = $game.")
 
                         // Update UI with the new game data
                         updateGameBoard()
@@ -696,6 +704,37 @@ class GameActivity : AppCompatActivity() {
     private fun stopTimer() {
         countDownTimer?.cancel()
         countDownTimer = null
+    }
+
+    private fun showGiveUpConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(R.string.confirm_give_up_title)
+        builder.setMessage(R.string.confirm_give_up_message)
+
+        // Set up the buttons
+        builder.setPositiveButton(R.string.yes) { dialog, which ->
+            // User clicked "Yes" button
+            giveUp()
+        }
+        builder.setNegativeButton(R.string.no) { dialog, which ->
+            // User clicked "No" button, so dismiss the dialog
+            dialog.dismiss()
+        }
+
+        // Create and show the alert dialog
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+
+    private fun giveUp() {
+        val looserId = currentUserId
+        winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
+        game.gameEnded = true
+        gameDao.updateGame(game)
+        viewModel.endGame(game.id, winnerId, looserId?: "Unknown")
+        stopTimer()
+        showGameEndDialogue()
     }
 
 }
