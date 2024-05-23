@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
@@ -51,6 +52,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var gameDao: GameDao
     private var gameListener: ListenerRegistration? = null
     private var countDownTimer: CountDownTimer? = null
+    private lateinit var viewModel: GameViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +62,7 @@ class GameActivity : AppCompatActivity() {
 
         userDao = UserDao()
         gameDao = GameDao()
-        val viewModel = GameViewModel()
+        viewModel = GameViewModel()
 
         auth = FirebaseAuth.getInstance()
         currentUserId = auth.currentUser?.uid
@@ -101,7 +103,9 @@ class GameActivity : AppCompatActivity() {
                 }
 
                 // Add Firestore listener to sync the game data
-                addGameListener()
+               if(!game.gameEnded) {
+                   addGameListener()
+               }
 
                 updateFreeDiscsView(this)
                 updateFreeDiscsView(this, playerDiscs = false)
@@ -216,6 +220,7 @@ class GameActivity : AppCompatActivity() {
                                         game.gameEnded = true
                                         gameDao.updateGame(game)
                                         viewModel.endGame(game.id, winnerId, looserId)
+                                        gameListener?.remove()
                                         finishTurn()
                                         stopTimer()
                                         showGameEndDialogue()
@@ -545,6 +550,7 @@ class GameActivity : AppCompatActivity() {
             val looseDialogFragment = LooseDialogFragment()
             looseDialogFragment.show(supportFragmentManager, "LooseDialogFragment")
         }
+        gameListener?.remove()
     }
 
     fun fetchPlayerIdsForGame(gameId: String, callback: (List<String>) -> Unit) {
@@ -672,7 +678,13 @@ class GameActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 binding.timeLeft.text = "00:00:00"
-                // Handle timer finish event
+                val looserId = game.nextPlayer
+                winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
+                game.gameEnded = true
+                gameDao.updateGame(game)
+                viewModel.endGame(game.id, winnerId, looserId)
+                stopTimer()
+                showGameEndDialogue()
             }
         }.start()
     }

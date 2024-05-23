@@ -20,52 +20,20 @@
             android:textSize="@dimen/margin_medium"
             android:textStyle="bold"
             android:text="@string/pop_up_invite"
-            android:layout_margin="@dimen/heading_xs"
             android:gravity="center"
             android:textColor="@color/green_dark"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select time limits for moves"
-            android:textAllCaps="true"
-            android:layout_gravity="center"
-            android:textColor="@color/green_dark"
-            android:padding="@dimen/heading_xs"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_small"
-            android:gravity="center">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="12"
-                android:textColor="@color/green_dark"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="24"
-                android:layout_marginLeft="@dimen/margin_medium"
-                android:textColor="@color/green_dark"/>
-
-
-        </LinearLayout>
         
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="@dimen/heading_xs">
+            android:layout_marginTop="@dimen/margin_medium">
             
             <Button
                 android:id="@+id/btn_yes"
-                android:layout_width="@dimen/invite_buttons"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/Yes"
                 android:textAllCaps="false"
@@ -75,8 +43,8 @@
 
             <Button
                 android:id="@+id/btn_no"
-                android:layout_width="@dimen/invite_buttons"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
                 android:text="@string/No"

@@ -3,17 +3,18 @@ package com.katja.sixthboardgame
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 
 class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
@@ -31,20 +32,32 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
         override fun onClick(view: View) {
 
             val context = view.context
-            val receiverId = highscores[adapterPosition]
 
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            val userId = currentUser?.uid
+           // val builder = AlertDialog.Builder(context)
+           // val dialogView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
+           // builder.setView(dialogView)
+           // alertDialog = builder.create()
 
-            // test
+           // alertDialog?.show()
 
-            if (receiverId != null) {
-                Log.d("LeaderboardAdapter", "User Clicked: $receiverId")
-                val popupWindow = CustomPopupWindow(context)
-                popupWindow.show()
-            } else {
-                Log.d("LeaderboardAdapter", "recieverId is null for position: $adapterPosition")
-            }
+           // val popupView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
+           // val popupWindow = PopupWindow(
+           //     popupView,
+           //     ViewGroup.LayoutParams.WRAP_CONTENT,
+           //     ViewGroup.LayoutParams.WRAP_CONTENT,
+           //     false
+           // )
+
+           // popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+           // popupWindow.showAtLocation(itemView, Gravity.CENTER, 0,0)
+
+
+            //val intent = Intent(context, StartGameActivity::class.java)
+            //context.startActivity(intent)
+
+            val popupWindow = CustomPopupWindow(context)
+            popupWindow.show()
         }
     }
 
@@ -73,15 +86,19 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
     }
 }
 
-class CustomPopupWindow(context: Context) : Dialog(context, R.style.CustomDialog) {
+class CustomPopupWindow(context: Context) : Dialog(context) {
 
     init {
+        // Set the custom layout for the popup window
         setContentView(R.layout.activity_pop_up_invite)
 
+        // Find the "Start Game" button and set its click listener
         val startGameButton = findViewById<Button>(R.id.btn_yes)
         startGameButton.setOnClickListener {
+            // Start the game activity (replace with your desired action)
             val intent = Intent(context, StartGameActivity::class.java)
             context.startActivity(intent)
+            // Dismiss the popup window
             dismiss()
         }
 
@@ -90,11 +107,9 @@ class CustomPopupWindow(context: Context) : Dialog(context, R.style.CustomDialog
             dismiss()
         }
 
+        // Ensure that the popup window is not dismissed when clicking outside of it
         setCanceledOnTouchOutside(false)
-
-        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        window?.setGravity(Gravity.CENTER)
     }
 }
 
-data class Leaderboard(val username: String, val score: Long)
+data class Leaderboard(val username: String, val score: Int)
