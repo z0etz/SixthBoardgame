@@ -56,7 +56,7 @@
     android:layout_gravity="center"
     android:layout_margin="@dimen/margin_small"
     android:textColor="@color/white"
-    android:fontFamily="@font/inter_semibold"/>
+    android:fontFamily="@font/inter_bold"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -216,7 +216,21 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/margin_small"
         android:textColor="@color/white"
-        android:fontFamily="@font/inter_semibold"/>
+        android:fontFamily="@font/inter_bold"/>
+
+        <TextView
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:id="@+id/text_button_give_up"
+            android:text="@string/give_up_game"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/gradient_button_orange"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center"
+            android:elevation="@dimen/elevation_small"
+            android:textColor="@color/white"
+            />
 
 
 </LinearLayout>

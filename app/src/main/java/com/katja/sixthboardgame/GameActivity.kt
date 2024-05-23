@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentReference
@@ -132,9 +133,15 @@ class GameActivity : AppCompatActivity() {
                     }
                 }
 
-                // Handle glicks and game logic
+                // Handle clicks and game logic
                 binding.gameBackground.setOnClickListener {
                     resetAvailableMoveSquares()
+                }
+
+                binding.textButtonGiveUp.setOnClickListener {
+                    if(!game.gameEnded) {
+                        showGameEndDialogue()
+                    }
                 }
 
                 binding.playersDiscs.setOnClickListener {
@@ -697,6 +704,27 @@ class GameActivity : AppCompatActivity() {
         countDownTimer?.cancel()
         countDownTimer = null
     }
+
+    private fun showGiveUpConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(R.string.confirm_give_up_title)
+        builder.setMessage(R.string.confirm_give_up_message)
+
+        // Set up the buttons
+        builder.setPositiveButton(R.string.yes) { dialog, which ->
+            // User clicked "Yes" button
+            giveUp()
+        }
+        builder.setNegativeButton(R.string.no) { dialog, which ->
+            // User clicked "No" button, so dismiss the dialog
+            dialog.dismiss()
+        }
+
+        // Create and show the alert dialog
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
 
     private fun giveUp() {
         val looserId = currentUserId
