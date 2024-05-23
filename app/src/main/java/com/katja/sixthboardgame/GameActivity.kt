@@ -698,4 +698,14 @@ class GameActivity : AppCompatActivity() {
         countDownTimer = null
     }
 
+    private fun giveUp() {
+        val looserId = currentUserId
+        winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
+        game.gameEnded = true
+        gameDao.updateGame(game)
+        viewModel.endGame(game.id, winnerId, looserId?: "Unknown")
+        stopTimer()
+        showGameEndDialogue()
+    }
+
 }
