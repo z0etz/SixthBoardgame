@@ -48,6 +48,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.168" />
 
+    <Button
+        android:id="@+id/sendInviteButton"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="188dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/gradient_button_green"
+        android:gravity="center"
+        android:text="Send invite"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -70,7 +86,8 @@
         android:id="@+id/invitesRecyclerView"
         android:layout_width="@dimen/recycle_view_w"
         android:layout_height="@dimen/recycle_view_h"
-        android:layout_margin="@dimen/margin_medium"         android:foregroundGravity="center"
+        android:layout_margin="@dimen/margin_medium"
+        android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
