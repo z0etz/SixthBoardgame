@@ -31,16 +31,6 @@
             android:textSize="@dimen/heading_large"
             android:textAllCaps="true" />
 
-
-        <TextView
-            android:id="@+id/textViewExclamation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/exclamation_mark_with_front_space"
-            android:textColor="@color/orange_light"
-            android:fontFamily="@font/inter_semibold"
-            android:textSize="@dimen/heading_large" />
-
     </LinearLayout>
 
     <TextView
