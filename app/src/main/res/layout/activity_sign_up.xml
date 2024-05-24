@@ -190,7 +190,7 @@
         android:id="@+id/logInTextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/log_in"
+        android:text="@string/sign_in"
         android:textColor="@color/grey"
         android:textSize="@dimen/heading_xs"
         android:fontFamily="@font/inter_bold"
