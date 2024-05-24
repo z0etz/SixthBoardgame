@@ -83,6 +83,10 @@ class GameActivity : AppCompatActivity() {
             height = gameBoardSize
         }
 
+        // Initialize MediaPlayer
+        mediaPlayer = MediaPlayer.create(this, R.raw.game_sound)
+        playSound()
+
         // Load the game by ID
         viewModel.loadGameById(gameId) { loadedGame ->
             if (loadedGame != null) {
@@ -398,13 +402,6 @@ class GameActivity : AppCompatActivity() {
                 println(getString(R.string.discs_to_move) + discsToMove)
             }
         }
-
-
-        // Initialisera MediaPlayer med din ljudfil
-        mediaPlayer = MediaPlayer.create(this, R.raw.game_sound)
-
-        // Spela upp ljudet när aktiviteten startar (anpassa efter ditt behov)
-        playSound()
 
     }
 
