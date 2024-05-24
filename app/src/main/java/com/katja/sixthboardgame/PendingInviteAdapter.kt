@@ -1,107 +1,68 @@
-package com.katja.sixthboardgame
-
-
-import android.app.Dialog
+import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.AdapterView.inflate
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.withContext
+import com.katja.sixthboardgame.R
+import com.katja.sixthboardgame.UserDao
 
-    class PendingInviteAdapter(
-        private val context: Context,
-        private val inviteList: MutableList<String>,
-        private val receiverId: String,
-        private val onDeleteClickListener: (Int) -> Unit
-    ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
+class PendingInviteAdapter(
+    private val context: Context,
+    private val inviteList: MutableList<String>,
+    private val onDeleteClickListener: (Int) -> Unit
+) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 
+    private val userDao = UserDao()
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
-            return InviteViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
+        return InviteViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
+        val userId = inviteList[position]
+        // Fetch username associated with the user ID
+        userDao.fetchUsernameById(userId) { username ->
+            (context as Activity).runOnUiThread {
+                holder.bind(username ?: "Unknown")
+            }
         }
+    }
 
-        override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
-            holder.bind(inviteList[position])
-        }
 
-        override fun getItemCount(): Int {
-            return inviteList.size
-        }
+    override fun getItemCount(): Int {
+        return inviteList.size
+    }
 
-        inner class InviteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            private val playerNameTextView: TextView = itemView.findViewById(R.id.invitePlayerName)
+    inner class InviteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val playerNameTextView: TextView = itemView.findViewById(R.id.invitePlayerName)
 
-            init {
-                itemView.setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        showGameDialog(receiverId, inviteList[position])
-                    }
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    // Handle item click
                 }
             }
+        }
 
-            init {
-                itemView.setOnLongClickListener {
-                    onDeleteClickListener(adapterPosition)
-                    true
-                }
-            }
-
-            fun bind(playerName: String) {
-                playerNameTextView.text = playerName
+        init {
+            itemView.setOnLongClickListener {
+                onDeleteClickListener(adapterPosition)
+                true
             }
         }
 
-        fun updateInvitationsList(newInvites: List<String>) {
-            inviteList.clear()
-            inviteList.addAll(newInvites)
-            notifyDataSetChanged()
+        fun bind(playerName: String) {
+            playerNameTextView.text = playerName
         }
+    }
 
-        private fun openGame(gameId: String) {
-            val intent = Intent(context, GameActivity::class.java)
-            intent.putExtra("GAME_ID", gameId)
-            context.startActivity(intent)
-        }
-
-        private fun showGameDialog(senderId: String, receiverId: String) {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            val currentUserId = currentUser?.uid
-
-        if (currentUserId != null) {
-            val dialog = Dialog(context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setContentView(R.layout.activity_game_dialog)
-
-                val buttonContinue = dialog.findViewById<TextView>(R.id.textButtonContinue)
-                val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
-
-            buttonContinue.setOnClickListener {
-                // Create a new a new game and add it to Firestore
-                GameDao().addGame(currentUserId, receiverId)
-                // Close dialog
-                dialog.dismiss()
-            }
-
-            buttonCancel.setOnClickListener {
-                dialog.dismiss()
-            }
-
-            dialog.show()
-        } else {
-            // Handle case when current user ID is null
-            Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
-        }
+    fun updateInvitationsList(newInvites: List<String>) {
+        inviteList.clear()
+        inviteList.addAll(newInvites)
+        notifyDataSetChanged()
     }
 }

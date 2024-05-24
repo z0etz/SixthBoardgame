@@ -1,5 +1,6 @@
 package com.katja.sixthboardgame;
 
+import PendingInviteAdapter
 import android.app.Activity;
 import android.app.Dialog
 import android.os.Bundle
@@ -51,13 +52,15 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
+
+        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList) { position ->
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
         }
+
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
