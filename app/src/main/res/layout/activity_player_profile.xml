@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/margin_xl"
         android:contentDescription="@string/wooden_background_image_description"
-        android:src="@drawable/bye_text_image" />
+        android:src="@drawable/account_text_image" />
 
     <LinearLayout
         android:layout_width="wrap_content"
