@@ -29,7 +29,7 @@ import java.util.Date
 
 class GameActivity : AppCompatActivity() {
 
-    //Hej
+
 
     private lateinit var binding: ActivityGameBinding
     private var gameBoardSize = 354
