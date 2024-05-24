@@ -36,7 +36,7 @@
         android:drawablePadding="@dimen/margin_small"
         android:elevation="@dimen/elevation_small"
         android:fontFamily="@font/inter_bold"
-        android:hint="@string/add_player"
+        android:hint="@string/add_player_..."
         android:padding="@dimen/margin_medium"
         android:textColor="@color/grey"
         android:textSize="@dimen/heading_xs"
