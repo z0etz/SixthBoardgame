@@ -50,13 +50,14 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
+        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "", onDeleteClickListener = { position ->
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
         }
+        )
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
