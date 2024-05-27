@@ -79,7 +79,7 @@ class WelcomeActivity : AppCompatActivity() {
         // Listen for real-time updates
         gameDao.listenForCurrentUserGamesUpdates(currentUserId) { updatedGameList ->
             ongoingGamesData.clear()
-            ongoingGamesData.addAll(updatedGameList.map { it.id })
+            ongoingGamesData.addAll(updatedGameList)
             adapter.notifyDataSetChanged()
         }
     }
