@@ -33,8 +33,16 @@
     <string name="gotit">Got It</string>
     <string name="rules">The rules are simple</string>
     <string name="game_instructions">Your goal is to build a tower of six or more disks with your color on top.
-        On your turn, you will either start a new tower by adding a piece to the board, or capture an existing tower by moving another in play.
-        The twist is that each tower moves like a different chess piece, based on the number of disks in that tower.</string>
+        On your turn, you can either start a new tower by adding one of your discs to an empty square on the board,
+        or move one or more discs from the top of one tower to the top of another.\n\n
+        The twist is that each tower moves like a different chess piece, based on the number of disks in that tower:\n\n
+        Stacks with 1 disk (Pawn) move a single square in any orthogonal direction.\n\n
+        Stack with 2 disks (Rook) move any number of squares in any orthogonal direction, to the first stack on its path.\n\n
+        Stack with 3 disks (Knight) move in an L-shape, 3 squares (2 squares in one orthogonal direction, and 1 in another orthogonal direction).\n\n
+        Stack with 4 disks (Bishop) move any number of squares in a diagonal direction to the first stack on its path.\n\n
+        Stack with 5 disks (Queen) move any number of squares in any direction (orthogonally or diagonally) to the first stack on its path.\n\n
+        Good luck, and enjoy your game!
+    </string>
     <string name="you_won">YOU WON</string>
     <string name="congratulations">Congratulations!</string>
     <string name="log_in_to_your_account">Login to your account</string>
