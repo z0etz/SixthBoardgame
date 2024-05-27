@@ -11,23 +11,29 @@ class WelcomeActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityWelcomeBinding
     lateinit var adapter: WelcomeAdapterCurrentGamesList
-    private val ongoingGamesData = mutableListOf<String>()
+    private val ongoingGamesData = mutableListOf<Game>()
     lateinit var gameDao: GameDao
+    lateinit var userDao: UserDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userDao = UserDao()
 
-        adapter = WelcomeAdapterCurrentGamesList(this, ongoingGamesData) { gameId ->
-            gameDao.fetchGameById(gameId) { game ->
-                if (game != null) {
-                    openGame(game.id)
+        adapter = WelcomeAdapterCurrentGamesList(
+            this,
+            ongoingGamesData,
+            { gameId ->
+                openGame(gameId)
+            },
+            { userId, callback ->
+                userDao.fetchUsernameById(userId) { username ->
+                    callback(username ?: "Unknown")
                 }
-            // Use the gameId fetched from fetchGameById in openGame
             }
-        }
+        )
 
         binding.recyclerViewOngoingGames.adapter = adapter
         binding.recyclerViewOngoingGames.layoutManager = LinearLayoutManager(this)
