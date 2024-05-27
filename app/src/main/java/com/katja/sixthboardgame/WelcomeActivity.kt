@@ -89,10 +89,15 @@ class WelcomeActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == NEW_GAME_REQUEST && resultCode == RESULT_OK) {
             // Reload ongoing games data
-            ongoingGamesData.clear()
+            loadOngoingGamesData()
 
             adapter.notifyDataSetChanged()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.stopUpdating()
     }
 
     companion object {
