@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.media.MediaPlayer
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -55,7 +54,6 @@ class GameActivity : AppCompatActivity() {
     private var gameListener: ListenerRegistration? = null
     private var countDownTimer: CountDownTimer? = null
     private lateinit var viewModel: GameViewModel
-    private lateinit var mediaPlayer: MediaPlayer
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,10 +80,6 @@ class GameActivity : AppCompatActivity() {
             width = gameBoardSize
             height = gameBoardSize
         }
-
-        // Initialize MediaPlayer
-        mediaPlayer = MediaPlayer.create(this, R.raw.game_sound)
-        playSound()
 
         // Load the game by ID
         viewModel.loadGameById(gameId) { loadedGame ->
@@ -405,14 +399,6 @@ class GameActivity : AppCompatActivity() {
 
     }
 
-    private fun playSound() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-            mediaPlayer.prepare()
-        }
-        mediaPlayer.start()
-    }
-
     private fun calcGameBoardSize() {
         gameBoardSize = if (screenHeight > screenWidth) screenWidth - 50 else screenWidth / 2
     }
@@ -626,7 +612,6 @@ class GameActivity : AppCompatActivity() {
         super.onDestroy()
         // Remove Firestore listener when the activity is destroyed
         gameListener?.remove()
-        mediaPlayer.release()
     }
 
     private fun addGameListener() {
