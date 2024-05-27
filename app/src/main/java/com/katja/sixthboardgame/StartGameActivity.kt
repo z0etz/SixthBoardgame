@@ -127,8 +127,8 @@ class StartGameActivity : AppCompatActivity() {
                         userMap[fullName] = user2Id
                     }
                 }
-                adapter.clear() // Clear existing data
-                adapter.addAll(usersList.distinct()) // Add distinct names only
+                adapter.clear() // clear old data
+                adapter.addAll(usersList.distinct()) // Add actual names with specific id
                 adapter.notifyDataSetChanged() // Notify adapter for changes
             }
             .addOnFailureListener { exception ->
