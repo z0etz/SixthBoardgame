@@ -68,7 +68,9 @@ class PendingInviteAdapter(
         }
 
         fun bind(playerName: String) {
-            playerNameTextView.text = playerName
+            // set the sender name from the playerName and display it as "Invite from [senderName]"
+            val senderName = context.getString(R.string.invited_by, playerName)
+            playerNameTextView.text = senderName
         }
     }
 
