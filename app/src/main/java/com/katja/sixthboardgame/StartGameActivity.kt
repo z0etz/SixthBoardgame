@@ -29,7 +29,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 
 class StartGameActivity : AppCompatActivity() {
 
-
     private lateinit var binding: ActivityStartGameBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var userDao: UserDao
@@ -45,6 +44,7 @@ class StartGameActivity : AppCompatActivity() {
     private val invitationsCollection =
         FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
+    private var selectedTime: Int = 24
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,104 +60,69 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter =
-            PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
-                val receiverName = selectedUsersList[position]
-                val receiverId = userMap[receiverName]
-                receiverId?.let {
-                    deleteInvite(firebaseAuth.currentUser?.uid!!, it)
-                }
+        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
+            val receiverName = selectedUsersList[position]
+            val receiverId = userMap[receiverName]
+            receiverId?.let {
+                deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
+        }
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         firestore = FirebaseFirestore.getInstance()
 
         val currentUser = firebaseAuth.currentUser
-        if (currentUser != null) {
-            inviteDao.listenForInvitations(currentUser.uid) { invitations ->
+        currentUser?.let {
+            inviteDao.listenForInvitations(it.uid) { invitations ->
                 processInvitations(invitations)
             }
         }
-
 
         userDao.fetchUserNames { names ->
             userNameList = names
             adapter.addAll(names ?: emptyList())
         }
 
-        autoCompleteTextView.setOnItemClickListener { parent, view, postition, id ->
-            val selectedUser = parent.getItemAtPosition(postition) as String
+        autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
+            val selectedUser = parent.getItemAtPosition(position) as String
             showPopup(selectedUser)
-
         }
 
+        // Reference the SeekBar and TextView in the activity layout
         val timeSlider = findViewById<SeekBar>(R.id.timeSlider)
-        val selectedTimeTextView = findViewById<TextView>(R.id.selectedTimeTextView) // Visa vald tid här
+        val selectedTimeTextView = findViewById<TextView>(R.id.selectedTimeTextView)
 
-        timeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Uppdatera textvyn med vald tid när slidern ändras
                 selectedTimeTextView.text = "$progress hours"
+                selectedTime = progress
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // Metod som anropas när användaren börjar flytta slidern
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // Metod som anropas när användaren slutar flytta slidern
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-
-       // autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
-       //     val selectedUser = parent.getItemAtPosition(position) as String
-       //     getReceiverId(selectedUser) // Update receiverId
-       //     showPopup(selectedUser)
-       //     receiverId?.let {
-       //         val senderId = firebaseAuth.currentUser?.uid
-       //         if (senderId != null) {
-       //             val inviteId = invitationsCollection.document().id
-       //             InviteDao().sendInvitation(senderId, it, inviteId)
-       //         } else {
-       //             Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
-       //         }
-       //     } ?: run {
-       //         Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-       //     }
-       //     selectedUsersList.add(selectedUser)
-       //     pendingInviteAdapter.notifyDataSetChanged()
-       // }
 
         getAllUsers()
     }
 
-    private var selectedTime: Int = 24
     private fun showPopup(selectedUser: String) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_time_choice, null)
-        val timeSlider = dialogView.findViewById<RadioGroup>(R.id.timeSlider)
-
+        val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
         val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
         selectedTimeTextView.text = "$selectedTime hours"
 
-        // slider
-
-        timeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 selectedTime = progress
                 selectedTimeTextView.text = "$selectedTime hours"
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // Metod som anropas när användaren börjar flytta slidern
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // Metod som anropas när användaren slutar flytta slidern
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-
-
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("INVITE")
@@ -189,103 +154,84 @@ class StartGameActivity : AppCompatActivity() {
     }
 
     private fun endGameDueToTimeout() {
-        // Implementera logiken för att avsluta spelet på grund av tidsgränsen här
-        // T.ex. visa ett meddelande för användaren och stänga aktiviteten
         Toast.makeText(this, "Spelet har avslutats på grund av inaktivitet", Toast.LENGTH_SHORT).show()
         finish()
     }
 
+    private fun getReceiverId(selectedUser: String): String? {
+        return userMap[selectedUser]
+    }
 
-    private fun getReceiverId(selectedUser: String) {
-            receiverId = userMap[selectedUser]
-        }
-
-        private fun getAllUsers() {
-            val usersCollection = firestore.collection("users")
-            usersCollection.get()
-                .addOnSuccessListener { querySnapshot ->
-                    val usersList = mutableListOf<String>()
-                    for (document in querySnapshot.documents) {
-                        val fullName = document.getString("UserName")
-                        val user2Id = document.getString("id")
-                        fullName?.let { usersList.add(it) }
-                        userMap[fullName] = user2Id
-                    }
-                    adapter.addAll(usersList)
+    private fun getAllUsers() {
+        val usersCollection = firestore.collection("users")
+        usersCollection.get()
+            .addOnSuccessListener { querySnapshot ->
+                val usersList = mutableListOf<String>()
+                for (document in querySnapshot.documents) {
+                    val fullName = document.getString("UserName")
+                    val user2Id = document.getString("id")
+                    fullName?.let { usersList.add(it) }
+                    userMap[fullName] = user2Id
                 }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(
-                        this,
-                        "Failed to fetch users: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-        }
-
-        private fun processInvitations(invitations: List<Map<String, Any>>) {
-            val incomingInvites = mutableListOf<String>()
-            val currentUser = firebaseAuth.currentUser
-            val currentUserId = currentUser?.uid
-
-            for (invitation in invitations) {
-                val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
-                val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
-                val status = invitation[inviteDao.STATUS_KEY] as String
-                // val inviteInfo = "Invitation from: $senderId - Status: $status"
-
-                // Check if the current user is either the sender or receiver
-                if (currentUserId == senderId || currentUserId == receiverId) {
-                    incomingInvites.add(senderId)
-                }
+                adapter.addAll(usersList)
             }
-
-            // Add all invites to the list, both sent and received
-            pendingInviteAdapter.updateInvitationsList(incomingInvites)
-        }
-
-
-        private fun deleteInvite(senderId: String, receiverId: String) {
-            // Delete invitation from Firestore
-            inviteDao.deleteInvitation(senderId, receiverId)
-                .addOnSuccessListener {
-                    val position = selectedUsersList.indexOf(receiverId)
-                    if (position != -1) {
-                        selectedUsersList.removeAt(position)
-                        pendingInviteAdapter.notifyItemRemoved(position)
-                    }
-                    Toast.makeText(
-                        this,
-                        "Invitation deleted successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                .addOnFailureListener { exception ->
-                    Log.e(
-                        "DeleteInvite",
-                        "Failed to delete invitation: ${exception.message}",
-                        exception
-                    )
-                    Toast.makeText(
-                        this,
-                        "Failed to delete invitation: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-        }
-
-
-        override fun onResume() {
-            super.onResume()
-            autoCompleteTextView.setText("")
-        }
+            .addOnFailureListener { exception ->
+                Toast.makeText(
+                    this,
+                    "Failed to fetch users: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
-    private fun getReceiverId(selectedUser: String): Any {
-        return "recieverId"
+    private fun processInvitations(invitations: List<Map<String, Any>>) {
+        val incomingInvites = mutableListOf<String>()
+        val currentUser = firebaseAuth.currentUser
+        val currentUserId = currentUser?.uid
+
+        for (invitation in invitations) {
+            val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
+            val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
+            val status = invitation[inviteDao.STATUS_KEY] as String
+
+            if (currentUserId == senderId || currentUserId == receiverId) {
+                incomingInvites.add(senderId)
+            }
+        }
+
+        pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
 
+    private fun deleteInvite(senderId: String, receiverId: String) {
+        inviteDao.deleteInvitation(senderId, receiverId)
+            .addOnSuccessListener {
+                val position = selectedUsersList.indexOf(receiverId)
+                if (position != -1) {
+                    selectedUsersList.removeAt(position)
+                    pendingInviteAdapter.notifyItemRemoved(position)
+                }
+                Toast.makeText(
+                    this,
+                    "Invitation deleted successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "DeleteInvite",
+                    "Failed to delete invitation: ${exception.message}",
+                    exception
+                )
+                Toast.makeText(
+                    this,
+                    "Failed to delete invitation: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
 
-
-
-
-
+    override fun onResume() {
+        super.onResume()
+        autoCompleteTextView.setText("")
+    }
+}
