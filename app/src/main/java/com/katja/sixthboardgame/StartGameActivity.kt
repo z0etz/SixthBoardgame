@@ -63,13 +63,12 @@ class StartGameActivity : AppCompatActivity() {
                 processInvitations(invitations)
             }
         }
-
-        userDao.fetchUserNames { names ->
-            userNameList = names
-            runOnUiThread {
-                adapter.addAll(names ?: emptyList())
-            }
-        }
+        //userDao.fetchUserNames { names ->
+          //  userNameList = names
+            //runOnUiThread {
+              //  adapter.addAll(names ?: emptyList())
+            //}
+        //}
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
