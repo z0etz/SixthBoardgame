@@ -93,7 +93,15 @@ class GameDao {
     }
 
 
-    fun removeGameFromFirebase(gameId: String, callback: GameDeletionCallback) {
+    fun removeGameFromFirebase(gameId: String, callback: GameDeletionCallback = object : GameDeletionCallback {
+        override fun onGameDeleted(success: Boolean) {
+            if (success) {
+                println("Game deleted successfully.")
+            } else {
+                println("Failed to delete game.")
+            }
+        }
+    }) {
         val gameRef = FirebaseFirestore.getInstance().collection("Games").document(gameId)
 
         // Verify if the document exists before attempting deletion
