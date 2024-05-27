@@ -21,6 +21,7 @@ import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
 class StartGameActivity : AppCompatActivity() {
 
+
     private lateinit var binding: ActivityStartGameBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var userDao: UserDao
@@ -63,33 +64,30 @@ class StartGameActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         val currentUser = firebaseAuth.currentUser
-        if (currentUser != null) {
+        if (currentUser != null){
             inviteDao.listenForInvitations(currentUser.uid) { invitations ->
                 processInvitations(invitations)
+
             }
+
         }
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
             getReceiverId(selectedUser) // Update receiverId
-            val senderId = firebaseAuth.currentUser?.uid
-
-            if (senderId != null) {
-                if (receiverId == senderId) {
-                    Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
+            receiverId?.let {
+                val senderId = firebaseAuth.currentUser?.uid
+                if (senderId != null){
+                    val inviteId = invitationsCollection.document().id
+                    InviteDao().sendInvitation(senderId, it, inviteId)
                 } else {
-                    receiverId?.let {
-                        val inviteId = invitationsCollection.document().id
-                        InviteDao().sendInvitation(senderId, it, inviteId)
-                    } ?: run {
-                        Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-                    }
-                    selectedUsersList.add(selectedUser)
-                    pendingInviteAdapter.notifyDataSetChanged()
+                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+            } ?: run {
+                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
             }
+            selectedUsersList.add(selectedUser)
+            pendingInviteAdapter.notifyDataSetChanged()
         }
 
         getAllUsers()
@@ -130,9 +128,9 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
             val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
             val status = invitation[inviteDao.STATUS_KEY] as String
+            // val inviteInfo = "Invitation from: $senderId - Status: $status"
 
-
-
+            // Check if the current user is either the sender or receiver
             if (currentUserId == senderId || currentUserId == receiverId) {
                 incomingInvites.add(senderId)
             }
@@ -141,6 +139,7 @@ class StartGameActivity : AppCompatActivity() {
         // Add all invites to the list, both sent and received
         pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
+
 
     private fun deleteInvite(senderId: String, receiverId: String) {
         // Delete invitation from Firestore
@@ -166,6 +165,10 @@ class StartGameActivity : AppCompatActivity() {
                 ).show()
             }
     }
+
+
+
+
 
     override fun onResume() {
         super.onResume()
