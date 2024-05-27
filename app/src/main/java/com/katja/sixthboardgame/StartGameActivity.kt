@@ -1,14 +1,9 @@
-package com.katja.sixthboardgame;
+package com.katja.sixthboardgame
 
-import android.app.Activity;
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import android.view.View.OnClickListener
-import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +15,6 @@ import com.google.firebase.ktx.Firebase
 import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
 class StartGameActivity : AppCompatActivity() {
-
 
     private lateinit var binding: ActivityStartGameBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -64,17 +58,17 @@ class StartGameActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         val currentUser = firebaseAuth.currentUser
-        if (currentUser != null){
+        if (currentUser != null) {
             inviteDao.listenForInvitations(currentUser.uid) { invitations ->
                 processInvitations(invitations)
-
             }
-
         }
 
         userDao.fetchUserNames { names ->
             userNameList = names
-            adapter.addAll(names ?: emptyList())
+            runOnUiThread {
+                adapter.addAll(names ?: emptyList())
+            }
         }
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
@@ -82,7 +76,7 @@ class StartGameActivity : AppCompatActivity() {
             getReceiverId(selectedUser) // Update receiverId
             receiverId?.let {
                 val senderId = firebaseAuth.currentUser?.uid
-                if (senderId != null){
+                if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, it, inviteId)
                 } else {
@@ -91,8 +85,10 @@ class StartGameActivity : AppCompatActivity() {
             } ?: run {
                 Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
             }
-            selectedUsersList.add(selectedUser)
-            pendingInviteAdapter.notifyDataSetChanged()
+            runOnUiThread {
+                selectedUsersList.add(selectedUser)
+                pendingInviteAdapter.notifyDataSetChanged()
+            }
         }
 
         getAllUsers()
@@ -109,11 +105,14 @@ class StartGameActivity : AppCompatActivity() {
                 val usersList = mutableListOf<String>()
                 for (document in querySnapshot.documents) {
                     val fullName = document.getString("UserName")
-                    val user2Id = document.getString("id")
+                    val userId = document.getString("id")
                     fullName?.let { usersList.add(it) }
-                    userMap[fullName] = user2Id
+                    userMap[fullName] = userId
+                    userMap[userId] = fullName  // Add reverse mapping for ID to name
                 }
-                adapter.addAll(usersList)
+                runOnUiThread {
+                    adapter.addAll(usersList)
+                }
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(
@@ -133,47 +132,47 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
             val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
             val status = invitation[inviteDao.STATUS_KEY] as String
-            // val inviteInfo = "Invitation from: $senderId - Status: $status"
 
             // Check if the current user is either the sender or receiver
             if (currentUserId == senderId || currentUserId == receiverId) {
-                incomingInvites.add(senderId)
+                val userName = if (currentUserId == senderId) userMap[receiverId] else userMap[senderId]
+                userName?.let { incomingInvites.add(it) }
             }
         }
 
-        // Add all invites to the list, both sent and received
-        pendingInviteAdapter.updateInvitationsList(incomingInvites)
+        runOnUiThread {
+            pendingInviteAdapter.updateInvitationsList(incomingInvites)
+        }
     }
 
-
     private fun deleteInvite(senderId: String, receiverId: String) {
-        // Delete invitation from Firestore
         inviteDao.deleteInvitation(senderId, receiverId)
             .addOnSuccessListener {
-                val position = selectedUsersList.indexOf(receiverId)
-                if (position != -1) {
-                    selectedUsersList.removeAt(position)
-                    pendingInviteAdapter.notifyItemRemoved(position)
+                runOnUiThread {
+                    val userName = userMap[receiverId]
+                    val position = selectedUsersList.indexOf(userName)
+                    if (position != -1) {
+                        selectedUsersList.removeAt(position)
+                        pendingInviteAdapter.notifyItemRemoved(position)
+                    }
+                    Toast.makeText(
+                        this,
+                        "Invitation deleted successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                Toast.makeText(
-                    this,
-                    "Invitation deleted successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
             .addOnFailureListener { exception ->
                 Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
-                Toast.makeText(
-                    this,
-                    "Failed to delete invitation: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Toast.makeText(
+                        this,
+                        "Failed to delete invitation: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
     }
-
-
-
-
 
     override fun onResume() {
         super.onResume()
