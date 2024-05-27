@@ -22,16 +22,36 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
         val positionTextView: TextView = itemView.findViewById(R.id.scoreboard_position)
         val usernameTextView: TextView = itemView.findViewById(R.id.scoreboard_username)
         val scoreTextView: TextView = itemView.findViewById(R.id.scoreboard_score)
+        val view: View = itemView
 
-        private var alertDialog: AlertDialog? = null
         init {
             // Set click listener for itemView
             itemView.setOnClickListener(this)
         }
 
-        override fun onClick(view: View) {
+        override fun onClick(v: View?) {
+            val selectedUser = highscores[adapterPosition].username
+            showPopup(view.context, selectedUser)
+        }
 
-            val context = view.context
+        private fun showPopup(context: Context, selectedUser: String) {
+            AlertDialog.Builder(context)
+                .setTitle("Invite")
+                .setMessage("Do you want to challenge $selectedUser")
+                .setPositiveButton("Yes") { dialog, which ->
+
+
+                }
+                .setNegativeButton("No") { dialog, which ->
+                    dialog.dismiss()
+
+                }
+                .show()
+        }
+
+       // override fun onClick(view: View) {
+
+        //    val context = view.context
 
            // val builder = AlertDialog.Builder(context)
            // val dialogView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
@@ -56,9 +76,7 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
             //val intent = Intent(context, StartGameActivity::class.java)
             //context.startActivity(intent)
 
-            val popupWindow = CustomPopupWindow(context)
-            popupWindow.show()
-        }
+//        }
     }
 
 
@@ -86,30 +104,6 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
     }
 }
 
-class CustomPopupWindow(context: Context) : Dialog(context) {
 
-    init {
-        // Set the custom layout for the popup window
-        setContentView(R.layout.activity_pop_up_invite)
-
-        // Find the "Start Game" button and set its click listener
-        val startGameButton = findViewById<Button>(R.id.btn_yes)
-        startGameButton.setOnClickListener {
-            // Start the game activity (replace with your desired action)
-            val intent = Intent(context, StartGameActivity::class.java)
-            context.startActivity(intent)
-            // Dismiss the popup window
-            dismiss()
-        }
-
-        val cancelButton = findViewById<Button>(R.id.btn_no)
-        cancelButton.setOnClickListener{
-            dismiss()
-        }
-
-        // Ensure that the popup window is not dismissed when clicking outside of it
-        setCanceledOnTouchOutside(false)
-    }
-}
 
 data class Leaderboard(val username: String, val score: Int)
