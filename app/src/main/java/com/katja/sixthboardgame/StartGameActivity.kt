@@ -71,9 +71,16 @@ class StartGameActivity : AppCompatActivity() {
         }
 
         userDao.fetchUserNames { names ->
-            userNameList = names
-            adapter.addAll(names ?: emptyList())
+            userNameList = names?.distinct() // Remove duplicates
+            Log.d("StartGameActivity", "Unique user names: $userNameList")
+            adapter.clear() // Clear existing data
+            userNameList?.let {
+                adapter.addAll(it)
+                Log.d("StartGameActivity", "Adapter populated with: $it")
+            }
         }
+
+
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
@@ -115,10 +122,14 @@ class StartGameActivity : AppCompatActivity() {
                 for (document in querySnapshot.documents) {
                     val fullName = document.getString("UserName")
                     val user2Id = document.getString("id")
-                    fullName?.let { usersList.add(it) }
-                    userMap[fullName] = user2Id
+                    if (!userMap.containsKey(fullName)) {
+                        fullName?.let { usersList.add(it) }
+                        userMap[fullName] = user2Id
+                    }
                 }
-                adapter.addAll(usersList)
+                adapter.clear() // Clear existing data
+                adapter.addAll(usersList.distinct()) // Add distinct names only
+                adapter.notifyDataSetChanged() // Notify adapter for changes
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(
