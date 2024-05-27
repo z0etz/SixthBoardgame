@@ -21,7 +21,8 @@ import kotlinx.coroutines.withContext
         private val context: Context,
         private val inviteList: MutableList<String>,
         private val receiverId: String,
-        private val onDeleteClickListener: (Int) -> Unit
+        private val onDeleteClickListener: (Int) -> Unit,
+        private val inviteDao: InviteDao = InviteDao()
     ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 
 
@@ -92,10 +93,14 @@ import kotlinx.coroutines.withContext
                 GameDao().addGame(currentUserId, receiverId)
                 // Close dialog
                 dialog.dismiss()
+                // Delete invite from Firebase (reversed order of id:s to make function work from receiver side)
+                inviteDao.deleteInvitation(receiverId, currentUserId)
             }
 
             buttonCancel.setOnClickListener {
                 dialog.dismiss()
+                // Delete invite from Firebase (reversed order of id:s to make function work from receiver side)
+                inviteDao.deleteInvitation(receiverId, currentUserId)
             }
 
             dialog.show()
