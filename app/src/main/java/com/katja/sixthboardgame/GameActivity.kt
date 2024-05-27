@@ -29,8 +29,6 @@ import java.util.Date
 
 class GameActivity : AppCompatActivity() {
 
-    //Hej
-
     private lateinit var binding: ActivityGameBinding
     private var gameBoardSize = 354
     private var screenWidth = 0
@@ -45,7 +43,6 @@ class GameActivity : AppCompatActivity() {
     private lateinit var game: Game
     private lateinit var gameId: String
     private lateinit var gameRef: DocumentReference
-    private var winnerId = "Unknown"
     private lateinit var auth: FirebaseAuth
     private var currentUserId: String? = null
     private var opponentId: String? = null
@@ -217,15 +214,15 @@ class GameActivity : AppCompatActivity() {
                                                 ?: DiscStack.DiscColor.GRAY
                                         val winnerColorString = winnerColor.name
                                         println("$winnerColorString won!")
-                                        winnerId =
+                                        game.winnerId =
                                             if (playerDiscColor == winnerColor) currentUserId ?: "Unknown"
                                             else game.playerIds.find { it != currentUserId } ?: "Unknown"
-                                        println("Winner id: $winnerId")
-                                        val looserId = game.playerIds.find { it != winnerId } ?: "Unknown"
+                                        println("Winner id: $game.winnerId")
+                                        val looserId = game.playerIds.find { it != game.winnerId } ?: "Unknown"
                                         println("Looser id: $looserId")
                                         game.gameEnded = true
                                         gameDao.updateGame(game)
-                                        viewModel.endGame(game.id, winnerId, looserId)
+                                        viewModel.endGame(game.id, game.winnerId, looserId)
                                         gameListener?.remove()
                                         finishTurn()
                                         stopTimer()
@@ -548,9 +545,9 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showGameEndDialogue() {
-        println("From showGameEndDialogue: WinnerId = $winnerId")
+        println("From showGameEndDialogue: WinnerId = $game.winnerId")
         val dialog = Dialog(this)
-        if (winnerId == currentUserId) {
+        if (game.winnerId == currentUserId) {
             val winDialogFragment = WinDialogFragment()
             winDialogFragment.show(supportFragmentManager, "WinDialogFragment")
         } else {
@@ -689,10 +686,10 @@ class GameActivity : AppCompatActivity() {
                 override fun onFinish() {
                     binding.timeLeft.text = "00:00:00"
                     val looserId = game.nextPlayer
-                    winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
+                    game.winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
                     game.gameEnded = true
                     gameDao.updateGame(game)
-                    viewModel.endGame(game.id, winnerId, looserId)
+                    viewModel.endGame(game.id, game.winnerId, looserId)
                     stopTimer()
                     showGameEndDialogue()
                 }
@@ -729,10 +726,10 @@ class GameActivity : AppCompatActivity() {
 
     private fun giveUp() {
         val looserId = currentUserId
-        winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
+        game.winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
         game.gameEnded = true
         gameDao.updateGame(game)
-        viewModel.endGame(game.id, winnerId, looserId?: "Unknown")
+        viewModel.endGame(game.id, game.winnerId, looserId?: "Unknown")
         stopTimer()
         showGameEndDialogue()
     }

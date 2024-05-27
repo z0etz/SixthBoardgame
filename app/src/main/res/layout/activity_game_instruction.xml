@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wooden_background"
-    tools:context=".GameInstructionActivity">
+    tools:context=".GameInstructionActivity"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_xl"
         android:text="@string/instructions"
@@ -20,33 +21,24 @@
         android:shadowDx="5"
         android:shadowDy="5"
         android:shadowRadius="8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center_horizontal"
+       />
 
     <LinearLayout
         android:id="@+id/backgroundTextView"
-        android:layout_width="@dimen/buttons_xl_width"
-        android:layout_height="@dimen/recycle_view_h"
-        android:layout_marginStart="@dimen/height_view_large"
-        android:layout_marginTop="@dimen/margin_end"
-        android:layout_marginEnd="@dimen/height_view_large"
-        android:layout_marginBottom="@dimen/buttons_xl_height"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_large"
         android:background="@drawable/background_list_item"
         android:elevation="@dimen/elevation_small"
         android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
             android:fontFamily="@font/inter_bold"
-            android:padding="@dimen/margin_xs"
+            android:layout_marginTop="@dimen/margin_medium"
             android:shadowColor="@color/red_light"
             android:shadowDx="2"
             android:shadowDy="2"
@@ -55,13 +47,20 @@
             android:textAlignment="center"
             android:textSize="@dimen/heading_small" />
 
-        <TextView
-            android:layout_width="@dimen/margin_end"
-            android:layout_height="@dimen/buttons_xl_width"
-            android:layout_margin="@dimen/margin_large"
-            android:fontFamily="@font/inter_bold"
-            android:text="@string/game_instructions"
-            android:textAlignment="center" />
+       <ScrollView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/margin_medium"
+               android:fontFamily="@font/inter_bold"
+               android:text="@string/game_instructions"
+               android:textAlignment="center" />
+
+       </ScrollView>
+
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
