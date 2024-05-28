@@ -60,9 +60,17 @@ android:orientation="vertical">
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/elevation_small"
     android:fontFamily="@font/inter_bold"
-    android:text="@string/opponents"
+    android:text="@string/opponent"
     android:textColor="@color/grey"
     android:textSize="@dimen/heading_small"/>
+    <TextView
+        android:id="@+id/selectedTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time between turns: "
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
 
 <LinearLayout

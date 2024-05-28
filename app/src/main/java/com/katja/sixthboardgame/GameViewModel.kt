@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import javax.security.auth.callback.Callback
 
 class GameViewModel {
+    //hej
 
     val gameDao = GameDao()
     val userDao = UserDao()
@@ -51,6 +52,6 @@ class GameViewModel {
                 }
             }
         }
-//        gameDao.removeGameFromFirebase(gameId)
+       gameDao.removeGameFromFirebase(gameId)
     }
 }

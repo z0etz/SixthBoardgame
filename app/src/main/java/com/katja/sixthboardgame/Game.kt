@@ -18,6 +18,11 @@ class Game() {
     var lastTurnTime = Date()
     var gameEnded = false
     var turnTime = 172800000 //Turn time in millis, defaulted to 48 hours
+
+    fun getTimeLeft(): Long {
+        val timeSinceLastTurn = Date().time - lastTurnTime.time
+        return turnTime - timeSinceLastTurn
+    }
 }
 
 //Separate game object needed to retrieve data from Firebase in order to decode game board as it contains nested arrays.

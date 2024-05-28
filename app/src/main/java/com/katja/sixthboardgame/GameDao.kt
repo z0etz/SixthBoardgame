@@ -27,6 +27,9 @@ class GameDao {
     fun addGame(currentUserId: String, receiverId: String) {
         val game = Game()
         game.playerIds = listOf(currentUserId, receiverId)
+        val playerIdsMutableList = game.playerIds.toMutableList()
+        playerIdsMutableList.shuffle()
+        game.playerIds = playerIdsMutableList
         game.nextPlayer = game.playerIds[0]
         updateGame(game)
         println("Timestamp: ${game.timestamp} Last turn time: ${game.lastTurnTime}")
@@ -93,7 +96,15 @@ class GameDao {
     }
 
 
-    fun removeGameFromFirebase(gameId: String, callback: GameDeletionCallback) {
+    fun removeGameFromFirebase(gameId: String, callback: GameDeletionCallback = object : GameDeletionCallback {
+        override fun onGameDeleted(success: Boolean) {
+            if (success) {
+                println("Game deleted successfully.")
+            } else {
+                println("Failed to delete game.")
+            }
+        }
+    }) {
         val gameRef = FirebaseFirestore.getInstance().collection("Games").document(gameId)
 
         // Verify if the document exists before attempting deletion

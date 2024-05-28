@@ -1,20 +1,45 @@
 package com.katja.sixthboardgame
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ListItemGameBinding
 
-class WelcomeAdapterCurrentGamesList(private val context: Context, private val dataList: List<String>, private val onItemClick: (String) -> Unit)  : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
+class WelcomeAdapterCurrentGamesList(private val context: Context, private val dataList: List<Game>, private val onItemClick: (String) -> Unit,private val fetchOpponentName: (String, (String) -> Unit) -> Unit)   : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
+
+    private var handler: Handler = Handler(Looper.getMainLooper())
+    private var runnable: Runnable
+
+    init {
+        runnable = object : Runnable {
+            override fun run() {
+                notifyDataSetChanged()  // This will refresh the RecyclerView each second
+                handler.postDelayed(this, 1000)
+            }
+        }
+        handler.postDelayed(runnable, 1000)
+    }
 
     // ViewHolder class to hold references to the views in the item layout using View Binding
     class ViewHolder(private val binding: ListItemGameBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(context: Context, data: String, onItemClick: (String) -> Unit) {
-            binding.gamelistOpponent.text = context.getString(R.string.opponent_not_loaded)
-            binding.gamelistTimeLeft.text = context.getString(R.string.time_not_loaded)
+        fun bind(context: Context, game: Game, onItemClick: (String) -> Unit, fetchOpponentName: (String, (String) -> Unit) -> Unit) {
+            val opponentId = game.playerIds.firstOrNull { it != FirebaseAuth.getInstance().currentUser?.uid } ?: "Unknown"
+            fetchOpponentName(opponentId) { opponentName ->
+                binding.gamelistOpponent.text = opponentName
+            }
+
+            val timeLeft = game.getTimeLeft()
+            val hours = timeLeft / (1000 * 60 * 60)
+            val minutes = (timeLeft % (1000 * 60 * 60)) / (1000 * 60)
+            val seconds = (timeLeft % (1000 * 60)) / 1000
+            binding.gamelistTimeLeft.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+
             itemView.setOnClickListener {
-                onItemClick(data)
+                onItemClick(game.id)
             }
         }
     }
@@ -25,10 +50,14 @@ class WelcomeAdapterCurrentGamesList(private val context: Context, private val d
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(context, dataList[position], onItemClick)
+        holder.bind(context, dataList[position], onItemClick, fetchOpponentName)
     }
 
     override fun getItemCount(): Int {
         return dataList.size
+    }
+
+    fun stopUpdating() {
+        handler.removeCallbacks(runnable)
     }
 }
