@@ -17,7 +17,7 @@ import com.katja.sixthboardgame.StartGameActivity
 
 object PopupUtils {
 
-    var selectedTime: Int = 24
+    var selectedTime: Int = 24 * 3600
 
     fun showPopup(
         context: Context,
@@ -31,12 +31,15 @@ object PopupUtils {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_time_choice, null)
         val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
         val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
-        selectedTimeTextView.text = "$selectedTime hours"
+
+        // Convert seconds to hours for display
+        selectedTimeTextView.text = "${selectedTime / 3600} hours"
 
         timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                selectedTime = progress
-                selectedTimeTextView.text = "$selectedTime hours"
+                // Convert hours (progress) to seconds
+                selectedTime = progress * 3600
+                selectedTimeTextView.text = "$progress hours"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
