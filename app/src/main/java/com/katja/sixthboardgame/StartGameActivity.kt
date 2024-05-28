@@ -8,6 +8,7 @@ import android.view.View.OnClickListener
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -80,8 +81,6 @@ class StartGameActivity : AppCompatActivity() {
             }
         }
 
-
-
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
             getReceiverId(selectedUser) // Update receiverId
@@ -97,7 +96,7 @@ class StartGameActivity : AppCompatActivity() {
                     } ?: run {
                         Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
                     }
-                    // line below is the culprit to the infamous bugg of the showing sender.
+                    // line below is the culprit to the infamous bug of showing sender.
                     // selectedUsersList.add(selectedUser)
                     pendingInviteAdapter.notifyDataSetChanged()
                 }
@@ -106,6 +105,20 @@ class StartGameActivity : AppCompatActivity() {
             }
         }
 
+        // Initialize time slider and text view
+        val timeSlider = findViewById<SeekBar>(R.id.timeSlider)
+        val selectedTimeTextView = findViewById<TextView>(R.id.selectedTimeTextView)
+        val selectedTime: Int = 24
+
+        timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                selectedTimeTextView.text = "$progress hours"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
 
         getAllUsers()
     }
