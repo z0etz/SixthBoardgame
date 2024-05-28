@@ -29,6 +29,8 @@ class HighscoreActivity : AppCompatActivity() {
     private var selectedUsersList = mutableListOf<String>()
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
     private val userMap = mutableMapOf<String?, String?>()
+    private val inviteDao = InviteDao() // Initialize InviteDao instance
+    private val gameDao = GameDao() // Initialize GameDao instance
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,23 +41,32 @@ class HighscoreActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
 
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
-            val receiverName = selectedUsersList[position]
-            val receiverId = userMap[receiverName]
-            receiverId?.let {
-            }
-        }
+        pendingInviteAdapter = PendingInviteAdapter(
+            this,
+            selectedUsersList,
+            receiverId ?: "",
+            onDeleteClickListener = { position ->
+                val receiverName = selectedUsersList[position]
+                val receiverId = userMap[receiverName]
+                receiverId?.let {
+                    // Your logic here
+                }
+            },
+            inviteDao = inviteDao, // Pass the instance of InviteDao
+            userDao = userDao, // Pass the instance of UserDao
+            gameDao = gameDao // Pass the instance of GameDao
+        )
         getAllUsers()
 
-        leaderboardAdapter = LeaderboardAdapter(emptyList()) { selectedUser ->
-            showPopup(selectedUser)
-        }
+        leaderboardAdapter = LeaderboardAdapter(emptyList())
         binding.recyclerViewHighscore.adapter = leaderboardAdapter
         binding.recyclerViewHighscore.layoutManager = LinearLayoutManager(this)
 
         fetchAndDisplayLeaderboard()
-
     }
+
+
+
 
     private var selectedTime: Int = 24
 
@@ -87,7 +98,7 @@ class HighscoreActivity : AppCompatActivity() {
             Log.d("ShowPopup", "User clicked Yes to send invitation.")
             Log.d("ShowPopup", "Selected user: $selectedUser")
             Log.d("ShowPopup", "UserMap: $userMap")
-            val receiverId = Utils.getReceiverId(selectedUser, userMap)
+            val receiverId = com.katja.sixthboardgame.Utils.getReceiverId(selectedUser, userMap)
             Log.d("ShowPopup", "Receiver ID: $receiverId")
             if (receiverId != null) {
                 Log.d("ShowPopup", "Receiver ID found: $receiverId")
