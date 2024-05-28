@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.withContext
 
 class PendingInviteAdapter(
@@ -96,36 +97,59 @@ class PendingInviteAdapter(
         val currentUserId = currentUser?.uid
 
         if (currentUserId != null) {
-            val dialog = Dialog(context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setContentView(R.layout.activity_game_dialog)
+            // Fetch selectedTime from Firestore
+            fetchSelectedTimeFromFirebase(receiverId) { selectedTime ->
+                if (selectedTime != null) {
+                    val dialog = Dialog(context)
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog.setCancelable(false)
+                    dialog.setContentView(R.layout.activity_game_dialog)
 
-            val buttonContinue = dialog.findViewById<TextView>(R.id.textButtonContinue)
-            val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
+                    val buttonContinue = dialog.findViewById<TextView>(R.id.textButtonContinue)
+                    val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
-            buttonContinue.setOnClickListener {
-                Log.d("PendingInviteAdapter", "Continue button clicked: senderId = $senderId, receiverId = $receiverId")
-                // Create a new game and add it to Firestore (Parameters: senderId, receiverId)
-                gameDao.addGame(currentUserId, receiverId)
-                // Close dialog
-                dialog.dismiss()
-                // Delete invite from Firebase (Parameters: receiverId, senderId)
-                inviteDao.deleteInvitation(receiverId, currentUserId)
+                    buttonContinue.setOnClickListener {
+                        Log.d("PendingInviteAdapter", "Continue button clicked: senderId = $senderId, receiverId = $receiverId")
+                        // Create a new game and add it to Firestore (Parameters: senderId, receiverId, selectedTime)
+                        gameDao.addGame(currentUserId, receiverId, selectedTime)
+                        // Close dialog
+                        dialog.dismiss()
+                        // Delete invite from Firebase (Parameters: receiverId, senderId)
+                        inviteDao.deleteInvitation(receiverId, currentUserId)
+                    }
+
+                    buttonCancel.setOnClickListener {
+                        Log.d("PendingInviteAdapter", "Cancel button clicked: senderId = $senderId, receiverId = $receiverId")
+                        dialog.dismiss()
+                        // Delete invite from Firebase (Parameters: receiverId, senderId)
+                        inviteDao.deleteInvitation(receiverId, currentUserId)
+                    }
+
+                    dialog.show()
+                    Log.d("PendingInviteAdapter", "Game dialog shown: senderId = $senderId, receiverId = $receiverId")
+                } else {
+                    Toast.makeText(context, "Failed to fetch selected time", Toast.LENGTH_SHORT).show()
+                    Log.e("PendingInviteAdapter", "Failed to fetch selected time")
+                }
             }
-
-            buttonCancel.setOnClickListener {
-                Log.d("PendingInviteAdapter", "Cancel button clicked: senderId = $senderId, receiverId = $receiverId")
-                dialog.dismiss()
-                // Delete invite from Firebase (Parameters: receiverId, senderId)
-                inviteDao.deleteInvitation(receiverId, currentUserId)
-            }
-
-            dialog.show()
-            Log.d("PendingInviteAdapter", "Game dialog shown: senderId = $senderId, receiverId = $receiverId")
         } else {
             Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
             Log.e("PendingInviteAdapter", "Current user ID is null")
+        }
+    }
+
+    private fun fetchSelectedTimeFromFirebase(receiverId: String, callback: (Int?) -> Unit) {
+        val invitationsRef = FirebaseFirestore.getInstance().collection("game_invitations")
+        invitationsRef.whereEqualTo("receiverId", receiverId).get().addOnSuccessListener { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                val document = querySnapshot.documents[0] // Assuming one invite per receiver
+                val selectedTime = document.getLong("selectedTime")?.toInt()
+                callback(selectedTime)
+            } else {
+                callback(null)
+            }
+        }.addOnFailureListener {
+            callback(null)
         }
     }
 

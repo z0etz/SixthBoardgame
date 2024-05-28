@@ -24,15 +24,15 @@ class GameDao {
 
     private val db = FirebaseFirestore.getInstance()
 
-    fun addGame(currentUserId: String, receiverId: String) {
+    fun addGame(currentUserId: String, receiverId: String, turnTime: Int) {
         val game = Game()
         game.playerIds = listOf(currentUserId, receiverId)
         val playerIdsMutableList = game.playerIds.toMutableList()
         playerIdsMutableList.shuffle()
         game.playerIds = playerIdsMutableList
         game.nextPlayer = game.playerIds[0]
+        game.turnTime = turnTime // Set the turn time
         updateGame(game)
-        println("Timestamp: ${game.timestamp} Last turn time: ${game.lastTurnTime}")
     }
 
     fun updateGame(game: Game) {
