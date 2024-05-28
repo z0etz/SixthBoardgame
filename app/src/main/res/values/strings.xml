@@ -82,6 +82,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="add_player">Add Player</string>
+    <string name="add_game">Add Game</string>
     <string name="invited_by">Invite from   %s</string>
     <string name="score">Score:</string>
 </resources>

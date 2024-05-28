@@ -60,7 +60,7 @@
         android:fontFamily="@font/inter_bold"
         android:gravity="center"
         android:elevation="@dimen/elevation_small"
-        android:text="@string/add_player"
+        android:text="@string/add_game"
         android:textColor="@color/white" />
 
     <TextView
