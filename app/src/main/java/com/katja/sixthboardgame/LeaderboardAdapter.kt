@@ -15,54 +15,46 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 
-class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
+class LeaderboardAdapter(
+    private var highscores: List<Leaderboard>,
+    private val context: Context,
+    private val firebaseAuth: FirebaseAuth,
+    private val userMap: Map<String?, String?>,
+    private val invitationsCollection: CollectionReference,
+    private val selectedUsersList: MutableList<String>,
+    private val pendingInviteAdapter: PendingInviteAdapter
+) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val positionTextView: TextView = itemView.findViewById(R.id.scoreboard_position)
         val usernameTextView: TextView = itemView.findViewById(R.id.scoreboard_username)
         val scoreTextView: TextView = itemView.findViewById(R.id.scoreboard_score)
 
-        private var alertDialog: AlertDialog? = null
         init {
-            // Set click listener for itemView
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val leaderboard = highscores[position]
+                val selectedUser = leaderboard.username
 
-            val context = view.context
-
-           // val builder = AlertDialog.Builder(context)
-           // val dialogView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
-           // builder.setView(dialogView)
-           // alertDialog = builder.create()
-
-           // alertDialog?.show()
-
-           // val popupView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
-           // val popupWindow = PopupWindow(
-           //     popupView,
-           //     ViewGroup.LayoutParams.WRAP_CONTENT,
-           //     ViewGroup.LayoutParams.WRAP_CONTENT,
-           //     false
-           // )
-
-           // popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-           // popupWindow.showAtLocation(itemView, Gravity.CENTER, 0,0)
-
-
-            //val intent = Intent(context, StartGameActivity::class.java)
-            //context.startActivity(intent)
-
-            val popupWindow = CustomPopupWindow(context)
-            popupWindow.show()
+                PopupUtils.showPopup(
+                    context,
+                    selectedUser,
+                    userMap,
+                    firebaseAuth,
+                    invitationsCollection,
+                    selectedUsersList,
+                    pendingInviteAdapter
+                )
+            }
         }
     }
-
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_score, parent, false)
@@ -110,6 +102,7 @@ class CustomPopupWindow(context: Context) : Dialog(context) {
         // Ensure that the popup window is not dismissed when clicking outside of it
         setCanceledOnTouchOutside(false)
     }
+
 }
 
 data class Leaderboard(val username: String, val score: Int)

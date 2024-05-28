@@ -1,11 +1,16 @@
 package com.katja.sixthboardgame
 
+
+import android.app.Activity;
+import android.app.AlertDialog
+
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -101,82 +106,34 @@ class StartGameActivity : AppCompatActivity() {
             }
         }
 
-
-
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
-            getReceiverId(selectedUser) // Update receiverId
+            val receiverId = getReceiverId(selectedUser) // Update receiverId
             val senderId = firebaseAuth.currentUser?.uid
 
-            if (senderId != null) {
-                if (receiverId == senderId) {
-                    Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
-                } else {
-                    receiverId?.let {
-                        val inviteId = invitationsCollection.document().id
-                        inviteDao.sendInvitation(senderId, receiverId ?: "Unknown", inviteId) { invitationData ->
-                            // Convert invitationData to Invite object
-                            val invite = Invite(
-                                inviteId = invitationData[inviteDao.INVITE_ID_KEY] as String,
-                                senderId = invitationData[inviteDao.SENDER_ID_KEY] as String,
-                                receiverId = invitationData[inviteDao.RECEIVER_ID_KEY] as String,
-                                status = invitationData[inviteDao.STATUS_KEY] as String
-                            )
 
-                            // Add invite to inviteMap
-                            inviteMap[inviteId] = invite
-                            }
-                        } ?: run {
-                        Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-                    }
-                    // line below is the culprit to the infamous bug of the showing sender.
-                    // selectedUsersList.add(selectedUser)
-                    pendingInviteAdapter.notifyDataSetChanged()
-                }
+            if (senderId != null && receiverId != null && senderId != receiverId) {
+                PopupUtils.showPopup(
+                    this,
+                    selectedUser,
+                    userMap,
+                    firebaseAuth,
+                    invitationsCollection,
+                    selectedUsersList,
+                    pendingInviteAdapter
+                )
+            
             } else {
-                Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
             }
         }
 
-
         getAllUsers()
-    }
+    } 
 
-   private fun showSentInviteDialog(inviteId: String) {
-       println("Clicked inviteId: $inviteId")
-       println("Invite details: ${inviteMap[inviteId]}")
-
-       val invite = inviteMap[inviteId]
-
-       if (invite != null) {
-           val dialog = Dialog(this)
-           dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-           dialog.setCancelable(false)
-           dialog.setContentView(R.layout.activity_cancel_invite)
-
-           val buttonDelete = dialog.findViewById<TextView>(R.id.textButtonDelete)
-           val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
-
-           buttonDelete.setOnClickListener {
-               // Handle deletion logic here
-               deleteInvite(invite.senderId, invite.receiverId)
-               dialog.dismiss()
-           }
-
-           buttonCancel.setOnClickListener {
-               dialog.dismiss()
-           }
-
-           dialog.show()
-       } else {
-           // Logging: Print message if invite not found
-           Log.d("InviteDialog", "Invite not found for inviteId: $inviteId")
-           Toast.makeText(this, "Invite not found", Toast.LENGTH_SHORT).show()
-       }
-   }
-
-    private fun getReceiverId(selectedUser: String) {
+   private fun getReceiverId(selectedUser: String) {
         receiverId = userMap[selectedUser]
+
     }
 
     private fun getAllUsers() {

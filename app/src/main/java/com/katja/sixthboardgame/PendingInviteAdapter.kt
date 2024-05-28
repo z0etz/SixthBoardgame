@@ -19,7 +19,8 @@ class PendingInviteAdapter(
     private val receiverId: String,
     private val onDeleteClickListener: (Int) -> Unit,
     private val inviteDao: InviteDao = InviteDao(),
-    private val userDao: UserDao = UserDao()
+    private val userDao: UserDao = UserDao(),
+    private val gameDao: GameDao = GameDao() // Add GameDao dependency
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
@@ -76,12 +77,6 @@ class PendingInviteAdapter(
         notifyDataSetChanged()
     }
 
-    private fun openGame(gameId: String) {
-        val intent = Intent(context, GameActivity::class.java)
-        intent.putExtra("GAME_ID", gameId)
-        context.startActivity(intent)
-    }
-
     private fun showGameDialog(senderId: String, receiverId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val currentUserId = currentUser?.uid
@@ -96,24 +91,24 @@ class PendingInviteAdapter(
             val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
             buttonContinue.setOnClickListener {
-                // Create a new a new game and add it to Firestore
-                GameDao().addGame(currentUserId, receiverId)
+                // Create a new game and add it to Firestore (Parameters: senderId, receiverId)
+                gameDao.addGame(currentUserId, receiverId)
                 // Close dialog
                 dialog.dismiss()
-                // Delete invite from Firebase (reversed order of id:s to make function work from receiver side)
+                // Delete invite from Firebase (Parameters: receiverId, senderId)
                 inviteDao.deleteInvitation(receiverId, currentUserId)
             }
 
             buttonCancel.setOnClickListener {
                 dialog.dismiss()
-                // Delete invite from Firebase (reversed order of id:s to make function work from receiver side)
+                // Delete invite from Firebase (Parameters: receiverId, senderId)
                 inviteDao.deleteInvitation(receiverId, currentUserId)
             }
 
             dialog.show()
         } else {
-
             Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
         }
     }
 }
+
