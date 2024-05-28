@@ -16,6 +16,7 @@ import com.katja.sixthboardgame.databinding.ActivityHighscoreBinding
 
 
 class HighscoreActivity : AppCompatActivity() {
+    //he hee
 
     lateinit var binding: ActivityHighscoreBinding
     private lateinit var firestore: FirebaseFirestore
