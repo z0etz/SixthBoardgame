@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.katja.sixthboardgame.PopupUtils.selectedTime
 import kotlinx.coroutines.withContext
 
 class PendingInviteAdapter(
@@ -37,13 +38,15 @@ class PendingInviteAdapter(
         // Fetch username corresponding to the sender ID
         userDao.fetchUsernameById(senderId) { username ->
             if (!username.isNullOrEmpty()) {
-                holder.bind(username) // Bind username to the view holder
+                // Assuming you have access to selectedTime here
+                holder.bind(username, selectedTime) // Pass selectedTime when binding
             } else {
                 // if no playerName or null
-                holder.bind("Unknown")
+                holder.bind("Unknown", selectedTime) // Pass selectedTime when binding
             }
         }
     }
+
 
     override fun getItemCount(): Int {
         return inviteList.size
@@ -59,21 +62,21 @@ class PendingInviteAdapter(
                     showGameDialog(receiverId, inviteList[position])
                 }
             }
-        }
 
-        init {
             itemView.setOnLongClickListener {
                 onDeleteClickListener(adapterPosition)
                 true
             }
         }
 
-        fun bind(playerName: String) {
-            // set the sender name from the playerName and display it as "Invite from [senderName]"
-            val senderName = context.getString(R.string.invited_by, playerName)
-            playerNameTextView.text = senderName
+        fun bind(playerName: String, selectedTime: Int) {
+            // set the sender name from the playerName and display it as "Invite from [senderName] [selectedTime]"
+            val senderName = itemView.context.getString(R.string.invited_by, playerName)
+            val displayText = "$senderName $selectedTime"
+            playerNameTextView.text = displayText
         }
     }
+
 
     fun updateInvitationsList(newInvites: List<String>) {
         inviteList.clear()

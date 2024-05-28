@@ -3,6 +3,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.katja.sixthboardgame.PopupUtils.selectedTime
 
 class InviteDao {
 
@@ -11,6 +12,7 @@ class InviteDao {
     val INVITE_ID_KEY = "inviteId"
     val SENDER_ID_KEY = "senderId"
     val RECEIVER_ID_KEY = "receiverId"
+    val SELECTED_TIME_KEY = "selectedTime"
     val STATUS_KEY = "status"
 
     fun sendInvitation(senderId: String, receiverId: String, inviteId: String, callback: (Map<String, Any>) -> Unit) {
@@ -18,6 +20,7 @@ class InviteDao {
             INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
+            SELECTED_TIME_KEY to selectedTime, // Add turn time to the invitation data
             STATUS_KEY to "pending"
         )
 
@@ -31,9 +34,10 @@ class InviteDao {
                 callback(invitationData)
             }
             .addOnFailureListener { e ->
-                // Hantera eventuellt fel vid skickning av inbjudning här
+                // Handle any errors that occur while sending the invitation here
             }
     }
+
     // Metod för att lyssna på inkommande spelinbjudningar för en specifik användare
     fun listenForInvitations(receiverId: String, listener: (List<Map<String, Any>>) -> Unit) {
         invitationsCollection
