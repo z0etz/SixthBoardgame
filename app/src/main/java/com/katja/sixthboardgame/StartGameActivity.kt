@@ -200,6 +200,21 @@ class StartGameActivity : AppCompatActivity() {
                     ).show()
                 }
 
+
+                adapter.clear() // clear old data
+                adapter.addAll(usersList.distinct()) // Add actual names with specific id
+                adapter.notifyDataSetChanged() // Notify adapter for changes
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(
+                    this,
+                    "Failed to fetch users: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+
         }
 
         private fun processInvitations(invitations: List<Map<String, Any>>) {

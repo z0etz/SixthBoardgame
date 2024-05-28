@@ -26,6 +26,7 @@ class PendingInviteAdapter(
     private val userDao: UserDao = UserDao()
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 
+    //fix
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
         return InviteViewHolder(view)
