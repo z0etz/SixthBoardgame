@@ -1,20 +1,8 @@
 package com.katja.sixthboardgame;
 
-import android.app.Activity;
-import android.app.Dialog
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.text.Html
-import android.text.SpannableStringBuilder
 import android.util.Log
-import android.view.View.OnClickListener
-import android.view.Window
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.RadioGroup
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +12,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
-import android.widget.SeekBar.OnSeekBarChangeListener
 
 
 class StartGameActivity : AppCompatActivity() {
@@ -50,6 +37,7 @@ class StartGameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStartGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         firebaseAuth = Firebase.auth
         userDao = UserDao()
@@ -106,6 +94,7 @@ class StartGameActivity : AppCompatActivity() {
         })
 
         getAllUsers()
+
     }
 
     private var selectedTime: Int = 24
@@ -138,14 +127,14 @@ class StartGameActivity : AppCompatActivity() {
                 if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, it.toString(), inviteId)
+                    selectedUsersList.add(selectedUser)
+                    pendingInviteAdapter.notifyDataSetChanged()
                 } else {
                     Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
                 }
             } ?: run {
                 Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
             }
-            selectedUsersList.add(selectedUser)
-            pendingInviteAdapter.notifyDataSetChanged()
         }
 
         builder.setNegativeButton("No") { dialog, which ->
@@ -156,15 +145,13 @@ class StartGameActivity : AppCompatActivity() {
     }
 
     private fun endGameDueToTimeout() {
-        // Implementera logiken för att avsluta spelet på grund av tidsgränsen här
-        // T.ex. visa ett meddelande för användaren och stänga aktiviteten
-        Toast.makeText(this, "Spelet har avslutats på grund av inaktivitet", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "The game has ended due to inactivity", Toast.LENGTH_SHORT).show()
         finish()
     }
 
 
-    private fun getReceiverId(selectedUser: String) {
-            receiverId = userMap[selectedUser]
+    private fun getReceiverId(selectedUser: String): String? {
+            return  userMap[selectedUser]
         }
 
         private fun getAllUsers() {
@@ -245,10 +232,6 @@ class StartGameActivity : AppCompatActivity() {
             super.onResume()
             autoCompleteTextView.setText("")
         }
-    }
-
-    private fun getReceiverId(selectedUser: String): Any {
-        return "recieverId"
     }
 
 

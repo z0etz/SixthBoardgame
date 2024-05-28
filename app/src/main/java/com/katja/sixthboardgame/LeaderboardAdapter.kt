@@ -16,7 +16,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.RecyclerView
 
-class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
+class LeaderboardAdapter(private var highscores: List<Leaderboard>, private val onUserClick: (String) -> Unit) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
+
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val positionTextView: TextView = itemView.findViewById(R.id.scoreboard_position)
@@ -31,52 +33,9 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
 
         override fun onClick(v: View?) {
             val selectedUser = highscores[adapterPosition].username
-            showPopup(view.context, selectedUser)
+            onUserClick(selectedUser)
+
         }
-
-        private fun showPopup(context: Context, selectedUser: String) {
-            AlertDialog.Builder(context)
-                .setTitle("Invite")
-                .setMessage("Do you want to challenge $selectedUser")
-                .setPositiveButton("Yes") { dialog, which ->
-
-
-                }
-                .setNegativeButton("No") { dialog, which ->
-                    dialog.dismiss()
-
-                }
-                .show()
-        }
-
-       // override fun onClick(view: View) {
-
-        //    val context = view.context
-
-           // val builder = AlertDialog.Builder(context)
-           // val dialogView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
-           // builder.setView(dialogView)
-           // alertDialog = builder.create()
-
-           // alertDialog?.show()
-
-           // val popupView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
-           // val popupWindow = PopupWindow(
-           //     popupView,
-           //     ViewGroup.LayoutParams.WRAP_CONTENT,
-           //     ViewGroup.LayoutParams.WRAP_CONTENT,
-           //     false
-           // )
-
-           // popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-           // popupWindow.showAtLocation(itemView, Gravity.CENTER, 0,0)
-
-
-            //val intent = Intent(context, StartGameActivity::class.java)
-            //context.startActivity(intent)
-
-//        }
     }
 
 
