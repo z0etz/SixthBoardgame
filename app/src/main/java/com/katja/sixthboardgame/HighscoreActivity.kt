@@ -69,7 +69,7 @@ class HighscoreActivity : AppCompatActivity() {
 
 
     private var selectedTime: Int = 24
-
+//he hee
     private fun showPopup(selectedUser: String) {
         Log.d("ShowPopup", "Showing popup for $selectedUser")
 
