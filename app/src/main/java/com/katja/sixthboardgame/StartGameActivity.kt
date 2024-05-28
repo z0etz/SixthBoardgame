@@ -33,6 +33,8 @@ class StartGameActivity : AppCompatActivity() {
         FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
 
+    // push
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartGameBinding.inflate(layoutInflater)
