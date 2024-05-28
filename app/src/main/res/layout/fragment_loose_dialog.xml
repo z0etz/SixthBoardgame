@@ -67,7 +67,7 @@
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:layout_marginTop="@dimen/margin_large"
-            android:background="@drawable/gradient_button_red"
+            android:background="@drawable/gradient_button_green"
             android:fontFamily="@font/inter_semibold"
             android:gravity="center"
             android:text="@string/accept"
