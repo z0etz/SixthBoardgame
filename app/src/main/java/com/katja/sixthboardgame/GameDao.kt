@@ -27,6 +27,9 @@ class GameDao {
     fun addGame(currentUserId: String, receiverId: String) {
         val game = Game()
         game.playerIds = listOf(currentUserId, receiverId)
+        val playerIdsMutableList = game.playerIds.toMutableList()
+        playerIdsMutableList.shuffle()
+        game.playerIds = playerIdsMutableList
         game.nextPlayer = game.playerIds[0]
         updateGame(game)
         println("Timestamp: ${game.timestamp} Last turn time: ${game.lastTurnTime}")
