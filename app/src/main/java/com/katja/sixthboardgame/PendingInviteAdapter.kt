@@ -27,7 +27,7 @@ class PendingInviteAdapter(
     private val receiverId: String,
     private val onDeleteClickListener: (Int) -> Unit,
     private val inviteDao: InviteDao = InviteDao(),
-    var selectedTime: Int = 24 * 3600,
+    var selectedSliderTime: Int = 24 * 3600,
     private val userDao: UserDao = UserDao(),
     private val gameDao: GameDao = GameDao() // Add GameDao dependency
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
@@ -81,7 +81,7 @@ class PendingInviteAdapter(
             val senderName = itemView.context.getString(R.string.invited_by, playerName)
             val displayText = "$senderName "
             playerNameTextView.text = displayText
-            Log.d("PendingInviteAdapter", "Binding player name: $playerName with selected time: $selectedTime")
+            Log.d("PendingInviteAdapter", "Binding player name: $playerName")
         }
     }
 
@@ -97,9 +97,11 @@ class PendingInviteAdapter(
         val currentUserId = currentUser?.uid
 
         if (currentUserId != null) {
+            Log.d("PendingInviteAdapter", "Fetching selected time from Firestore for senderId = $senderId, receiverId = $receiverId")
             // Fetch selectedTime from Firestore
-            fetchSelectedTimeFromFirebase(receiverId) { selectedTime ->
+            fetchSelectedTimeFromFirebase(receiverId, currentUserId) { selectedTime ->
                 if (selectedTime != null) {
+                    Log.d("PendingInviteAdapter", "Fetched selected time: $selectedTime")
                     val dialog = Dialog(context)
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                     dialog.setCancelable(false)
@@ -138,20 +140,39 @@ class PendingInviteAdapter(
         }
     }
 
-    private fun fetchSelectedTimeFromFirebase(receiverId: String, callback: (Int?) -> Unit) {
+    private fun fetchSelectedTimeFromFirebase(senderId: String, receiverId: String, callback: (Int?) -> Unit) {
         val invitationsRef = FirebaseFirestore.getInstance().collection("game_invitations")
-        invitationsRef.whereEqualTo("receiverId", receiverId).get().addOnSuccessListener { querySnapshot ->
-            if (!querySnapshot.isEmpty) {
-                val document = querySnapshot.documents[0] // Assuming one invite per receiver
-                val selectedTime = document.getLong("selectedTime")?.toInt()
-                callback(selectedTime)
-            } else {
+        Log.d("PendingInviteAdapter", "Querying Firestore for senderId = $senderId and receiverId = $receiverId")
+
+        // Add a check to log the actual documents in the collection
+        invitationsRef.get().addOnSuccessListener { querySnapshot ->
+            Log.d("PendingInviteAdapter", "Total documents in game_invitations: ${querySnapshot.documents.size}")
+            for (document in querySnapshot.documents) {
+                Log.d("PendingInviteAdapter", "Document ID: ${document.id}, Data: ${document.data}")
+            }
+        }
+
+        invitationsRef
+            .whereEqualTo("senderId", senderId)
+            .whereEqualTo("receiverId", receiverId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                Log.d("PendingInviteAdapter", "Query successful: ${querySnapshot.documents.size} documents found")
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents[0] // Assuming one invite per sender-receiver pair
+                    val selectedTime = document.getLong("selectedTime")?.toInt()
+                    Log.d("PendingInviteAdapter", "Selected time fetched: $selectedTime")
+                    callback(selectedTime)
+                } else {
+                    Log.d("PendingInviteAdapter", "No documents found for the given senderId and receiverId")
+                    callback(null)
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("PendingInviteAdapter", "Error fetching documents: ${exception.message}")
                 callback(null)
             }
-        }.addOnFailureListener {
-            callback(null)
-        }
     }
+
 
     fun showPopup(
         context: Context,
@@ -167,12 +188,12 @@ class PendingInviteAdapter(
         val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
 
         // Convert seconds to hours for display
-        selectedTimeTextView.text = "${selectedTime / 3600} hours"
+        selectedTimeTextView.text = "${selectedSliderTime / 3600000} hours"
 
         timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 // Convert hours (progress) to seconds
-                selectedTime = progress * 3600
+                selectedSliderTime = progress * 3600000
                 selectedTimeTextView.text = "$progress hours"
             }
 
@@ -193,7 +214,7 @@ class PendingInviteAdapter(
                 if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, receiverId, inviteId,
-                        selectedTime) { invitationData ->
+                        selectedSliderTime) { invitationData ->
                         // Handle the callback here, for example, you might want to update UI or log information
                         pendingInviteAdapter.notifyDataSetChanged()
                     }
@@ -211,5 +232,8 @@ class PendingInviteAdapter(
 
         builder.show()
     }
+
 }
+
+
 
