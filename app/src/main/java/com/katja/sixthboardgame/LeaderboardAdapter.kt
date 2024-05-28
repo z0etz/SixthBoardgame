@@ -15,8 +15,18 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 
-class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
+class LeaderboardAdapter(
+    private var highscores: List<Leaderboard>,
+    private val context: Context,
+    private val firebaseAuth: FirebaseAuth,
+    private val userMap: Map<String?, String?>,
+    private val invitationsCollection: CollectionReference,
+    private val selectedUsersList: MutableList<String>,
+    private val pendingInviteAdapter: PendingInviteAdapter
+) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val positionTextView: TextView = itemView.findViewById(R.id.scoreboard_position)
@@ -24,29 +34,27 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
         val scoreTextView: TextView = itemView.findViewById(R.id.scoreboard_score)
 
         init {
-            // Set click listener for itemView
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
-            val context = view.context
-
-            // Get the position of the clicked item
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 val leaderboard = highscores[position]
-                // Get the username of the clicked item
                 val selectedUser = leaderboard.username
 
-                // Show the custom popup window
-                val popupWindow = CustomPopupWindow(context)
-                popupWindow.show()
+                PopupUtils.showPopup(
+                    context,
+                    selectedUser,
+                    userMap,
+                    firebaseAuth,
+                    invitationsCollection,
+                    selectedUsersList,
+                    pendingInviteAdapter
+                )
             }
         }
     }
-
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_score, parent, false)

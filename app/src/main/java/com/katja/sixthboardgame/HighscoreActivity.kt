@@ -24,13 +24,12 @@ class HighscoreActivity : AppCompatActivity() {
     private var receiverId: String? = null
     private lateinit var leaderboardAdapter: LeaderboardAdapter
     private lateinit var firebaseAuth: FirebaseAuth
-    private val invitationsCollection =
-        FirebaseFirestore.getInstance().collection("game_invitations")
+    private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
     private var selectedUsersList = mutableListOf<String>()
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
     private val userMap = mutableMapOf<String?, String?>()
-    private val inviteDao = InviteDao() // Initialize InviteDao instance
-    private val gameDao = GameDao() // Initialize GameDao instance
+    private val inviteDao = InviteDao()
+    private val gameDao = GameDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,16 +48,24 @@ class HighscoreActivity : AppCompatActivity() {
                 val receiverName = selectedUsersList[position]
                 val receiverId = userMap[receiverName]
                 receiverId?.let {
-                    // Your logic here
+                    // Handle delete invite here if needed
                 }
             },
-            inviteDao = inviteDao, // Pass the instance of InviteDao
-            userDao = userDao, // Pass the instance of UserDao
-            gameDao = gameDao // Pass the instance of GameDao
+            inviteDao = inviteDao,
+            userDao = userDao,
+            gameDao = gameDao
         )
         getAllUsers()
 
-        leaderboardAdapter = LeaderboardAdapter(emptyList())
+        leaderboardAdapter = LeaderboardAdapter(
+            emptyList(),
+            this,
+            firebaseAuth,
+            userMap,
+            invitationsCollection,
+            selectedUsersList,
+            pendingInviteAdapter
+        )
         binding.recyclerViewHighscore.adapter = leaderboardAdapter
         binding.recyclerViewHighscore.layoutManager = LinearLayoutManager(this)
 
@@ -69,63 +76,7 @@ class HighscoreActivity : AppCompatActivity() {
 
 
     private var selectedTime: Int = 24
-//he hee
-    private fun showPopup(selectedUser: String) {
-        Log.d("ShowPopup", "Showing popup for $selectedUser")
 
-        val dialogView = layoutInflater.inflate(R.layout.dialog_time_choice, null)
-        val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
-        val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
-        selectedTimeTextView.text = "$selectedTime hours"
-
-        timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                selectedTime = progress
-                selectedTimeTextView.text = "$selectedTime hours"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("INVITE")
-        builder.setMessage("Do you want to challenge $selectedUser?")
-        builder.setView(dialogView)
-
-        builder.setPositiveButton("Yes") { dialog, which ->
-            Log.d("ShowPopup", "User clicked Yes to send invitation.")
-            Log.d("ShowPopup", "Selected user: $selectedUser")
-            Log.d("ShowPopup", "UserMap: $userMap")
-            val receiverId = com.katja.sixthboardgame.Utils.getReceiverId(selectedUser, userMap)
-            Log.d("ShowPopup", "Receiver ID: $receiverId")
-            if (receiverId != null) {
-                Log.d("ShowPopup", "Receiver ID found: $receiverId")
-                val senderId = firebaseAuth.currentUser?.uid
-                if (senderId != null) {
-                    Log.d("ShowPopup", "Sender ID found: $senderId")
-                    val inviteId = invitationsCollection.document().id
-                    InviteDao().sendInvitation(senderId, receiverId, inviteId)
-                    selectedUsersList.add(selectedUser)
-                    pendingInviteAdapter.notifyDataSetChanged()
-                } else {
-                    Log.e("ShowPopup", "Sender ID is null")
-                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Log.e("ShowPopup", "Receiver ID not found")
-                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        builder.setNegativeButton("No") { dialog, which ->
-            Log.d("ShowPopup", "User clicked No.")
-            dialog.dismiss()
-        }
-
-        builder.show()
-    }
 
     private fun getReceiverId(selectedUser: String): String? {
         return userMap[selectedUser]

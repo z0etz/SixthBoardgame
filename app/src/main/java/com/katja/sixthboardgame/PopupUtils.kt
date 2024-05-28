@@ -16,11 +16,22 @@ import com.katja.sixthboardgame.R
 import com.katja.sixthboardgame.StartGameActivity
 
 object PopupUtils {
-    fun showPopup(context: Context, selectedUser: String, userMap: Map<String?, String?>, firebaseAuth: FirebaseAuth, invitationsCollection: CollectionReference, pendingInviteAdapter: PendingInviteAdapter, selectedUsersList: MutableList<String>) {
+
+    var selectedTime: Int = 24
+
+    fun showPopup(
+        context: Context,
+        selectedUser: String,
+        userMap: Map<String?, String?>,
+        firebaseAuth: FirebaseAuth,
+        invitationsCollection: CollectionReference,
+        selectedUsersList: MutableList<String>,
+        pendingInviteAdapter: PendingInviteAdapter
+    ) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_time_choice, null)
         val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
         val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
-        var selectedTime = 24 // Initial value
+        selectedTimeTextView.text = "$selectedTime hours"
 
         timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -45,7 +56,6 @@ object PopupUtils {
                 if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, receiverId, inviteId)
-                    selectedUser?.let { selectedUsersList.add(it) }
                     pendingInviteAdapter.notifyDataSetChanged()
                 } else {
                     Toast.makeText(context, "Sender ID is null", Toast.LENGTH_SHORT).show()
@@ -62,4 +72,3 @@ object PopupUtils {
         builder.show()
     }
 }
-

@@ -88,60 +88,21 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = firebaseAuth.currentUser?.uid
 
             if (senderId != null && receiverId != null && senderId != receiverId) {
-                showPopup(selectedUser)
+                PopupUtils.showPopup(
+                    this,
+                    selectedUser,
+                    userMap,
+                    firebaseAuth,
+                    invitationsCollection,
+                    selectedUsersList,
+                    pendingInviteAdapter
+                )
             } else {
                 Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
             }
         }
 
         getAllUsers()
-    }
-
-    private var selectedTime: Int = 24
-    private fun showPopup(selectedUser: String) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_time_choice, null)
-        val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
-        val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
-        selectedTimeTextView.text = "$selectedTime hours"
-
-        timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                selectedTime = progress
-                selectedTimeTextView.text = "$selectedTime hours"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("INVITE")
-        builder.setMessage("Do you want to challenge $selectedUser?")
-        builder.setView(dialogView)
-
-        builder.setPositiveButton("Yes") { dialog, which ->
-            val receiverId = getReceiverId(selectedUser)
-            receiverId?.let {
-                val senderId = firebaseAuth.currentUser?.uid
-                if (senderId != null) {
-                    val inviteId = invitationsCollection.document().id
-                    InviteDao().sendInvitation(senderId, it, inviteId)
-
-                    pendingInviteAdapter.notifyDataSetChanged()
-                } else {
-                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
-                }
-            } ?: run {
-                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        builder.setNegativeButton("No") { dialog, which ->
-            dialog.dismiss()
-        }
-
-        builder.show()
     }
 
     private fun getReceiverId(selectedUser: String): String? {
