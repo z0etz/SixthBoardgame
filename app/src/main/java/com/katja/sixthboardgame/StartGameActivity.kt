@@ -16,7 +16,6 @@ import com.katja.sixthboardgame.databinding.ActivityStartGameBinding
 
 class StartGameActivity : AppCompatActivity() {
 
-
     private lateinit var binding: ActivityStartGameBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var userDao: UserDao
@@ -50,33 +49,43 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "") { position ->
+        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "", onDeleteClickListener = { position ->
             val receiverName = selectedUsersList[position]
             val receiverId = userMap[receiverName]
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
         }
+        )
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         firestore = FirebaseFirestore.getInstance()
 
         val currentUser = firebaseAuth.currentUser
+ popup-invite-newgame
         currentUser?.let {
             inviteDao.listenForInvitations(it.uid) { invitations ->
-                processInvitations(invitations)
+
             }
         }
 
 
         userDao.fetchUserNames { names ->
-            userNameList = names
-            adapter.addAll(names ?: emptyList())
+            userNameList = names?.distinct() // Remove duplicates
+            Log.d("StartGameActivity", "Unique user names: $userNameList")
+            adapter.clear() // Clear existing data
+            userNameList?.let {
+                adapter.addAll(it)
+                Log.d("StartGameActivity", "Adapter populated with: $it")
+            }
         }
+
+
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
+ popup-invite-newgame
             showPopup(selectedUser)
 
         }
@@ -131,27 +140,41 @@ class StartGameActivity : AppCompatActivity() {
                     InviteDao().sendInvitation(senderId, it.toString(), inviteId)
                     selectedUsersList.add(selectedUser)
                     pendingInviteAdapter.notifyDataSetChanged()
+
                 } else {
-                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+                    receiverId?.let {
+                        val inviteId = invitationsCollection.document().id
+                        InviteDao().sendInvitation(senderId, it, inviteId)
+                    } ?: run {
+                        Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+                    }
+                    // line below is the culprit to the infamous bugg of the showing sender.
+                    // selectedUsersList.add(selectedUser)
+                    pendingInviteAdapter.notifyDataSetChanged()
                 }
-            } ?: run {
-                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
             }
         }
 
+ popup-invite-newgame
         builder.setNegativeButton("No") { dialog, which ->
             dialog.dismiss()
         }
 
+
         builder.show()
     }
 
+ popup-invite-newgame
     private fun endGameDueToTimeout() {
         Toast.makeText(this, "The game has ended due to inactivity", Toast.LENGTH_SHORT).show()
         finish()
+
     }
 
 
+ popup-invite-newgame
     private fun getReceiverId(selectedUser: String): String? {
             return  userMap[selectedUser]
         }
@@ -176,6 +199,7 @@ class StartGameActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
         }
 
         private fun processInvitations(invitations: List<Map<String, Any>>) {
@@ -183,6 +207,7 @@ class StartGameActivity : AppCompatActivity() {
             val currentUser = firebaseAuth.currentUser
             val currentUserId = currentUser?.uid
 
+ popup-invite-newgame
             for (invitation in invitations) {
                 val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
                 val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
@@ -192,9 +217,11 @@ class StartGameActivity : AppCompatActivity() {
                 // Check if the current user is either the sender or receiver
                 if (currentUserId == senderId || currentUserId == receiverId) {
                     incomingInvites.add(senderId)
+
                 }
             }
 
+ popup-invite-newgame
             // Add all invites to the list, both sent and received
             pendingInviteAdapter.updateInvitationsList(incomingInvites)
         }
@@ -234,6 +261,7 @@ class StartGameActivity : AppCompatActivity() {
             super.onResume()
             autoCompleteTextView.setText("")
         }
+
     }
 
 
