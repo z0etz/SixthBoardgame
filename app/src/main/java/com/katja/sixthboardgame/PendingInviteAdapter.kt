@@ -1,6 +1,7 @@
 package com.katja.sixthboardgame
 
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -11,11 +12,12 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.AdapterView.inflate
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.katja.sixthboardgame.PopupUtils.selectedTime
+import com.google.firebase.firestore.CollectionReference
 import kotlinx.coroutines.withContext
 
 class PendingInviteAdapter(
@@ -24,6 +26,7 @@ class PendingInviteAdapter(
     private val receiverId: String,
     private val onDeleteClickListener: (Int) -> Unit,
     private val inviteDao: InviteDao = InviteDao(),
+    var selectedTime: Int = 24 * 3600,
     private val userDao: UserDao = UserDao(),
     private val gameDao: GameDao = GameDao() // Add GameDao dependency
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
@@ -42,10 +45,10 @@ class PendingInviteAdapter(
             if (!username.isNullOrEmpty()) {
                 Log.d("PendingInviteAdapter", "Fetched username for senderId $senderId: $username")
                 // Assuming you have access to selectedTime here
-                holder.bind(username, selectedTime) // Pass selectedTime when binding
+                holder.bind(username) // Pass selectedTime when binding
             } else {
                 Log.d("PendingInviteAdapter", "Username for senderId $senderId is null or empty")
-                holder.bind("Unknown", selectedTime) // Pass selectedTime when binding
+                holder.bind("Unknown") // Pass selectedTime when binding
             }
         }
     }
@@ -73,9 +76,9 @@ class PendingInviteAdapter(
             }
         }
 
-        fun bind(playerName: String, selectedTime: Int) {
+        fun bind(playerName: String) {
             val senderName = itemView.context.getString(R.string.invited_by, playerName)
-            val displayText = "$senderName - turn time $selectedTime"
+            val displayText = "$senderName "
             playerNameTextView.text = displayText
             Log.d("PendingInviteAdapter", "Binding player name: $playerName with selected time: $selectedTime")
         }
@@ -124,6 +127,65 @@ class PendingInviteAdapter(
             Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
             Log.e("PendingInviteAdapter", "Current user ID is null")
         }
+    }
+
+    fun showPopup(
+        context: Context,
+        selectedUser: String,
+        userMap: Map<String?, String?>,
+        firebaseAuth: FirebaseAuth,
+        invitationsCollection: CollectionReference,
+        selectedUsersList: MutableList<String>,
+        pendingInviteAdapter: PendingInviteAdapter
+    ) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_time_choice, null)
+        val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
+        val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
+
+        // Convert seconds to hours for display
+        selectedTimeTextView.text = "${selectedTime / 3600} hours"
+
+        timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Convert hours (progress) to seconds
+                selectedTime = progress * 3600
+                selectedTimeTextView.text = "$progress hours"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("INVITE")
+        builder.setMessage("Do you want to challenge $selectedUser?")
+        builder.setView(dialogView)
+
+        builder.setPositiveButton("Yes") { dialog, which ->
+            val receiverId = userMap[selectedUser]
+            if (receiverId != null) {
+                val senderId = firebaseAuth.currentUser?.uid
+                if (senderId != null) {
+                    val inviteId = invitationsCollection.document().id
+                    InviteDao().sendInvitation(senderId, receiverId, inviteId,
+                        selectedTime) { invitationData ->
+                        // Handle the callback here, for example, you might want to update UI or log information
+                        pendingInviteAdapter.notifyDataSetChanged()
+                    }
+                } else {
+                    Toast.makeText(context, "Sender ID is null", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(context, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        builder.setNegativeButton("No") { dialog, which ->
+            dialog.dismiss()
+        }
+
+        builder.show()
     }
 }
 

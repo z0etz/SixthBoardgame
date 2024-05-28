@@ -3,7 +3,6 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.katja.sixthboardgame.PopupUtils.selectedTime
 
 class InviteDao {
 
@@ -87,6 +86,19 @@ class InviteDao {
             }
             .addOnFailureListener { e ->
                 // Hantera eventuellt fel vid uppdatering av inbjudningsstatus här
+            }
+    }
+
+    fun getInvite(inviteId: String, callback: (Map<String, Any>?) -> Unit) {
+        invitationsCollection.document(inviteId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val inviteData = documentSnapshot.data
+                callback(inviteData)
+            }
+            .addOnFailureListener { exception ->
+                // Handle failure if necessary
+                callback(null)
             }
     }
     fun deleteInvitation(senderId: String, receiverId: String): Task<Void> {

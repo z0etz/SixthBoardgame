@@ -89,7 +89,7 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = firebaseAuth.currentUser?.uid
 
             if (senderId != null && receiverId != null && senderId != receiverId) {
-                PopupUtils.showPopup(
+                pendingInviteAdapter.showPopup(
                     this,
                     selectedUser,
                     userMap,

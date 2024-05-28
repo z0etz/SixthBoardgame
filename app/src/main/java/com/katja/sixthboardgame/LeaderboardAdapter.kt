@@ -43,7 +43,7 @@ class LeaderboardAdapter(
                 val leaderboard = highscores[position]
                 val selectedUser = leaderboard.username
 
-                PopupUtils.showPopup(
+                pendingInviteAdapter.showPopup(
                     context,
                     selectedUser,
                     userMap,
