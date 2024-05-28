@@ -55,8 +55,10 @@ object PopupUtils {
                 val senderId = firebaseAuth.currentUser?.uid
                 if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
-                    InviteDao().sendInvitation(senderId, receiverId, inviteId)
-                    pendingInviteAdapter.notifyDataSetChanged()
+                    InviteDao().sendInvitation(senderId, receiverId, inviteId) { invitationData ->
+                        // Handle the callback here, for example, you might want to update UI or log information
+                        pendingInviteAdapter.notifyDataSetChanged()
+                    }
                 } else {
                     Toast.makeText(context, "Sender ID is null", Toast.LENGTH_SHORT).show()
                 }
@@ -72,3 +74,4 @@ object PopupUtils {
         builder.show()
     }
 }
+
