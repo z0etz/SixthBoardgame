@@ -15,7 +15,7 @@ class InviteDao {
     val SELECTED_TIME_KEY = "selectedTime"
     val STATUS_KEY = "status"
 
-    fun sendInvitation(senderId: String, receiverId: String, inviteId: String, callback: (Map<String, Any>) -> Unit) {
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String,selectedTime: Int, callback: (Map<String, Any>) -> Unit) {
         val invitationData = hashMapOf(
             INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,

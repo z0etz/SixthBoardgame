@@ -58,7 +58,8 @@ object PopupUtils {
                 val senderId = firebaseAuth.currentUser?.uid
                 if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
-                    InviteDao().sendInvitation(senderId, receiverId, inviteId) { invitationData ->
+                    InviteDao().sendInvitation(senderId, receiverId, inviteId,
+                        selectedTime) { invitationData ->
                         // Handle the callback here, for example, you might want to update UI or log information
                         pendingInviteAdapter.notifyDataSetChanged()
                     }

@@ -1,2 +1,3 @@
 package com.katja.sixthboardgame
-class Invite(var inviteId: String, val senderId: String, val receiverId: String, val status: String)
+class Invite(var inviteId: String, val senderId: String, val receiverId: String, val selectedTime: Int,
+             val status: String)
