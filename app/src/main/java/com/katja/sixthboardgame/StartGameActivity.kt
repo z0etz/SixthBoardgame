@@ -33,7 +33,7 @@ class StartGameActivity : AppCompatActivity() {
         FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
 
-    // push
+    // stable branch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
