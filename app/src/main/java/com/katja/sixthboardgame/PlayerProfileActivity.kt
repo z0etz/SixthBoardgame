@@ -41,7 +41,8 @@ import com.katja.sixthboardgame.databinding.ActivityPlayerProfileBinding
             dao.fetchUserScoreById(currentUserId?: "Unknown") { score ->
                 if (score != null) {
                     Log.d("PlayerProfileActivity", "Score: $score")
-                    binding.textViewScore.text = score.toString()
+                    val scoreString = getString(R.string.score) + " " + score.toString()
+                    binding.textViewScore.text = scoreString
                 } else {
                     Log.e("PlayerProfileActivity", "Failed to get score")
                 }

@@ -58,7 +58,7 @@
     <string name="your_turn">YOUR TURN</string>
     <string name="opponents_turn">OPPONENTS TURN</string>
     <string name="time_left_not_loaded">Time left not loaded</string>
-    <string name="highscore">High Score</string>
+    <string name="highscore">Highscore</string>
     <string name="opponent_not_loaded">Opponent not loaded</string>
     <string name="time_not_loaded">Time not loaded</string>
     <string name="sign_out">Sign Out</string>
@@ -83,4 +83,5 @@
     <string name="no">No</string>
     <string name="add_player">Add Player</string>
     <string name="invited_by">Invite from   %s</string>
+    <string name="score">Score:</string>
 </resources>
