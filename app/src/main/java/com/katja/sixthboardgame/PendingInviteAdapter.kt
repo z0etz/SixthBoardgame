@@ -1,23 +1,19 @@
 package com.katja.sixthboardgame
 
-
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.AdapterView.inflate
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.PopupUtils.selectedTime
-import kotlinx.coroutines.withContext
-
 class PendingInviteAdapter(
     private val context: Context,
     private val inviteList: MutableList<String>,
@@ -35,18 +31,20 @@ class PendingInviteAdapter(
 
     override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
         val senderId = inviteList[position]
-        // Fetch username corresponding to the sender ID
         userDao.fetchUsernameById(senderId) { username ->
             if (!username.isNullOrEmpty()) {
-                // Assuming you have access to selectedTime here
-                holder.bind(username, selectedTime) // Pass selectedTime when binding
+                runOnUiThread {
+                    Log.d("PendingInviteAdapter", "Binding username: $username with selectedTime: ${PopupUtils.selectedTime / 3600} hours")
+                    holder.bind(username, PopupUtils.selectedTime / 3600) // Convert seconds to hours
+                }
             } else {
-                // if no playerName or null
-                holder.bind("Unknown", selectedTime) // Pass selectedTime when binding
+                runOnUiThread {
+                    Log.d("PendingInviteAdapter", "Binding username: Unknown with selectedTime: ${PopupUtils.selectedTime / 3600} hours")
+                    holder.bind("Unknown", PopupUtils.selectedTime / 3600) // Convert seconds to hours
+                }
             }
-        }
+}
     }
-
 
     override fun getItemCount(): Int {
         return inviteList.size
@@ -69,14 +67,12 @@ class PendingInviteAdapter(
             }
         }
 
-        fun bind(playerName: String, selectedTime: Int) {
-            // set the sender name from the playerName and display it as "Invite from [senderName] [selectedTime]"
+        fun bind(playerName: String, selectedTimeHours: Int) {
             val senderName = itemView.context.getString(R.string.invited_by, playerName)
-            val displayText = "$senderName $selectedTime"
+            val displayText = "$senderName for $selectedTimeHours hours"
             playerNameTextView.text = displayText
         }
     }
-
 
     fun updateInvitationsList(newInvites: List<String>) {
         inviteList.clear()
@@ -98,17 +94,13 @@ class PendingInviteAdapter(
             val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
             buttonContinue.setOnClickListener {
-                // Create a new game and add it to Firestore (Parameters: senderId, receiverId)
                 gameDao.addGame(currentUserId, receiverId)
-                // Close dialog
                 dialog.dismiss()
-                // Delete invite from Firebase (Parameters: receiverId, senderId)
                 inviteDao.deleteInvitation(receiverId, currentUserId)
             }
 
             buttonCancel.setOnClickListener {
                 dialog.dismiss()
-                // Delete invite from Firebase (Parameters: receiverId, senderId)
                 inviteDao.deleteInvitation(receiverId, currentUserId)
             }
 
@@ -117,5 +109,12 @@ class PendingInviteAdapter(
             Toast.makeText(context, "Current user ID is null", Toast.LENGTH_SHORT).show()
         }
     }
-}
 
+    private fun runOnUiThread(action: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            action()
+        } else {
+            Handler(Looper.getMainLooper()).post { action() }
+        }
+    }
+}

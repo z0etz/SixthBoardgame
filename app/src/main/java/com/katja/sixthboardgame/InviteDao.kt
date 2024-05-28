@@ -9,32 +9,27 @@ class InviteDao {
 
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
 
-    val INVITE_ID_KEY = "inviteId"
     val SENDER_ID_KEY = "senderId"
     val RECEIVER_ID_KEY = "receiverId"
-    val SELECTED_TIME_KEY = "selectedTime"
     val STATUS_KEY = "status"
+    val TIME_KEY = "selectedTime"
 
-    fun sendInvitation(senderId: String, receiverId: String, inviteId: String, callback: (Map<String, Any>) -> Unit) {
-        val invitationData = hashMapOf(
-            INVITE_ID_KEY to inviteId,
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String, selectedTime: Int, callback: (Map<String, Any>) -> Unit) {
+        val invitation = hashMapOf(
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
-            SELECTED_TIME_KEY to selectedTime, // Add turn time to the invitation data
-            STATUS_KEY to "pending"
+            STATUS_KEY to "pending",
+            TIME_KEY to selectedTime
         )
 
-        invitationsCollection.add(invitationData)
-            .addOnSuccessListener { documentReference ->
-                val inviteId = documentReference.id
-                // Log the sent invitation details
-                Log.d(TAG, "Invitation sent with id: $inviteId")
-
-                // Pass invitationData to callback
-                callback(invitationData)
+        FirebaseFirestore.getInstance().collection("game_invitations")
+            .document(inviteId)
+            .set(invitation)
+            .addOnSuccessListener {
+                callback(invitation)
             }
-            .addOnFailureListener { e ->
-                // Handle any errors that occur while sending the invitation here
+            .addOnFailureListener { exception ->
+                Log.e("InviteDao", "Failed to send invitation: ${exception.message}", exception)
             }
     }
 

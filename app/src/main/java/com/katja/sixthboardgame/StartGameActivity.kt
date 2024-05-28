@@ -1,9 +1,6 @@
 package com.katja.sixthboardgame
 
-
-import android.app.Activity;
 import android.app.AlertDialog
-
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -59,8 +56,7 @@ class StartGameActivity : AppCompatActivity() {
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
-        }
-        )
+        })
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -69,17 +65,21 @@ class StartGameActivity : AppCompatActivity() {
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
             inviteDao.listenForInvitations(currentUser.uid) { invitations ->
-                processInvitations(invitations)
+                runOnUiThread {
+                    processInvitations(invitations)
+                }
             }
         }
 
         userDao.fetchUserNames { names ->
-            userNameList = names?.distinct() // Remove duplicates
-            Log.d("StartGameActivity", "Unique user names: $userNameList")
-            adapter.clear() // Clear existing data
-            userNameList?.let {
-                adapter.addAll(it)
-                Log.d("StartGameActivity", "Adapter populated with: $it")
+            runOnUiThread {
+                userNameList = names?.distinct() // Remove duplicates
+                Log.d("StartGameActivity", "Unique user names: $userNameList")
+                adapter.clear() // Clear existing data
+                userNameList?.let {
+                    adapter.addAll(it)
+                    Log.d("StartGameActivity", "Adapter populated with: $it")
+                }
             }
         }
 
@@ -114,25 +114,29 @@ class StartGameActivity : AppCompatActivity() {
         val usersCollection = firestore.collection("users")
         usersCollection.get()
             .addOnSuccessListener { querySnapshot ->
-                val usersList = mutableListOf<String>()
-                for (document in querySnapshot.documents) {
-                    val fullName = document.getString("UserName")
-                    val user2Id = document.getString("id")
-                    if (!userMap.containsKey(fullName)) {
-                        fullName?.let { usersList.add(it) }
-                        userMap[fullName] = user2Id
+                runOnUiThread {
+                    val usersList = mutableListOf<String>()
+                    for (document in querySnapshot.documents) {
+                        val fullName = document.getString("UserName")
+                        val user2Id = document.getString("id")
+                        if (!userMap.containsKey(fullName)) {
+                            fullName?.let { usersList.add(it) }
+                            userMap[fullName] = user2Id
+                        }
                     }
+                    adapter.clear() // Clear existing data
+                    adapter.addAll(usersList.distinct()) // Add distinct names only
+                    adapter.notifyDataSetChanged() // Notify adapter for changes
                 }
-                adapter.clear() // Clear existing data
-                adapter.addAll(usersList.distinct()) // Add distinct names only
-                adapter.notifyDataSetChanged() // Notify adapter for changes
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(
-                    this,
-                    "Failed to fetch users: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Toast.makeText(
+                        this,
+                        "Failed to fetch users: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
     }
 
@@ -145,8 +149,6 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
             val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
             val status = invitation[inviteDao.STATUS_KEY] as String
-
-
 
             if (currentUserId == senderId || currentUserId == receiverId) {
                 incomingInvites.add(senderId)
@@ -161,24 +163,28 @@ class StartGameActivity : AppCompatActivity() {
         // Delete invitation from Firestore
         inviteDao.deleteInvitation(senderId, receiverId)
             .addOnSuccessListener {
-                val position = selectedUsersList.indexOf(receiverId)
-                if (position != -1) {
-                    selectedUsersList.removeAt(position)
-                    pendingInviteAdapter.notifyItemRemoved(position)
+                runOnUiThread {
+                    val position = selectedUsersList.indexOf(receiverId)
+                    if (position != -1) {
+                        selectedUsersList.removeAt(position)
+                        pendingInviteAdapter.notifyItemRemoved(position)
+                    }
+                    Toast.makeText(
+                        this,
+                        "Invitation deleted successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                Toast.makeText(
-                    this,
-                    "Invitation deleted successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
             .addOnFailureListener { exception ->
-                Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
-                Toast.makeText(
-                    this,
-                    "Failed to delete invitation: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
+                    Toast.makeText(
+                        this,
+                        "Failed to delete invitation: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
     }
 

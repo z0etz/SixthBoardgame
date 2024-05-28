@@ -14,10 +14,9 @@ import com.google.firebase.firestore.CollectionReference
 import com.katja.sixthboardgame.InviteDao
 import com.katja.sixthboardgame.R
 import com.katja.sixthboardgame.StartGameActivity
-
 object PopupUtils {
 
-    var selectedTime: Int = 24 * 3600
+    var selectedTime: Int = 24 * 3600 // Default time in seconds
 
     fun showPopup(
         context: Context,
@@ -32,18 +31,16 @@ object PopupUtils {
         val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
         val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
 
-        // Convert seconds to hours for display
+        // Display the default time in hours
         selectedTimeTextView.text = "${selectedTime / 3600} hours"
 
         timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Convert hours (progress) to seconds
-                selectedTime = progress * 3600
+                selectedTime = progress * 3600 // Convert progress (hours) to seconds
                 selectedTimeTextView.text = "$progress hours"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
@@ -58,8 +55,7 @@ object PopupUtils {
                 val senderId = firebaseAuth.currentUser?.uid
                 if (senderId != null) {
                     val inviteId = invitationsCollection.document().id
-                    InviteDao().sendInvitation(senderId, receiverId, inviteId) { invitationData ->
-                        // Handle the callback here, for example, you might want to update UI or log information
+                    InviteDao().sendInvitation(senderId, receiverId, inviteId, selectedTime) { invitationData ->
                         pendingInviteAdapter.notifyDataSetChanged()
                     }
                 } else {
@@ -77,4 +73,3 @@ object PopupUtils {
         builder.show()
     }
 }
-
