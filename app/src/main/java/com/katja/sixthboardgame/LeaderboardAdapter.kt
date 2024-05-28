@@ -23,41 +23,25 @@ class LeaderboardAdapter(private var highscores: List<Leaderboard>) : RecyclerVi
         val usernameTextView: TextView = itemView.findViewById(R.id.scoreboard_username)
         val scoreTextView: TextView = itemView.findViewById(R.id.scoreboard_score)
 
-        private var alertDialog: AlertDialog? = null
         init {
             // Set click listener for itemView
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
-
             val context = view.context
 
-           // val builder = AlertDialog.Builder(context)
-           // val dialogView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
-           // builder.setView(dialogView)
-           // alertDialog = builder.create()
+            // Get the position of the clicked item
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val leaderboard = highscores[position]
+                // Get the username of the clicked item
+                val selectedUser = leaderboard.username
 
-           // alertDialog?.show()
-
-           // val popupView = LayoutInflater.from(context).inflate(R.layout.activity_pop_up_invite, null)
-           // val popupWindow = PopupWindow(
-           //     popupView,
-           //     ViewGroup.LayoutParams.WRAP_CONTENT,
-           //     ViewGroup.LayoutParams.WRAP_CONTENT,
-           //     false
-           // )
-
-           // popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-           // popupWindow.showAtLocation(itemView, Gravity.CENTER, 0,0)
-
-
-            //val intent = Intent(context, StartGameActivity::class.java)
-            //context.startActivity(intent)
-
-            val popupWindow = CustomPopupWindow(context)
-            popupWindow.show()
+                // Show the custom popup window
+                val popupWindow = CustomPopupWindow(context)
+                popupWindow.show()
+            }
         }
     }
 
@@ -110,6 +94,7 @@ class CustomPopupWindow(context: Context) : Dialog(context) {
         // Ensure that the popup window is not dismissed when clicking outside of it
         setCanceledOnTouchOutside(false)
     }
+
 }
 
 data class Leaderboard(val username: String, val score: Int)
