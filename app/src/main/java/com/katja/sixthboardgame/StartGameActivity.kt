@@ -1,6 +1,7 @@
 package com.katja.sixthboardgame;
 
 import android.app.Activity;
+import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -83,38 +84,30 @@ class StartGameActivity : AppCompatActivity() {
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
-            getReceiverId(selectedUser) // Update receiverId
+            val receiverId = getReceiverId(selectedUser) // Update receiverId
             val senderId = firebaseAuth.currentUser?.uid
 
-            if (senderId != null) {
-                if (receiverId == senderId) {
-                    Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
-                } else {
-                    receiverId?.let {
-                        // Call the showPopup function here
-                        PopupUtils.showPopup(this, selectedUser, userMap, firebaseAuth, invitationsCollection, pendingInviteAdapter, selectedUsersList)
-                        val inviteId = invitationsCollection.document().id
-                        InviteDao().sendInvitation(senderId, it, inviteId)
-                    } ?: run {
-                        Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
-                    }
-                    // line below is the culprit to the infamous bug of showing sender.
-                    // selectedUsersList.add(selectedUser)
-                    pendingInviteAdapter.notifyDataSetChanged()
-                }
+            if (senderId != null && receiverId != null && senderId != receiverId) {
+                showPopup(selectedUser)
             } else {
-                Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Initialize time slider and text view
-        val timeSlider = findViewById<SeekBar>(R.id.timeSlider)
-        val selectedTimeTextView = findViewById<TextView>(R.id.selectedTimeTextView)
-        val selectedTime: Int = 24
+        getAllUsers()
+    }
+
+    private var selectedTime: Int = 24
+    private fun showPopup(selectedUser: String) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_time_choice, null)
+        val timeSlider = dialogView.findViewById<SeekBar>(R.id.timeSlider)
+        val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
+        selectedTimeTextView.text = "$selectedTime hours"
 
         timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                selectedTimeTextView.text = "$progress hours"
+                selectedTime = progress
+                selectedTimeTextView.text = "$selectedTime hours"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -122,11 +115,37 @@ class StartGameActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        getAllUsers()
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("INVITE")
+        builder.setMessage("Do you want to challenge $selectedUser?")
+        builder.setView(dialogView)
+
+        builder.setPositiveButton("Yes") { dialog, which ->
+            val receiverId = getReceiverId(selectedUser)
+            receiverId?.let {
+                val senderId = firebaseAuth.currentUser?.uid
+                if (senderId != null) {
+                    val inviteId = invitationsCollection.document().id
+                    InviteDao().sendInvitation(senderId, it, inviteId)
+
+                    pendingInviteAdapter.notifyDataSetChanged()
+                } else {
+                    Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
+                }
+            } ?: run {
+                Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        builder.setNegativeButton("No") { dialog, which ->
+            dialog.dismiss()
+        }
+
+        builder.show()
     }
 
-    private fun getReceiverId(selectedUser: String) {
-        receiverId = userMap[selectedUser]
+    private fun getReceiverId(selectedUser: String): String? {
+        return userMap[selectedUser]
     }
 
     private fun getAllUsers() {
