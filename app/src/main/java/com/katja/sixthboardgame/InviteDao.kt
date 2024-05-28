@@ -13,21 +13,22 @@ class InviteDao {
     val RECEIVER_ID_KEY = "receiverId"
     val STATUS_KEY = "status"
 
-    fun sendInvitation(senderId: String, receiverId: String, inviteId: String) {
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String, callback: (Map<String, Any>) -> Unit) {
         val invitationData = hashMapOf(
             INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
             STATUS_KEY to "pending"
-            // Lägg till andra relevanta attribut för spelinbjudningar här
         )
 
         invitationsCollection.add(invitationData)
             .addOnSuccessListener { documentReference ->
                 val inviteId = documentReference.id
-                // Använd inviteId för att identifiera den nya spelinbjudningen
+                // Log the sent invitation details
                 Log.d(TAG, "Invitation sent with id: $inviteId")
-                // Implementera eventuell logik för lyckad inbjudningsskickning här
+
+                // Pass invitationData to callback
+                callback(invitationData)
             }
             .addOnFailureListener { e ->
                 // Hantera eventuellt fel vid skickning av inbjudning här
@@ -40,6 +41,26 @@ class InviteDao {
             .addSnapshotListener { snapshots, exception ->
                 if (exception != null) {
                     // Hantera eventuellt fel vid lyssning på inbjudningar här
+                    return@addSnapshotListener
+                }
+
+                val invitations = mutableListOf<Map<String, Any>>()
+                snapshots?.documents?.forEach { document ->
+                    val invitation = document.data ?: mapOf()
+                    invitations.add(invitation)
+                }
+
+                listener(invitations)
+            }
+    }
+
+    // Method to listen for sent game invitations for a specific user
+    fun listenForSentInvitations(senderId: String, listener: (List<Map<String, Any>>) -> Unit) {
+        invitationsCollection
+            .whereEqualTo(SENDER_ID_KEY, senderId)
+            .addSnapshotListener { snapshots, exception ->
+                if (exception != null) {
+                    // Handle any errors that occur during the listening process
                     return@addSnapshotListener
                 }
 
