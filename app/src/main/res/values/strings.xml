@@ -63,7 +63,7 @@
     <string name="time_not_loaded">Time not loaded</string>
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
-    <string name="pending_invites">Pending invites</string>
+    <string name="pending_invites">Received invites</string>
     <string name="player_name">Player Name</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="plus">+</string>
@@ -85,4 +85,7 @@
     <string name="add_game">Add Game</string>
     <string name="invited_by">Invite from   %s</string>
     <string name="score">Score:</string>
+    <string name="delete_invite">Delete invite?</string>
+    <string name="sent_invites">Sent Invites</string>
+    <string name="delete">Delete</string>
 </resources>
