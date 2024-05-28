@@ -3,6 +3,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 
 class InviteDao {
 
@@ -55,24 +56,27 @@ class InviteDao {
     }
 
     // Method to listen for sent game invitations for a specific user
-    fun listenForSentInvitations(senderId: String, listener: (List<Map<String, Any>>) -> Unit) {
+    fun listenForSentInvitations(senderId: String, listener: (List<Invite>) -> Unit) {
         invitationsCollection
             .whereEqualTo(SENDER_ID_KEY, senderId)
             .addSnapshotListener { snapshots, exception ->
                 if (exception != null) {
-                    // Handle any errors that occur during the listening process
+                    Log.e(TAG, "Error listening for invitations: ", exception)
                     return@addSnapshotListener
                 }
 
-                val invitations = mutableListOf<Map<String, Any>>()
+                val invitations = mutableListOf<Invite>()
                 snapshots?.documents?.forEach { document ->
-                    val invitation = document.data ?: mapOf()
-                    invitations.add(invitation)
+                    val invitation = document.toObject<Invite>()
+                    if (invitation != null) {
+                        invitations.add(invitation)
+                    }
                 }
 
                 listener(invitations)
             }
     }
+
 
     // Metod för att uppdatera statusen för en spelinbjudning
     fun updateInvitationStatus(inviteId: String, newStatus: String) {
@@ -100,5 +104,18 @@ class InviteDao {
             }
     }
 
-
+    fun fetchInvitationById(inviteId: String, callback: (Invite?) -> Unit) {
+        invitationsCollection.document(inviteId).get()
+            .addOnSuccessListener { documentSnapshot ->
+                val invite = documentSnapshot.toObject<Invite>()
+                callback(invite)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error fetching invitation: ", e)
+                callback(null)
+            }
+    }
 }
+
+
+
