@@ -91,6 +91,8 @@ class StartGameActivity : AppCompatActivity() {
                     Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
                 } else {
                     receiverId?.let {
+                        // Call the showPopup function here
+                        PopupUtils.showPopup(this, selectedUser, userMap, firebaseAuth, invitationsCollection, pendingInviteAdapter, selectedUsersList)
                         val inviteId = invitationsCollection.document().id
                         InviteDao().sendInvitation(senderId, it, inviteId)
                     } ?: run {
