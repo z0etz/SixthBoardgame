@@ -90,13 +90,15 @@ class StartGameActivity : AppCompatActivity() {
                     } ?: run {
                         Toast.makeText(this, "Receiver ID not found", Toast.LENGTH_SHORT).show()
                     }
-                    selectedUsersList.add(selectedUser)
+                    // line below is the culprit to the infamous bugg of the showing sender.
+                    // selectedUsersList.add(selectedUser)
                     pendingInviteAdapter.notifyDataSetChanged()
                 }
             } else {
                 Toast.makeText(this, "Sender ID is null", Toast.LENGTH_SHORT).show()
             }
         }
+
 
         getAllUsers()
     }
