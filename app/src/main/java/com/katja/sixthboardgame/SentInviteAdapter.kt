@@ -39,7 +39,8 @@ class SentInviteAdapter(
         }
 
         fun bind(playerName: String) {
-            playerNameTextView.text = playerName
+            val text = context.getString(R.string.invited, playerName)
+            playerNameTextView.text = text
         }
     }
 
