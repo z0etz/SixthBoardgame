@@ -60,7 +60,7 @@ android:orientation="vertical">
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/elevation_small"
     android:fontFamily="@font/inter_bold"
-    android:text="@string/opponents"
+    android:text="@string/opponent"
     android:textColor="@color/grey"
     android:textSize="@dimen/heading_small"/>
 </LinearLayout>

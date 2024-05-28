@@ -25,7 +25,7 @@
     <string name="sign_up_to_your_new_account">Sign up to your new account</string>
     <string name="are_you_ready">Are You Ready?</string>
     <string name="vs">VS</string>
-    <string name="opponents">Opponents</string>
+    <string name="opponent">Opponent</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Continue</string>
     <string name="game_accept">Accept</string>
@@ -56,14 +56,14 @@
     <string name="hello_world">Hello, World!</string>
     <string name="whos_turn">WHOS TURN? - not loaded</string>
     <string name="your_turn">YOUR TURN</string>
-    <string name="opponents_turn">OPPONENTS TURN</string>
+    <string name="opponents_turn">Opponents turn</string>
     <string name="time_left_not_loaded">Time left not loaded</string>
-    <string name="highscore">High Score</string>
+    <string name="highscore">Highscore</string>
     <string name="opponent_not_loaded">Opponent not loaded</string>
     <string name="time_not_loaded">Time not loaded</string>
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
-    <string name="pending_invites">Pending invites</string>
+    <string name="pending_invites">Received invites</string>
     <string name="player_name">Player Name</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="plus">+</string>
@@ -82,5 +82,10 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="add_player">Add Player</string>
+    <string name="add_game">Add Game</string>
     <string name="invited_by">Invite from   %s</string>
+    <string name="score">Score:</string>
+    <string name="delete_invite">Delete invite?</string>
+    <string name="sent_invites">Sent Invites</string>
+    <string name="delete">Delete</string>
 </resources>

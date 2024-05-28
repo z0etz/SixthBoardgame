@@ -672,28 +672,32 @@ class GameActivity : AppCompatActivity() {
         countDownTimer?.cancel() // Cancel any existing timer
 
         if(!game.gameEnded) {
-            val timeSinceLastTurn = Date().time - game.lastTurnTime.time
-            val turnTimeLeft = game.turnTime - timeSinceLastTurn
+            if(game.nextPlayer == currentUserId) {
+                val timeSinceLastTurn = Date().time - game.lastTurnTime.time
+                val turnTimeLeft = game.turnTime - timeSinceLastTurn
 
-            countDownTimer = object : CountDownTimer(turnTimeLeft, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val hours = millisUntilFinished / (1000 * 60 * 60)
-                    val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
-                    val seconds = (millisUntilFinished % (1000 * 60)) / 1000
-                    binding.timeLeft.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
-                }
+                countDownTimer = object : CountDownTimer(turnTimeLeft, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        val hours = millisUntilFinished / (1000 * 60 * 60)
+                        val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
+                        val seconds = (millisUntilFinished % (1000 * 60)) / 1000
+                        binding.timeLeft.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                    }
 
-                override fun onFinish() {
-                    binding.timeLeft.text = "00:00:00"
-                    val looserId = game.nextPlayer
-                    game.winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
-                    game.gameEnded = true
-                    gameDao.updateGame(game)
-                    viewModel.endGame(game.id, game.winnerId, looserId)
-                    stopTimer()
-                    showGameEndDialogue()
-                }
-            }.start()
+                    override fun onFinish() {
+                        binding.timeLeft.text = "00:00:00"
+                        val looserId = game.nextPlayer
+                        game.winnerId = game.playerIds.find { it != looserId } ?: "Unknown"
+                        game.gameEnded = true
+                        gameDao.updateGame(game)
+                        viewModel.endGame(game.id, game.winnerId, looserId)
+                        stopTimer()
+                        showGameEndDialogue()
+                    }
+                }.start()
+            } else {
+                binding.timeLeft.text = getString(R.string.opponents_turn)
+            }
         } else {
             binding.timeLeft.text = getString(R.string.game_ended)
         }
