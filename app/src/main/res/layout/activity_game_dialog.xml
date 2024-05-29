@@ -91,7 +91,7 @@ android:weightSum="2">
     android:background="@drawable/gradient_button_red"
     android:fontFamily="@font/inter_semibold"
     android:gravity="center"
-    android:text="@string/cancel"
+    android:text="@string/game_decline"
     android:textColor="@color/white"
     android:padding="@dimen/elevation_small" />
 
@@ -105,7 +105,7 @@ android:weightSum="2">
     android:background="@drawable/gradient_button_green"
     android:fontFamily="@font/inter_semibold"
     android:gravity="center"
-    android:text="@string/accept"
+    android:text="@string/game_accept"
     android:textColor="@color/white"
     android:padding="@dimen/elevation_small" />
 </LinearLayout>
