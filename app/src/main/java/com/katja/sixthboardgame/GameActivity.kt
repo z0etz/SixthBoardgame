@@ -427,12 +427,13 @@ class GameActivity : AppCompatActivity() {
             val discViewId = resources.getIdentifier("disc${i}", "id", packageName)
             val discView = squareView.findViewById<View>(discViewId)
 
-            if (i < discStack.discs.size) {
+            val discIndex = startIndex + i
+            if (discIndex < discStack.discs.size) {
                 // If there are more discs in the stack than there are disc views in the square, turn on the corresponding disc view
                 discView?.visibility = View.VISIBLE
 
                 // Show disc of correct color
-                val discColor = discStack.discs[i]
+                val discColor = discStack.discs[discIndex]
                 discView?.background = ContextCompat.getDrawable(
                     this,
                     when (discColor) {
