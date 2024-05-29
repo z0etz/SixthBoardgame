@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class PendingInviteAdapter(
     private val context: Context,
-    private val inviteList: MutableList<String>,
+    private val inviteList: MutableList<Invite>,
     private val receiverId: String,
     private val onDeleteClickListener: (Int) -> Unit,
     private val inviteDao: InviteDao = InviteDao(),
@@ -37,8 +36,8 @@ class PendingInviteAdapter(
     }
 
     override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
-        val senderId = inviteList[position]
         Log.d("PendingInviteAdapter", "Binding invite at position $position: senderId = $senderId")
+        val senderId = inviteList[position].senderId
 
         // Fetch username corresponding to the sender ID
         userDao.fetchUsernameById(senderId) { username ->
@@ -65,7 +64,7 @@ class PendingInviteAdapter(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     Log.d("PendingInviteAdapter", "Item clicked at position $position: invite = ${inviteList[position]}")
-                    showGameDialog(receiverId, inviteList[position])
+                    showGameDialog(receiverId, inviteList[position].senderId)
                 }
             }
 
@@ -84,7 +83,7 @@ class PendingInviteAdapter(
         }
     }
 
-    fun updateInvitationsList(newInvites: List<String>) {
+    fun updateInvitationsList(newInvites: List<Invite>) {
         inviteList.clear()
         inviteList.addAll(newInvites)
         notifyDataSetChanged()

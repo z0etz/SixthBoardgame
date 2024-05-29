@@ -84,6 +84,7 @@
     <string name="add_player">Add Player</string>
     <string name="add_game">Add Game</string>
     <string name="invited_by">Invite from   %s</string>
+    <string name="invited">Invited   %s</string>
     <string name="score">Score:</string>
     <string name="delete_invite">Delete invite?</string>
     <string name="sent_invites">Sent Invites</string>

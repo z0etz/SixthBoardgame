@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 
 class SentInviteAdapter(
     private val context: Activity,
-    private val inviteList: MutableList<String>,
+    private val inviteList: MutableList<Invite>,
     private val onClickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<SentInviteAdapter.InviteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
         return InviteViewHolder(view)
     }
 
@@ -24,6 +25,12 @@ class SentInviteAdapter(
 
     override fun getItemCount(): Int {
         return inviteList.size
+    }
+
+    fun updateInvitationsList(sentInvites: MutableList<Invite>) {
+        inviteList.clear()
+        inviteList.addAll(sentInvites)
+        notifyDataSetChanged()
     }
 
     inner class InviteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,14 +45,16 @@ class SentInviteAdapter(
             }
         }
 
-        fun bind(playerName: String) {
-            playerNameTextView.text = playerName
-        }
-    }
+        fun bind(invite: Invite) {
+            val receiverId = invite.receiverId
 
-    fun updateInvitationsList(newInvites: List<String>) {
-        inviteList.clear()
-        inviteList.addAll(newInvites)
-        notifyDataSetChanged()
+            UserDao().fetchUsernameById(receiverId) { username ->
+                val playerName = username ?: "Unknown"
+                val text = context.getString(R.string.invited, playerName)
+                playerNameTextView.text = text
+            }
+        }
+
+
     }
 }
