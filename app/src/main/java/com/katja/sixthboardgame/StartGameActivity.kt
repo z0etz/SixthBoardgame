@@ -1,13 +1,11 @@
 package com.katja.sixthboardgame
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,12 +30,12 @@ class StartGameActivity : AppCompatActivity() {
     private var selectedUsersList = mutableListOf<Invite>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
+    private lateinit var sentInviteAdapter: SentInviteAdapter
     private lateinit var inviteDao: InviteDao
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
     private var sentInvitesList = mutableListOf<Invite>()
     private val inviteMap = mutableMapOf<String, Invite>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,23 +45,32 @@ class StartGameActivity : AppCompatActivity() {
         firebaseAuth = Firebase.auth
         userDao = UserDao()
         inviteDao = InviteDao()
+        firestore = FirebaseFirestore.getInstance()
 
         autoCompleteTextView = binding.autoTv
         adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "", onDeleteClickListener = { position ->
-            val invite = selectedUsersList[position]
-            val receiverId = invite.receiverId
-            receiverId?.let {
-                deleteInvite(firebaseAuth.currentUser?.uid!!, it)
-            }
-        })
+        pendingInviteAdapter = PendingInviteAdapter(
+            this,
+            selectedUsersList,
+            receiverId ?: "",
+            onDeleteClickListener = { position ->
+                val invite = selectedUsersList[position]
+                val receiverId = invite.receiverId
+                receiverId?.let {
+                    deleteInvite(firebaseAuth.currentUser?.uid!!, it)
+                }
+            },
+            inviteDao = inviteDao,
+            userDao = userDao,
+            gameDao = GameDao()
+        )
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        //Set up sent invites list
+        // Set up sent invites list
         val sentRecyclerView = findViewById<RecyclerView>(R.id.sentInvitesRecyclerView)
         sentInviteAdapter = SentInviteAdapter(this, sentInvitesList) { position ->
             val invite = sentInvitesList[position]
@@ -117,7 +124,11 @@ class StartGameActivity : AppCompatActivity() {
                     pendingInviteAdapter
                 )
             } else {
-                Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "You cannot send an invitation to yourself.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -199,11 +210,10 @@ class StartGameActivity : AppCompatActivity() {
     }
 
     private fun deleteInvite(senderId: String, receiverId: String) {
-        // Delete invitation from Firestore
         inviteDao.deleteInvitation(senderId, receiverId)
             .addOnSuccessListener {
                 runOnUiThread {
-                    val position = selectedUsersList.indexOf(receiverId)
+                    val position = selectedUsersList.indexOfFirst { it.receiverId == receiverId }
                     if (position != -1) {
                         selectedUsersList.removeAt(position)
                         pendingInviteAdapter.notifyItemRemoved(position)
@@ -213,16 +223,15 @@ class StartGameActivity : AppCompatActivity() {
                         "Invitation deleted successfully",
                         Toast.LENGTH_SHORT
                     ).show()
-                    
-                val position = selectedUsersList.indexOfFirst { it.receiverId == receiverId }
-                if (position != -1) {
-                    selectedUsersList.removeAt(position)
-                    pendingInviteAdapter.notifyItemRemoved(position)
                 }
             }
             .addOnFailureListener { exception ->
                 runOnUiThread {
-                    Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
+                    Log.e(
+                        "DeleteInvite",
+                        "Failed to delete invitation: ${exception.message}",
+                        exception
+                    )
                     Toast.makeText(
                         this,
                         "Failed to delete invitation: ${exception.message}",
@@ -232,8 +241,42 @@ class StartGameActivity : AppCompatActivity() {
             }
     }
 
+    private fun showSentInviteDialog(inviteId: String) {
+        println("Clicked inviteId: $inviteId")
+        println("Invite details: ${inviteMap[inviteId]}")
+
+        val invite = inviteMap[inviteId]
+
+        if (invite != null) {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.activity_cancel_invite)
+
+            val buttonDelete = dialog.findViewById<TextView>(R.id.textButtonDelete)
+            val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
+
+            buttonDelete.setOnClickListener {
+                // Handle deletion logic here
+                deleteInvite(invite.senderId, invite.receiverId)
+                dialog.dismiss()
+            }
+
+            buttonCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        } else {
+            // Logging: Print message if invite not found
+            Log.d("InviteDialog", "Invite not found for inviteId: $inviteId")
+            Toast.makeText(this, "Invite not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         autoCompleteTextView.setText("")
     }
 }
+

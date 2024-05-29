@@ -3,17 +3,11 @@ package com.katja.sixthboardgame
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -24,7 +18,7 @@ class LeaderboardAdapter(
     private val firebaseAuth: FirebaseAuth,
     private val userMap: Map<String?, String?>,
     private val invitationsCollection: CollectionReference,
-    private val selectedUsersList: MutableList<String>,
+    private val selectedUsersList: MutableList<Invite>,
     private val pendingInviteAdapter: PendingInviteAdapter
 ) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
@@ -85,7 +79,7 @@ class CustomPopupWindow(context: Context) : Dialog(context) {
         setContentView(R.layout.activity_pop_up_invite)
 
         // Find the "Start Game" button and set its click listener
-        val startGameButton = findViewById<Button>(R.id.btn_yes)
+        val startGameButton = findViewById<TextView>(R.id.btn_yes)
         startGameButton.setOnClickListener {
             // Start the game activity (replace with your desired action)
             val intent = Intent(context, StartGameActivity::class.java)
@@ -94,7 +88,7 @@ class CustomPopupWindow(context: Context) : Dialog(context) {
             dismiss()
         }
 
-        val cancelButton = findViewById<Button>(R.id.btn_no)
+        val cancelButton = findViewById<TextView>(R.id.btn_no)
         cancelButton.setOnClickListener{
             dismiss()
         }
