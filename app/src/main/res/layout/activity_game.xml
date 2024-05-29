@@ -222,7 +222,7 @@
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:id="@+id/text_button_give_up"
-            android:text="@string/quit"
+            android:text="@string/give_up_game"
             android:layout_marginTop="@dimen/margin_large"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/gradient_button_orange"
