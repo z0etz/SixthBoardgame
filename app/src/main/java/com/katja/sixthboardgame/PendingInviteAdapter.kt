@@ -4,14 +4,11 @@ package com.katja.sixthboardgame
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.AdapterView.inflate
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -19,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.withContext
 
 class PendingInviteAdapter(
     private val context: Context,
@@ -179,7 +175,7 @@ class PendingInviteAdapter(
         userMap: Map<String?, String?>,
         firebaseAuth: FirebaseAuth,
         invitationsCollection: CollectionReference,
-        selectedUsersList: MutableList<String>,
+        selectedUsersList: MutableList<Invite>,
         pendingInviteAdapter: PendingInviteAdapter
     ) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_time_choice, null)

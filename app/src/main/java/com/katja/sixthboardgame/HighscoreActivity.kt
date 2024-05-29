@@ -58,15 +58,13 @@ class HighscoreActivity : AppCompatActivity() {
         )
         getAllUsers()
 
-        val selectedUserIds = selectedUsersList.map { it.receiverId }.toMutableList()
-
         leaderboardAdapter = LeaderboardAdapter(
             emptyList(),
             this,
             firebaseAuth,
             userMap,
             invitationsCollection,
-            selectedUserIds,
+            selectedUsersList,
             pendingInviteAdapter
         )
 

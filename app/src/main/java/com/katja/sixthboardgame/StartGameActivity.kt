@@ -1,13 +1,11 @@
 package com.katja.sixthboardgame
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +30,7 @@ class StartGameActivity : AppCompatActivity() {
     private var selectedUsersList = mutableListOf<Invite>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
+    private lateinit var sentInviteAdapter: SentInviteAdapter
     private lateinit var inviteDao: InviteDao
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
@@ -73,7 +72,7 @@ class StartGameActivity : AppCompatActivity() {
 
         // Set up sent invites list
         val sentRecyclerView = findViewById<RecyclerView>(R.id.sentInvitesRecyclerView)
-        val sentInviteAdapter = SentInviteAdapter(this, sentInvitesList) { position ->
+        sentInviteAdapter = SentInviteAdapter(this, sentInvitesList) { position ->
             val invite = sentInvitesList[position]
             showSentInviteDialog(invite.inviteId)
         }
@@ -240,6 +239,39 @@ class StartGameActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+    }
+
+    private fun showSentInviteDialog(inviteId: String) {
+        println("Clicked inviteId: $inviteId")
+        println("Invite details: ${inviteMap[inviteId]}")
+
+        val invite = inviteMap[inviteId]
+
+        if (invite != null) {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.activity_cancel_invite)
+
+            val buttonDelete = dialog.findViewById<TextView>(R.id.textButtonDelete)
+            val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
+
+            buttonDelete.setOnClickListener {
+                // Handle deletion logic here
+                deleteInvite(invite.senderId, invite.receiverId)
+                dialog.dismiss()
+            }
+
+            buttonCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        } else {
+            // Logging: Print message if invite not found
+            Log.d("InviteDialog", "Invite not found for inviteId: $inviteId")
+            Toast.makeText(this, "Invite not found", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {
