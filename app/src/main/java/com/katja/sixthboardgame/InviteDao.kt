@@ -12,13 +12,15 @@ class InviteDao {
     val INVITE_ID_KEY = "inviteId"
     val SENDER_ID_KEY = "senderId"
     val RECEIVER_ID_KEY = "receiverId"
+    val SELECTED_TIME_KEY = "selectedTime"
     val STATUS_KEY = "status"
 
-    fun sendInvitation(senderId: String, receiverId: String, inviteId: String, callback: (Map<String, Any>) -> Unit) {
+    fun sendInvitation(senderId: String, receiverId: String, inviteId: String,selectedTime: Int, callback: (Map<String, Any>) -> Unit) {
         val invitationData = hashMapOf(
             INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
+            SELECTED_TIME_KEY to selectedTime, // Add turn time to the invitation data
             STATUS_KEY to "pending"
         )
 
@@ -32,9 +34,10 @@ class InviteDao {
                 callback(invitationData)
             }
             .addOnFailureListener { e ->
-                // Hantera eventuellt fel vid skickning av inbjudning här
+                // Handle any errors that occur while sending the invitation here
             }
     }
+
     // Metod för att lyssna på inkommande spelinbjudningar för en specifik användare
     fun listenForInvitations(receiverId: String, listener: (List<Map<String, Any>>) -> Unit) {
         invitationsCollection
@@ -87,6 +90,19 @@ class InviteDao {
             }
             .addOnFailureListener { e ->
                 // Hantera eventuellt fel vid uppdatering av inbjudningsstatus här
+            }
+    }
+
+    fun getInvite(inviteId: String, callback: (Map<String, Any>?) -> Unit) {
+        invitationsCollection.document(inviteId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val inviteData = documentSnapshot.data
+                callback(inviteData)
+            }
+            .addOnFailureListener { exception ->
+                // Handle failure if necessary
+                callback(null)
             }
     }
     fun deleteInvitation(senderId: String, receiverId: String): Task<Void> {

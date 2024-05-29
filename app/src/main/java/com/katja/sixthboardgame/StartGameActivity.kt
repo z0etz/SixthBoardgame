@@ -1,9 +1,6 @@
 package com.katja.sixthboardgame
 
-
-import android.app.Activity;
 import android.app.AlertDialog
-
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -35,12 +32,12 @@ class StartGameActivity : AppCompatActivity() {
     private var selectedUsersList = mutableListOf<Invite>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
-    private lateinit var sentInviteAdapter: SentInviteAdapter
     private lateinit var inviteDao: InviteDao
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
     private var receiverId: String? = null
     private var sentInvitesList = mutableListOf<Invite>()
     private val inviteMap = mutableMapOf<String, Invite>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +48,6 @@ class StartGameActivity : AppCompatActivity() {
         userDao = UserDao()
         inviteDao = InviteDao()
 
-        //Set up received invites list
         autoCompleteTextView = binding.autoTv
         adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
         autoCompleteTextView.setAdapter(adapter)
@@ -63,12 +59,9 @@ class StartGameActivity : AppCompatActivity() {
             receiverId?.let {
                 deleteInvite(firebaseAuth.currentUser?.uid!!, it)
             }
-        }
-        )
+        })
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
-        firestore = FirebaseFirestore.getInstance()
-
 
         //Set up sent invites list
         val sentRecyclerView = findViewById<RecyclerView>(R.id.sentInvitesRecyclerView)
@@ -97,12 +90,14 @@ class StartGameActivity : AppCompatActivity() {
         }
 
         userDao.fetchUserNames { names ->
-            userNameList = names.distinct() // Remove duplicates
-            Log.d("StartGameActivity", "Unique user names: $userNameList")
-            adapter.clear() // Clear existing data
-            userNameList?.let {
-                adapter.addAll(it)
-                Log.d("StartGameActivity", "Adapter populated with: $it")
+            runOnUiThread {
+                userNameList = names?.distinct() // Remove duplicates
+                Log.d("StartGameActivity", "Unique user names: $userNameList")
+                adapter.clear() // Clear existing data
+                userNameList?.let {
+                    adapter.addAll(it)
+                    Log.d("StartGameActivity", "Adapter populated with: $it")
+                }
             }
         }
 
@@ -111,9 +106,8 @@ class StartGameActivity : AppCompatActivity() {
             val receiverId = getReceiverId(selectedUser) // Update receiverId
             val senderId = firebaseAuth.currentUser?.uid
 
-
             if (senderId != null && receiverId != null && senderId != receiverId) {
-                PopupUtils.showPopup(
+                pendingInviteAdapter.showPopup(
                     this,
                     selectedUser,
                     userMap,
@@ -122,43 +116,45 @@ class StartGameActivity : AppCompatActivity() {
                     selectedUsersList,
                     pendingInviteAdapter
                 )
-            
             } else {
                 Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
             }
         }
 
         getAllUsers()
-    } 
+    }
 
-   private fun getReceiverId(selectedUser: String) {
-        receiverId = userMap[selectedUser]
-
+    private fun getReceiverId(selectedUser: String): String? {
+        return userMap[selectedUser]
     }
 
     private fun getAllUsers() {
         val usersCollection = firestore.collection("users")
         usersCollection.get()
             .addOnSuccessListener { querySnapshot ->
-                val usersList = mutableListOf<String>()
-                for (document in querySnapshot.documents) {
-                    val fullName = document.getString("UserName")
-                    val user2Id = document.getString("id")
-                    if (!userMap.containsKey(fullName)) {
-                        fullName?.let { usersList.add(it) }
-                        userMap[fullName] = user2Id
+                runOnUiThread {
+                    val usersList = mutableListOf<String>()
+                    for (document in querySnapshot.documents) {
+                        val fullName = document.getString("UserName")
+                        val user2Id = document.getString("id")
+                        if (!userMap.containsKey(fullName)) {
+                            fullName?.let { usersList.add(it) }
+                            userMap[fullName] = user2Id
+                        }
                     }
+                    adapter.clear() // Clear existing data
+                    adapter.addAll(usersList.distinct()) // Add distinct names only
+                    adapter.notifyDataSetChanged() // Notify adapter for changes
                 }
-                adapter.clear() // clear old data
-                adapter.addAll(usersList.distinct()) // Add actual names with specific id
-                adapter.notifyDataSetChanged() // Notify adapter for changes
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(
-                    this,
-                    "Failed to fetch users: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Toast.makeText(
+                        this,
+                        "Failed to fetch users: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
     }
 
@@ -176,7 +172,7 @@ class StartGameActivity : AppCompatActivity() {
             }
         }
 
-        // Add all invites to the list
+        // Add all invites to the list, both sent and received
         pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
 
@@ -206,24 +202,33 @@ class StartGameActivity : AppCompatActivity() {
         // Delete invitation from Firestore
         inviteDao.deleteInvitation(senderId, receiverId)
             .addOnSuccessListener {
+                runOnUiThread {
+                    val position = selectedUsersList.indexOf(receiverId)
+                    if (position != -1) {
+                        selectedUsersList.removeAt(position)
+                        pendingInviteAdapter.notifyItemRemoved(position)
+                    }
+                    Toast.makeText(
+                        this,
+                        "Invitation deleted successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    
                 val position = selectedUsersList.indexOfFirst { it.receiverId == receiverId }
                 if (position != -1) {
                     selectedUsersList.removeAt(position)
                     pendingInviteAdapter.notifyItemRemoved(position)
                 }
-                Toast.makeText(
-                    this,
-                    "Invitation deleted successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
             .addOnFailureListener { exception ->
-                Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
-                Toast.makeText(
-                    this,
-                    "Failed to delete invitation: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
+                    Toast.makeText(
+                        this,
+                        "Failed to delete invitation: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
     }
 

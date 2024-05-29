@@ -12,7 +12,7 @@
     <string name="time_unavailable">Time unavailable</string>
     <string name="opponent_unavailable">Opponent unavailable</string>
     <string name="sign_up">Sign Up</string>
-    <string name="sign_in">Sign in</string>
+    <string name="sign_in">Sign In</string>
     <string name="login">Login</string>
     <string name="let_s_play">LET´S PLAY</string>
     <string name="wooden_background_image_description">Wood image</string>
@@ -63,7 +63,7 @@
     <string name="time_not_loaded">Time not loaded</string>
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
-    <string name="pending_invites">Received invites</string>
+    <string name="pending_invites">Received Invites</string>
     <string name="player_name">Player Name</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="plus">+</string>
@@ -89,4 +89,5 @@
     <string name="delete_invite">Delete invite?</string>
     <string name="sent_invites">Sent Invites</string>
     <string name="delete">Delete</string>
+    <string name="quit">Quit</string>
 </resources>
