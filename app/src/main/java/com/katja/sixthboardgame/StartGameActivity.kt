@@ -274,4 +274,5 @@ class StartGameActivity : AppCompatActivity() {
         super.onResume()
         autoCompleteTextView.setText("")
     }
+
 }
