@@ -114,15 +114,41 @@ class StartGameActivity : AppCompatActivity() {
             val senderId = firebaseAuth.currentUser?.uid
 
             if (senderId != null && receiverId != null && senderId != receiverId) {
-                pendingInviteAdapter.showPopup(
-                    this,
-                    selectedUser,
-                    userMap,
-                    firebaseAuth,
-                    invitationsCollection,
-                    selectedUsersList,
-                    pendingInviteAdapter
-                )
+                // Query Firestore to check for existing invitations
+                invitationsCollection
+                    .whereEqualTo("senderId", senderId)
+                    .whereEqualTo("receiverId", receiverId)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (querySnapshot.isEmpty) {
+                            // No existing invitation, show the popup
+                            pendingInviteAdapter.showPopup(
+                                this,
+                                selectedUser,
+                                userMap,
+                                firebaseAuth,
+                                invitationsCollection,
+                                selectedUsersList,
+                                pendingInviteAdapter
+                            )
+                        } else {
+                            // Existing invitation found, show a toast message
+                            Toast.makeText(
+                                this,
+                                "You have already sent an invitation to this user.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        // Handle any errors that occur during the query
+                        Toast.makeText(
+                            this,
+                            "Failed to send invitation",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        println("Failed to check if invitation to user already exists: ${exception.message}")
+                    }
             } else {
                 Toast.makeText(
                     this,
