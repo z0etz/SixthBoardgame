@@ -673,7 +673,6 @@ class GameActivity : AppCompatActivity() {
         countDownTimer?.cancel() // Cancel any existing timer
 
         if(!game.gameEnded) {
-            if(game.nextPlayer == currentUserId) {
                 val timeSinceLastTurn = Date().time - game.lastTurnTime.time
                 val turnTimeLeft = game.turnTime - timeSinceLastTurn
 
@@ -696,9 +695,6 @@ class GameActivity : AppCompatActivity() {
                         showGameEndDialogue()
                     }
                 }.start()
-            } else {
-                binding.timeLeft.text = getString(R.string.opponents_turn)
-            }
         } else {
             binding.timeLeft.text = getString(R.string.game_ended)
         }
