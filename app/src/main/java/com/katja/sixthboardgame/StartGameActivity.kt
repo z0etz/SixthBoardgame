@@ -36,6 +36,7 @@ class StartGameActivity : AppCompatActivity() {
     private var receiverId: String? = null
     private var sentInvitesList = mutableListOf<Invite>()
     private val inviteMap = mutableMapOf<String, Invite>()
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -208,8 +209,6 @@ class StartGameActivity : AppCompatActivity() {
                 incomingInvites.add(invitation)
             }
         }
-
-        // Add all invites to the list, both sent and received
         pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
 
@@ -229,9 +228,6 @@ class StartGameActivity : AppCompatActivity() {
                 sentInvites.add(invite)
             }
         }
-        // Logging: Print contents of inviteMap
-        Log.d("InviteMap", "InviteMap: $inviteMap")
-        // Update the UI with the sent invites
         sentInviteAdapter.updateInvitationsList(sentInvites)
     }
 
@@ -290,6 +286,20 @@ class StartGameActivity : AppCompatActivity() {
 
             buttonCancel.setOnClickListener {
                 dialog.dismiss()
+            }
+
+            val usernameText = dialog.findViewById<TextView>(R.id.usernameDialogTextView)
+            val opponentNameText = dialog.findViewById<TextView>(R.id.opponentsDialogTextView)
+
+            userDao.fetchUsernameById(invite.senderId) { username ->
+                if(username != null) {
+                    usernameText.text = username
+                }
+            }
+            userDao.fetchUsernameById(invite.receiverId) { opponentName ->
+                if(opponentName != null) {
+                    opponentNameText.text = opponentName
+                }
             }
 
             dialog.show()

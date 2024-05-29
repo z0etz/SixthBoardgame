@@ -60,7 +60,7 @@ class PendingInviteAdapter(
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    Log.d("PendingInviteAdapter", "Item clicked at position $position: invite = ${inviteList[position]}")
+                    Log.d("PendingInviteAdapter", "Item clicked at position $position: SenderId of invite = ${inviteList[position].senderId}")
                     showGameDialog(receiverId, inviteList[position].senderId)
                 }
             }
@@ -120,6 +120,20 @@ class PendingInviteAdapter(
                         dialog.dismiss()
                         // Delete invite from Firebase (Parameters: receiverId, senderId)
                         inviteDao.deleteInvitation(receiverId, currentUserId)
+                    }
+
+                    val usernameText = dialog.findViewById<TextView>(R.id.usernameDialogTextView)
+                    val opponentNameText = dialog.findViewById<TextView>(R.id.opponentsDialogTextView)
+
+                    userDao.fetchUsernameById(receiverId) { username ->
+                        if(username != null) {
+                            usernameText.text = username
+                        }
+                    }
+                    userDao.fetchUsernameById(currentUserId) { opponentName ->
+                        if(opponentName != null) {
+                            opponentNameText.text = opponentName
+                        }
                     }
 
                     dialog.show()
