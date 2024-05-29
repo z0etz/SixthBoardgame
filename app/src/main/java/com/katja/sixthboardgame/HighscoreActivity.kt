@@ -26,7 +26,7 @@ class HighscoreActivity : AppCompatActivity() {
     private lateinit var leaderboardAdapter: LeaderboardAdapter
     private lateinit var firebaseAuth: FirebaseAuth
     private val invitationsCollection = FirebaseFirestore.getInstance().collection("game_invitations")
-    private var selectedUsersList = mutableListOf<String>()
+    private var selectedUsersList = mutableListOf<Invite>()
     private lateinit var pendingInviteAdapter: PendingInviteAdapter
     private val userMap = mutableMapOf<String?, String?>()
     private val inviteDao = InviteDao()
@@ -46,8 +46,8 @@ class HighscoreActivity : AppCompatActivity() {
             selectedUsersList,
             receiverId ?: "",
             onDeleteClickListener = { position ->
-                val receiverName = selectedUsersList[position]
-                val receiverId = userMap[receiverName]
+                val invite = selectedUsersList[position]
+                val receiverId = invite.receiverId
                 receiverId?.let {
                     // Handle delete invite here if needed
                 }
@@ -58,23 +58,23 @@ class HighscoreActivity : AppCompatActivity() {
         )
         getAllUsers()
 
+        val selectedUserIds = selectedUsersList.map { it.receiverId }.toMutableList()
+
         leaderboardAdapter = LeaderboardAdapter(
             emptyList(),
             this,
             firebaseAuth,
             userMap,
             invitationsCollection,
-            selectedUsersList,
+            selectedUserIds,
             pendingInviteAdapter
         )
+
         binding.recyclerViewHighscore.adapter = leaderboardAdapter
         binding.recyclerViewHighscore.layoutManager = LinearLayoutManager(this)
 
         fetchAndDisplayLeaderboard()
     }
-
-
-
 
     private var selectedTime: Int = 24
 

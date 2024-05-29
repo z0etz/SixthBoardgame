@@ -38,7 +38,6 @@ class StartGameActivity : AppCompatActivity() {
     private var sentInvitesList = mutableListOf<Invite>()
     private val inviteMap = mutableMapOf<String, Invite>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartGameBinding.inflate(layoutInflater)
@@ -47,25 +46,34 @@ class StartGameActivity : AppCompatActivity() {
         firebaseAuth = Firebase.auth
         userDao = UserDao()
         inviteDao = InviteDao()
+        firestore = FirebaseFirestore.getInstance()
 
         autoCompleteTextView = binding.autoTv
         adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line)
         autoCompleteTextView.setAdapter(adapter)
 
         recyclerView = findViewById(R.id.invitesRecyclerView)
-        pendingInviteAdapter = PendingInviteAdapter(this, selectedUsersList, receiverId ?: "", onDeleteClickListener = { position ->
-            val invite = selectedUsersList[position]
-            val receiverId = invite.receiverId
-            receiverId?.let {
-                deleteInvite(firebaseAuth.currentUser?.uid!!, it)
-            }
-        })
+        pendingInviteAdapter = PendingInviteAdapter(
+            this,
+            selectedUsersList,
+            receiverId ?: "",
+            onDeleteClickListener = { position ->
+                val invite = selectedUsersList[position]
+                val receiverId = invite.receiverId
+                receiverId?.let {
+                    deleteInvite(firebaseAuth.currentUser?.uid!!, it)
+                }
+            },
+            inviteDao = inviteDao,
+            userDao = userDao,
+            gameDao = GameDao()
+        )
         recyclerView.adapter = pendingInviteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        //Set up sent invites list
+        // Set up sent invites list
         val sentRecyclerView = findViewById<RecyclerView>(R.id.sentInvitesRecyclerView)
-        sentInviteAdapter = SentInviteAdapter(this, sentInvitesList) { position ->
+        val sentInviteAdapter = SentInviteAdapter(this, sentInvitesList) { position ->
             val invite = sentInvitesList[position]
             showSentInviteDialog(invite.inviteId)
         }
@@ -117,7 +125,11 @@ class StartGameActivity : AppCompatActivity() {
                     pendingInviteAdapter
                 )
             } else {
-                Toast.makeText(this, "You cannot send an invitation to yourself.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "You cannot send an invitation to yourself.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -199,11 +211,10 @@ class StartGameActivity : AppCompatActivity() {
     }
 
     private fun deleteInvite(senderId: String, receiverId: String) {
-        // Delete invitation from Firestore
         inviteDao.deleteInvitation(senderId, receiverId)
             .addOnSuccessListener {
                 runOnUiThread {
-                    val position = selectedUsersList.indexOf(receiverId)
+                    val position = selectedUsersList.indexOfFirst { it.receiverId == receiverId }
                     if (position != -1) {
                         selectedUsersList.removeAt(position)
                         pendingInviteAdapter.notifyItemRemoved(position)
@@ -213,16 +224,15 @@ class StartGameActivity : AppCompatActivity() {
                         "Invitation deleted successfully",
                         Toast.LENGTH_SHORT
                     ).show()
-                    
-                val position = selectedUsersList.indexOfFirst { it.receiverId == receiverId }
-                if (position != -1) {
-                    selectedUsersList.removeAt(position)
-                    pendingInviteAdapter.notifyItemRemoved(position)
                 }
             }
             .addOnFailureListener { exception ->
                 runOnUiThread {
-                    Log.e("DeleteInvite", "Failed to delete invitation: ${exception.message}", exception)
+                    Log.e(
+                        "DeleteInvite",
+                        "Failed to delete invitation: ${exception.message}",
+                        exception
+                    )
                     Toast.makeText(
                         this,
                         "Failed to delete invitation: ${exception.message}",
@@ -237,3 +247,4 @@ class StartGameActivity : AppCompatActivity() {
         autoCompleteTextView.setText("")
     }
 }
+
