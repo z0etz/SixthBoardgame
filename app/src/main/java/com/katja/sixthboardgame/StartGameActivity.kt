@@ -91,7 +91,7 @@ class StartGameActivity : AppCompatActivity() {
                     val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
                     val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
                     val status = invitation[inviteDao.STATUS_KEY] as String
-                    Invite(inviteId, senderId, receiverId, status)
+                    Invite(inviteId, senderId, receiverId, selectedTime = 0, status)
                 }
                 processReceivedInvitations(invites)
             }

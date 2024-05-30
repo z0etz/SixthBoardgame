@@ -1,17 +1,12 @@
 package com.katja.sixthboardgame
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.installations.Utils
 import com.katja.sixthboardgame.databinding.ActivityHighscoreBinding
 
 
