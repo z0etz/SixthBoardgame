@@ -188,10 +188,11 @@ class PendingInviteAdapter(
                         )
                         // Create a new game and add it to Firestore (Parameters: senderId, receiverId, selectedTime)
                         gameDao.addGame(currentUserId, receiverId, selectedTime)
+                        inviteDao.deleteInvitation(receiverId, currentUserId)
                         // Close dialog
                         dialog.dismiss()
                         // Delete invite from Firebase (Parameters: receiverId, senderId)
-                        inviteDao.deleteInvitation(receiverId, currentUserId)
+
                     }
 
                     buttonCancel.setOnClickListener {

@@ -9,7 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ListItemGameBinding
 
-class WelcomeAdapterCurrentGamesList(private val context: Context, private val dataList: List<Game>, private val onItemClick: (String) -> Unit,private val fetchOpponentName: (String, (String) -> Unit) -> Unit)   : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
+class WelcomeAdapterCurrentGamesList(
+    private val context: Context,
+    private val dataList: MutableList<Game>, // Changed to MutableList to allow updates
+    private val onItemClick: (String) -> Unit,
+    private val fetchOpponentName: (String, (String) -> Unit) -> Unit
+) : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
 
     private var handler: Handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable
@@ -24,7 +29,6 @@ class WelcomeAdapterCurrentGamesList(private val context: Context, private val d
         handler.postDelayed(runnable, 1000)
     }
 
-    // ViewHolder class to hold references to the views in the item layout using View Binding
     class ViewHolder(private val binding: ListItemGameBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(context: Context, game: Game, onItemClick: (String) -> Unit, fetchOpponentName: (String, (String) -> Unit) -> Unit) {
             val opponentId = game.playerIds.firstOrNull { it != FirebaseAuth.getInstance().currentUser?.uid } ?: "Unknown"
