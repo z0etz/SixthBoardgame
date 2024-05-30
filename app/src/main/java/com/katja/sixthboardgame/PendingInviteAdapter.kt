@@ -23,7 +23,7 @@ class PendingInviteAdapter(
     private val receiverId: String,
     private val onDeleteClickListener: (Int) -> Unit,
     private val inviteDao: InviteDao = InviteDao(),
-    var selectedSliderTime: Int = 24 * 3600,
+    var selectedSliderTime: Int = 24 * 3600000,
     private val userDao: UserDao = UserDao(),
     private val gameDao: GameDao = GameDao() // Add GameDao dependency
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
@@ -199,12 +199,12 @@ class PendingInviteAdapter(
         val selectedTimeTextView = dialogView.findViewById<TextView>(R.id.selectedTimeTextView)
 
         // Convert seconds to hours for display
-        selectedTimeTextView.text = "${selectedSliderTime / 3600} hours"
+        selectedTimeTextView.text = "${selectedSliderTime / 3600000} hours"
 
         timeSlider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 // Convert hours (progress) to seconds
-                selectedSliderTime = progress * 3600
+                selectedSliderTime = progress * 3600000
                 selectedTimeTextView.text = "$progress hours"
             }
 
