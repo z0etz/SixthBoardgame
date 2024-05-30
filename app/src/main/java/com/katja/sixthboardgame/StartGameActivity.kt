@@ -91,7 +91,7 @@ class StartGameActivity : AppCompatActivity() {
                     val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
                     val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
                     val status = invitation[inviteDao.STATUS_KEY] as String
-                    Invite(inviteId, senderId, receiverId, status)
+                    Invite(inviteId, senderId, receiverId, selectedTime = 0, status)
                 }
                 processReceivedInvitations(invites)
             }
@@ -197,19 +197,28 @@ class StartGameActivity : AppCompatActivity() {
     }
 
     private fun processReceivedInvitations(invitations: List<Invite>) {
-        val incomingInvites = mutableListOf<Invite>()
         val currentUser = firebaseAuth.currentUser
         val currentUserId = currentUser?.uid
 
-        for (invitation in invitations) {
+        val incomingInvites = mutableListOf<Invite>()
+        val selectedTimes = mutableMapOf<String, Int>()
+
+        invitations.forEach { invitation ->
             val senderId = invitation.senderId
             val receiverId = invitation.receiverId
 
             if (currentUserId == receiverId) {
-                incomingInvites.add(invitation)
+                pendingInviteAdapter.fetchSelectedTimeFromFirebase(senderId, receiverId) { selectedTime ->
+                    val inviteWithTime = invitation.copy(selectedTime = selectedTime ?: 0)
+                    incomingInvites.add(inviteWithTime)
+                    selectedTimes[invitation.inviteId] = selectedTime ?: 0
+
+                    if (incomingInvites.size == invitations.size) {
+                        pendingInviteAdapter.updateInvitationsList(incomingInvites, selectedTimes)
+                    }
+                }
             }
         }
-        pendingInviteAdapter.updateInvitationsList(incomingInvites)
     }
 
     private fun processSentInvitations(sentInvitations: List<Invite>) {

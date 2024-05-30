@@ -14,8 +14,7 @@ class SentInviteAdapter(
 ) : RecyclerView.Adapter<SentInviteAdapter.InviteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_invites, parent, false)
         return InviteViewHolder(view)
     }
 
@@ -23,11 +22,9 @@ class SentInviteAdapter(
         holder.bind(inviteList[position])
     }
 
-    override fun getItemCount(): Int {
-        return inviteList.size
-    }
+    override fun getItemCount(): Int = inviteList.size
 
-    fun updateInvitationsList(sentInvites: MutableList<Invite>) {
+    fun updateInvitationsList(sentInvites: List<Invite>) {
         inviteList.clear()
         inviteList.addAll(sentInvites)
         notifyDataSetChanged()
@@ -35,6 +32,7 @@ class SentInviteAdapter(
 
     inner class InviteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val playerNameTextView: TextView = itemView.findViewById(R.id.invitePlayerName)
+        private val selectedTimeTextView: TextView = itemView.findViewById(R.id.selectedTime)
 
         init {
             itemView.setOnClickListener {
@@ -46,15 +44,16 @@ class SentInviteAdapter(
         }
 
         fun bind(invite: Invite) {
-            val receiverId = invite.receiverId
-
-            UserDao().fetchUsernameById(receiverId) { username ->
+            UserDao().fetchUsernameById(invite.receiverId) { username ->
                 val playerName = username ?: "Unknown"
-                val text = context.getString(R.string.invited, playerName)
-                playerNameTextView.text = text
+                val inviteText = context.getString(R.string.invited, playerName)
+                playerNameTextView.text = inviteText
+
+                // Convert milliseconds to hours for readability
+                val selectedTimeInHours = invite.selectedTime / (1000 * 60 * 60)
+                val timeText = context.getString(R.string.selected_time, selectedTimeInHours)
+                selectedTimeTextView.text = timeText
             }
         }
-
-
     }
 }
