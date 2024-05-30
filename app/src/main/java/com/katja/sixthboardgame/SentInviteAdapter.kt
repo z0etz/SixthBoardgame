@@ -49,7 +49,9 @@ class SentInviteAdapter(
                 val inviteText = context.getString(R.string.invited, playerName)
                 playerNameTextView.text = inviteText
 
-                val timeText = context.getString(R.string.selected_time, invite.selectedTime)
+                // Convert milliseconds to hours for readability
+                val selectedTimeInHours = invite.selectedTime / (1000 * 60 * 60)
+                val timeText = context.getString(R.string.selected_time, selectedTimeInHours)
                 selectedTimeTextView.text = timeText
             }
         }
