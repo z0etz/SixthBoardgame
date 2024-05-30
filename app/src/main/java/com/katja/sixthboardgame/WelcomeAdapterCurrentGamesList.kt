@@ -17,7 +17,8 @@ class WelcomeAdapterCurrentGamesList(private val context: Context, private val d
     init {
         runnable = object : Runnable {
             override fun run() {
-                notifyDataSetChanged()  // This will refresh the RecyclerView each second
+                // Refresh the RecyclerView each second
+                notifyDataSetChanged()
                 handler.postDelayed(this, 1000)
             }
         }

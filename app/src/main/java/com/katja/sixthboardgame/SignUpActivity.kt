@@ -23,8 +23,7 @@ class SignUpActivity : AppCompatActivity() {
         fireBaseAuth = Firebase.auth
         userDao = UserDao()
 
-        // this is taking sometime
-        // ask Bill how to handel such problems
+        // TODO: This takes time, see if it can be handled faster somehow.
         userDao.fetchUserNames {
 
             userNameList = it
@@ -39,8 +38,6 @@ class SignUpActivity : AppCompatActivity() {
         binding.signUpButton.setOnClickListener {
             register()
         }
-
-
     }
 
     fun register() {
@@ -57,14 +54,9 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-
-
-        // we need to keep all following code inside this userDao function to avoid conflict
+        // All following code needs to be kept inside this function to avoid conflict
         // between asynchronous code and synchronous code
-
-
             for (oldUserName in userNameList) {
-
                 println(oldUserName)
                 println(oldUserName.indices)
                 if (oldUserName == userName) {
@@ -72,18 +64,11 @@ class SignUpActivity : AppCompatActivity() {
                     return
                 }
             }
-
-
-
-
-
             if (password != confirmPassWord) {
 
                 Toast.makeText(this, "Passwords don't match ", Toast.LENGTH_SHORT).show()
                 return
-
             }
-
 
             fireBaseAuth.createUserWithEmailAndPassword(usermail, password)
                 .addOnSuccessListener { authResult ->
@@ -106,6 +91,5 @@ class SignUpActivity : AppCompatActivity() {
                     )
                         .show()
                 }
-
     }
 }

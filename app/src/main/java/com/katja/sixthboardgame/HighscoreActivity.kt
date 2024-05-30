@@ -16,7 +16,6 @@ import com.katja.sixthboardgame.databinding.ActivityHighscoreBinding
 
 
 class HighscoreActivity : AppCompatActivity() {
-    //he hee
 
     lateinit var binding: ActivityHighscoreBinding
     private lateinit var firestore: FirebaseFirestore
@@ -72,13 +71,6 @@ class HighscoreActivity : AppCompatActivity() {
         binding.recyclerViewHighscore.layoutManager = LinearLayoutManager(this)
 
         fetchAndDisplayLeaderboard()
-    }
-
-    private var selectedTime: Int = 24
-
-
-    private fun getReceiverId(selectedUser: String): String? {
-        return userMap[selectedUser]
     }
 
     private fun fetchAndDisplayLeaderboard() {

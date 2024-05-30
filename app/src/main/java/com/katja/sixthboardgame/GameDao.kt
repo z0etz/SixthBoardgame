@@ -31,7 +31,7 @@ class GameDao {
         playerIdsMutableList.shuffle()
         game.playerIds = playerIdsMutableList
         game.nextPlayer = game.playerIds[0]
-        game.turnTime = turnTime // Set the turn time
+        game.turnTime = turnTime
         updateGame(game)
     }
 

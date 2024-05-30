@@ -90,7 +90,6 @@ class WelcomeActivity : AppCompatActivity() {
         if (requestCode == NEW_GAME_REQUEST && resultCode == RESULT_OK) {
             // Reload ongoing games data
             loadOngoingGamesData()
-
             adapter.notifyDataSetChanged()
         }
     }

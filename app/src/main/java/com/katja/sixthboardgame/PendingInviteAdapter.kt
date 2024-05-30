@@ -25,7 +25,7 @@ class PendingInviteAdapter(
     private val inviteDao: InviteDao = InviteDao(),
     var selectedSliderTime: Int = 24 * 3600,
     private val userDao: UserDao = UserDao(),
-    private val gameDao: GameDao = GameDao() // Add GameDao dependency
+    private val gameDao: GameDao = GameDao()
 ) : RecyclerView.Adapter<PendingInviteAdapter.InviteViewHolder>() {
 // final push
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
@@ -36,15 +36,13 @@ class PendingInviteAdapter(
     override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
         val senderId = inviteList[position].senderId
 
-        // Fetch username corresponding to the sender ID
         userDao.fetchUsernameById(senderId) { username ->
             if (!username.isNullOrEmpty()) {
                 Log.d("PendingInviteAdapter", "Fetched username for senderId $senderId: $username")
-                // Assuming you have access to selectedTime here
-                holder.bind(username) // Pass selectedTime when binding
+                holder.bind(username)
             } else {
                 Log.d("PendingInviteAdapter", "Username for senderId $senderId is null or empty")
-                holder.bind("Unknown") // Pass selectedTime when binding
+                holder.bind("Unknown")
             }
         }
     }
@@ -168,7 +166,7 @@ class PendingInviteAdapter(
             .addOnSuccessListener { querySnapshot ->
                 Log.d("PendingInviteAdapter", "Query successful: ${querySnapshot.documents.size} documents found")
                 if (!querySnapshot.isEmpty) {
-                    val document = querySnapshot.documents[0] // Assuming one invite per sender-receiver pair
+                    val document = querySnapshot.documents[0]
                     val selectedTime = document.getLong("selectedTime")?.toInt()
                     Log.d("PendingInviteAdapter", "Selected time fetched: $selectedTime")
                     callback(selectedTime)
@@ -181,7 +179,6 @@ class PendingInviteAdapter(
                 callback(null)
             }
     }
-
 
     fun showPopup(
         context: Context,
@@ -224,7 +221,6 @@ class PendingInviteAdapter(
                     val inviteId = invitationsCollection.document().id
                     InviteDao().sendInvitation(senderId, receiverId, inviteId,
                         selectedSliderTime) { invitationData ->
-                        // Handle the callback here, for example, you might want to update UI or log information
                         pendingInviteAdapter.notifyDataSetChanged()
                     }
                 } else {

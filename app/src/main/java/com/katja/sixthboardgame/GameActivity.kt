@@ -429,7 +429,6 @@ class GameActivity : AppCompatActivity() {
 
             val discIndex = startIndex + i
             if (discIndex < discStack.discs.size) {
-                // If there are more discs in the stack than there are disc views in the square, turn on the corresponding disc view
                 discView?.visibility = View.VISIBLE
 
                 // Show disc of correct color
@@ -711,19 +710,15 @@ class GameActivity : AppCompatActivity() {
 
         // Set up the buttons
         builder.setPositiveButton(R.string.yes) { dialog, which ->
-            // User clicked "Yes" button
             giveUp()
         }
         builder.setNegativeButton(R.string.no) { dialog, which ->
-            // User clicked "No" button, so dismiss the dialog
             dialog.dismiss()
         }
 
-        // Create and show the alert dialog
         val dialog: AlertDialog = builder.create()
         dialog.show()
     }
-
 
     private fun giveUp() {
         val looserId = currentUserId

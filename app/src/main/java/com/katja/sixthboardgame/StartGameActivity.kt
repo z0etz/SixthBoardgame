@@ -90,8 +90,7 @@ class StartGameActivity : AppCompatActivity() {
                     val inviteId = invitation[inviteDao.INVITE_ID_KEY] as String
                     val senderId = invitation[inviteDao.SENDER_ID_KEY] as String
                     val receiverId = invitation[inviteDao.RECEIVER_ID_KEY] as String
-                    val status = invitation[inviteDao.STATUS_KEY] as String
-                    Invite(inviteId, senderId, receiverId, status)
+                    Invite(inviteId, senderId, receiverId)
                 }
                 processReceivedInvitations(invites)
             }
@@ -111,7 +110,7 @@ class StartGameActivity : AppCompatActivity() {
 
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedUser = parent.getItemAtPosition(position) as String
-            val receiverId = getReceiverId(selectedUser) // Update receiverId
+            val receiverId = getReceiverId(selectedUser)
             val senderId = firebaseAuth.currentUser?.uid
 
             if (senderId != null && receiverId != null && senderId != receiverId) {
@@ -122,7 +121,7 @@ class StartGameActivity : AppCompatActivity() {
                     .get()
                     .addOnSuccessListener { querySnapshot ->
                         if (querySnapshot.isEmpty) {
-                            // No existing invitation, show the popup
+                            // No existing invitation, show popup
                             pendingInviteAdapter.showPopup(
                                 this,
                                 selectedUser,
@@ -142,7 +141,6 @@ class StartGameActivity : AppCompatActivity() {
                         }
                     }
                     .addOnFailureListener { exception ->
-                        // Handle any errors that occur during the query
                         Toast.makeText(
                             this,
                             "Failed to send invitation",
@@ -180,9 +178,9 @@ class StartGameActivity : AppCompatActivity() {
                             userMap[fullName] = user2Id
                         }
                     }
-                    adapter.clear() // Clear existing data
-                    adapter.addAll(usersList.distinct()) // Add distinct names only
-                    adapter.notifyDataSetChanged() // Notify adapter for changes
+                    adapter.clear()
+                    adapter.addAll(usersList.distinct()) // Add unique names only
+                    adapter.notifyDataSetChanged()
                 }
             }
             .addOnFailureListener { exception ->
@@ -222,12 +220,12 @@ class StartGameActivity : AppCompatActivity() {
         for (invite in sentInvitations) {
             inviteMap[invite.inviteId] = invite
 
-            // Add logic here to ensure that the invitation was sent by the current user
             if (currentUserId == invite.senderId) {
-                // Add the receiverId to the list of sent invites
+                // Add invite to the list of sent invites
                 sentInvites.add(invite)
             }
         }
+        // Update UI
         sentInviteAdapter.updateInvitationsList(sentInvites)
     }
 
@@ -279,7 +277,6 @@ class StartGameActivity : AppCompatActivity() {
             val buttonCancel = dialog.findViewById<TextView>(R.id.textButtonCancel)
 
             buttonDelete.setOnClickListener {
-                // Handle deletion logic here
                 deleteInvite(invite.senderId, invite.receiverId)
                 dialog.dismiss()
             }
@@ -304,7 +301,6 @@ class StartGameActivity : AppCompatActivity() {
 
             dialog.show()
         } else {
-            // Logging: Print message if invite not found
             Log.d("InviteDialog", "Invite not found for inviteId: $inviteId")
             Toast.makeText(this, "Invite not found", Toast.LENGTH_SHORT).show()
         }

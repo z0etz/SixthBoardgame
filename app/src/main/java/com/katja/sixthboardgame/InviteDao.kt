@@ -13,38 +13,31 @@ class InviteDao {
     val SENDER_ID_KEY = "senderId"
     val RECEIVER_ID_KEY = "receiverId"
     val SELECTED_TIME_KEY = "selectedTime"
-    val STATUS_KEY = "status"
 
     fun sendInvitation(senderId: String, receiverId: String, inviteId: String,selectedTime: Int, callback: (Map<String, Any>) -> Unit) {
         val invitationData = hashMapOf(
             INVITE_ID_KEY to inviteId,
             SENDER_ID_KEY to senderId,
             RECEIVER_ID_KEY to receiverId,
-            SELECTED_TIME_KEY to selectedTime, // Add turn time to the invitation data
-            STATUS_KEY to "pending"
+            SELECTED_TIME_KEY to selectedTime
         )
 
         invitationsCollection.add(invitationData)
             .addOnSuccessListener { documentReference ->
                 val inviteId = documentReference.id
-                // Log the sent invitation details
                 Log.d(TAG, "Invitation sent with id: $inviteId")
 
-                // Pass invitationData to callback
                 callback(invitationData)
             }
             .addOnFailureListener { e ->
-                // Handle any errors that occur while sending the invitation here
             }
     }
 
-    // Metod för att lyssna på inkommande spelinbjudningar för en specifik användare
     fun listenForInvitations(receiverId: String, listener: (List<Map<String, Any>>) -> Unit) {
         invitationsCollection
             .whereEqualTo(RECEIVER_ID_KEY, receiverId)
             .addSnapshotListener { snapshots, exception ->
                 if (exception != null) {
-                    // Hantera eventuellt fel vid lyssning på inbjudningar här
                     return@addSnapshotListener
                 }
 
@@ -80,31 +73,6 @@ class InviteDao {
             }
     }
 
-
-    // Metod för att uppdatera statusen för en spelinbjudning
-    fun updateInvitationStatus(inviteId: String, newStatus: String) {
-        invitationsCollection.document(inviteId)
-            .update(STATUS_KEY, newStatus)
-            .addOnSuccessListener {
-                // Implementera eventuell logik för lyckad uppdatering av inbjudningsstatus här
-            }
-            .addOnFailureListener { e ->
-                // Hantera eventuellt fel vid uppdatering av inbjudningsstatus här
-            }
-    }
-
-    fun getInvite(inviteId: String, callback: (Map<String, Any>?) -> Unit) {
-        invitationsCollection.document(inviteId)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                val inviteData = documentSnapshot.data
-                callback(inviteData)
-            }
-            .addOnFailureListener { exception ->
-                // Handle failure if necessary
-                callback(null)
-            }
-    }
     fun deleteInvitation(senderId: String, receiverId: String): Task<Void> {
         return invitationsCollection
             .whereEqualTo(SENDER_ID_KEY, senderId)
@@ -120,6 +88,7 @@ class InviteDao {
             }
     }
 
+    // Currently unused function, save as it my be needed when implementing future functionality
     fun fetchInvitationById(inviteId: String, callback: (Invite?) -> Unit) {
         invitationsCollection.document(inviteId).get()
             .addOnSuccessListener { documentSnapshot ->

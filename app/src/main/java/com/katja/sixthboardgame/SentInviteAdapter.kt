@@ -54,7 +54,5 @@ class SentInviteAdapter(
                 playerNameTextView.text = text
             }
         }
-
-
     }
 }

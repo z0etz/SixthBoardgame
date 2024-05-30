@@ -72,31 +72,4 @@ class LeaderboardAdapter(
     }
 }
 
-class CustomPopupWindow(context: Context) : Dialog(context) {
-
-    init {
-        // Set the custom layout for the popup window
-        setContentView(R.layout.activity_pop_up_invite)
-
-        // Find the "Start Game" button and set its click listener
-        val startGameButton = findViewById<TextView>(R.id.btn_yes)
-        startGameButton.setOnClickListener {
-            // Start the game activity (replace with your desired action)
-            val intent = Intent(context, StartGameActivity::class.java)
-            context.startActivity(intent)
-            // Dismiss the popup window
-            dismiss()
-        }
-
-        val cancelButton = findViewById<TextView>(R.id.btn_no)
-        cancelButton.setOnClickListener{
-            dismiss()
-        }
-
-        // Ensure that the popup window is not dismissed when clicking outside of it
-        setCanceledOnTouchOutside(false)
-    }
-
-}
-
 data class Leaderboard(val username: String, val score: Int)

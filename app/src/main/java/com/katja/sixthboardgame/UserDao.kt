@@ -10,7 +10,8 @@ class UserDao {
     val ID_KEY = "id"
     val USER_NAME_KEY = "UserName"
     val EMAIL_KEY = "email"
-    val LEADERBOARD_KEY = "leaderboard" //for leaderboard
+    val LEADERBOARD_KEY = "leaderboard"
+
     fun addUser(user: User) {
         val dataToStore = HashMap<String, Any>()
         dataToStore.put(ID_KEY, user.id as Any)
@@ -30,7 +31,6 @@ class UserDao {
             }
             .addOnFailureListener { log -> Log.w(ContentValues.TAG, "Failed to add user to firestore") }
     }
-
 
     fun fetchUserNames(completion: (List<String>) -> Unit) {
         FirebaseFirestore.getInstance()
@@ -116,7 +116,6 @@ class UserDao {
 
         userRef.get().addOnSuccessListener { documentSnapshot ->
             if (documentSnapshot.exists()) {
-                // User exists, proceed with the update
                 FirebaseFirestore.getInstance().runTransaction { transaction ->
                     val snapshot = transaction.get(userRef)
                     val newScore = (snapshot.getLong(LEADERBOARD_KEY)?.toInt() ?: 0) + increment
@@ -128,7 +127,6 @@ class UserDao {
                     completion(false)
                 }
             } else {
-                // Document does not exist
                 Log.e(ContentValues.TAG, "User does not exist")
                 completion(false)
             }
@@ -137,7 +135,6 @@ class UserDao {
             completion(false)
         }
     }
-    
 }
 
 

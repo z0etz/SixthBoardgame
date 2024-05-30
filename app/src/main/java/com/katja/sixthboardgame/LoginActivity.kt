@@ -35,9 +35,6 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
-
-
-
     }
 
 
@@ -50,7 +47,6 @@ class LoginActivity : AppCompatActivity() {
         } else {
             login(username, password)
         }
-
     }
 
     fun login(username: String, password: String) {
@@ -68,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
             }
     }
+
     fun autoLogin(){
         if (auth.currentUser != null){
 
@@ -77,37 +74,3 @@ class LoginActivity : AppCompatActivity() {
       }
     }
 }
-
-
-/*
-    fun logIn(){
-        val userMail = binding.etUsermail.text.toString()
-        val password = binding.etPassword.text.toString()
-
-        if(userMail.isEmpty() || password.isEmpty()){
-
-            Toast.makeText(this, "Password or mail is missing", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-
-
-
-        auth.signInWithEmailAndPassword(userMail, password)
-            .addOnSuccessListener{ AuthResult ->
-
-                Toast.makeText(this, "Welcome to the game", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, WelcomeActivity::class.java)
-                startActivity(intent)
-                finish()
-
-            }
-            .addOnFailureListener{ exception ->
-                println("failed to log user in ${exception.message}")
-                Toast.makeText(this, "failed to login:  ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
-
-
-
-    }
-*/
