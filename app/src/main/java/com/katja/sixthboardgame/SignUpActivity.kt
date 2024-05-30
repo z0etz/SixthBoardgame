@@ -40,7 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    fun register() {
+    private fun register() {
 
         val userName = binding.etUsername.text.toString().trim()
         val usermail = binding.etEmail.text.toString().trim()

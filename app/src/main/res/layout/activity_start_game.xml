@@ -24,7 +24,6 @@
         android:fontFamily="@font/inter_bold"
         />
 
-
     <AutoCompleteTextView
         android:id="@+id/auto_tv"
         android:layout_width="@dimen/buttons_xl_width"

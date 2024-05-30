@@ -5,12 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.katja.sixthboardgame.databinding.ActivityLoginBinding
-import com.katja.sixthboardgame.databinding.ActivitySignUpBinding
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -38,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    fun authenticateUser(username: String, password: String) {
+    private fun authenticateUser(username: String, password: String) {
         if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || password.isEmpty()) {
             Toast.makeText(
                 this, "Both or one Field is incorrect/empty",
@@ -49,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun login(username: String, password: String) {
+    private fun login(username: String, password: String) {
 
         auth = FirebaseAuth.getInstance()
         auth.signInWithEmailAndPassword(username, password)
@@ -65,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    fun autoLogin(){
+    private fun autoLogin(){
         if (auth.currentUser != null){
 
             val intent = Intent(this, WelcomeActivity::class.java)

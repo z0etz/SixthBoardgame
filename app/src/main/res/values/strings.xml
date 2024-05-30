@@ -90,4 +90,5 @@
     <string name="sent_invites">Sent Invites</string>
     <string name="delete">Delete</string>
     <string name="quit">Quit</string>
+    <string name="game_board_square">Game board square</string>
 </resources>

@@ -7,10 +7,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
 class UserDao {
-    val ID_KEY = "id"
-    val USER_NAME_KEY = "UserName"
-    val EMAIL_KEY = "email"
-    val LEADERBOARD_KEY = "leaderboard"
+    private val ID_KEY = "id"
+    private val USER_NAME_KEY = "UserName"
+    private val EMAIL_KEY = "email"
+    private val LEADERBOARD_KEY = "leaderboard"
 
     fun addUser(user: User) {
         val dataToStore = HashMap<String, Any>()

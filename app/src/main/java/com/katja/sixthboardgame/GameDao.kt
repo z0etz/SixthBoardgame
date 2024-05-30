@@ -3,7 +3,6 @@ package com.katja.sixthboardgame
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
-import java.util.Date
 
 interface GameDeletionCallback {
     fun onGameDeleted(success: Boolean)

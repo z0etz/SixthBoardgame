@@ -2,8 +2,6 @@ package com.katja.sixthboardgame
 
 import android.app.Activity
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,7 +17,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
@@ -449,7 +446,7 @@ class GameActivity : AppCompatActivity() {
         val plusView = squareView.findViewById<View>(R.id.plus_sign)
         plusView?.visibility = if (discStack.discs.size > 6) View.VISIBLE else View.GONE
 
-        var numberOfdiscsText = squareView.findViewById<TextView>(R.id.text_number_of_discs)
+        val numberOfdiscsText = squareView.findViewById<TextView>(R.id.text_number_of_discs)
         numberOfdiscsText.text = discStack.discs.size.toString()
         if (discStack.discs.size > 1 && numberOfdiscsText != null) {
             numberOfdiscsText.visibility = View.VISIBLE

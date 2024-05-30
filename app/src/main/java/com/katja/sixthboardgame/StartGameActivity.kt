@@ -36,7 +36,6 @@ class StartGameActivity : AppCompatActivity() {
     private var receiverId: String? = null
     private var sentInvitesList = mutableListOf<Invite>()
     private val inviteMap = mutableMapOf<String, Invite>()
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,9 +59,7 @@ class StartGameActivity : AppCompatActivity() {
             onDeleteClickListener = { position ->
                 val invite = selectedUsersList[position]
                 val receiverId = invite.receiverId
-                receiverId?.let {
-                    deleteInvite(firebaseAuth.currentUser?.uid!!, it)
-                }
+                deleteInvite(firebaseAuth.currentUser?.uid!!, receiverId)
             },
             inviteDao = inviteDao,
             userDao = userDao,
@@ -98,7 +95,7 @@ class StartGameActivity : AppCompatActivity() {
 
         userDao.fetchUserNames { names ->
             runOnUiThread {
-                userNameList = names?.distinct() // Remove duplicates
+                userNameList = names.distinct() // Remove duplicates
                 Log.d("StartGameActivity", "Unique user names: $userNameList")
                 adapter.clear() // Clear existing data
                 userNameList?.let {
@@ -200,7 +197,6 @@ class StartGameActivity : AppCompatActivity() {
         val currentUserId = currentUser?.uid
 
         for (invitation in invitations) {
-            val senderId = invitation.senderId
             val receiverId = invitation.receiverId
 
             if (currentUserId == receiverId) {

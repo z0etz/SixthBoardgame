@@ -1,12 +1,9 @@
 package com.katja.sixthboardgame
 
-import android.util.Log
-import com.google.gson.annotations.SerializedName
 import java.util.Date
 import java.util.UUID
-import java.util.concurrent.CountDownLatch
 
-class Game() {
+class Game {
     var id = UUID.randomUUID().toString()
     var playerIds= listOf("")
     var nextPlayer = ""

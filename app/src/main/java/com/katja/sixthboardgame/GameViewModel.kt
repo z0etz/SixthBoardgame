@@ -1,14 +1,9 @@
 package com.katja.sixthboardgame
 
-import android.util.Log
-import com.google.firebase.firestore.FirebaseFirestore
-import javax.security.auth.callback.Callback
-
 class GameViewModel {
-    //hej
 
-    val gameDao = GameDao()
-    val userDao = UserDao()
+    private val gameDao = GameDao()
+    private val userDao = UserDao()
 
 
     fun loadGameById(gameId: String, callback: (Game?) -> Unit) {

@@ -10,10 +10,10 @@ import com.katja.sixthboardgame.databinding.ActivityWelcomeBinding
 class WelcomeActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityWelcomeBinding
-    lateinit var adapter: WelcomeAdapterCurrentGamesList
+    private lateinit var adapter: WelcomeAdapterCurrentGamesList
     private val ongoingGamesData = mutableListOf<Game>()
-    lateinit var gameDao: GameDao
-    lateinit var userDao: UserDao
+    private lateinit var gameDao: GameDao
+    private lateinit var userDao: UserDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
