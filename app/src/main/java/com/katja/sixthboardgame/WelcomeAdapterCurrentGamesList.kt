@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.katja.sixthboardgame.databinding.ListItemGameBinding
+import java.util.Date
 
 class WelcomeAdapterCurrentGamesList(private val context: Context, private val dataList: List<Game>, private val onItemClick: (String) -> Unit,private val fetchOpponentName: (String, (String) -> Unit) -> Unit)   : RecyclerView.Adapter<WelcomeAdapterCurrentGamesList.ViewHolder>() {
 
     private var handler: Handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable
 
+    // Here you can adjust the time.
     init {
         runnable = object : Runnable {
             override fun run() {
@@ -32,11 +34,33 @@ class WelcomeAdapterCurrentGamesList(private val context: Context, private val d
                 binding.gamelistOpponent.text = opponentName
             }
 
-            val timeLeft = game.getTimeLeft()
-            val hours = timeLeft / (1000 * 60 * 60)
-            val minutes = (timeLeft % (1000 * 60 * 60)) / (1000 * 60)
-            val seconds = (timeLeft % (1000 * 60)) / 1000
-            binding.gamelistTimeLeft.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            //val timeLeft = game.getTimeLeft()
+
+            val timeSinceLastTurn = Date().time - game.lastTurnTime.time
+            val timeLeft = game.turnTime - timeSinceLastTurn
+
+
+            if (timeLeft < 0){
+                binding.gamelistTimeLeft.text = "Game ended"
+            }
+            else {
+
+
+
+                if(game.nextPlayer != opponentId) {
+                    val hours = timeLeft / (1000 * 60 * 60)
+                    val minutes = (timeLeft % (1000 * 60 * 60)) / (1000 * 60)
+                    val seconds = (timeLeft % (1000 * 60)) / 1000
+                    binding.gamelistTimeLeft.text =
+                        String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                }
+                else{
+                    binding.gamelistTimeLeft.text = "It is opponent's turn"
+                }
+            }
+
+
+
 
             itemView.setOnClickListener {
                 onItemClick(game.id)
