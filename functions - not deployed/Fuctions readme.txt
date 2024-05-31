@@ -1,0 +1,1 @@
+Back-end functions prepared but not deployed, as cloud services require a payed Firebase account.
