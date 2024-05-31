@@ -51,7 +51,7 @@ class PendingInviteAdapter(
                         "PendingInviteAdapter",
                         "Item clicked at position $position: SenderId of invite = ${inviteList[position].senderId}"
                     )
-                    showGameDialog(receiverId, inviteList[position].senderId)
+                    showGameDialog(receiverId, inviteList[position].senderId, position)
                 }
             }
 
@@ -160,7 +160,7 @@ class PendingInviteAdapter(
         builder.show()
     }
 
-    private fun showGameDialog(senderId: String, receiverId: String) {
+    private fun showGameDialog(senderId: String, receiverId: String, position: Int) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val currentUserId = currentUser?.uid
 
@@ -192,6 +192,8 @@ class PendingInviteAdapter(
                         dialog.dismiss()
                         // Delete invite from Firebase (Parameters: receiverId, senderId)
                         inviteDao.deleteInvitation(receiverId, currentUserId)
+                        inviteList.removeAt(position)
+                        notifyDataSetChanged()
                     }
 
                     buttonCancel.setOnClickListener {
@@ -202,6 +204,8 @@ class PendingInviteAdapter(
                         dialog.dismiss()
                         // Delete invite from Firebase (Parameters: receiverId, senderId)
                         inviteDao.deleteInvitation(receiverId, currentUserId)
+                        inviteList.removeAt(position)
+                        notifyDataSetChanged()
                     }
 
                     val usernameText = dialog.findViewById<TextView>(R.id.usernameDialogTextView)
