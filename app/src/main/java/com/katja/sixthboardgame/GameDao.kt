@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import java.util.Date
+import com.google.firebase.Timestamp
 
 interface GameDeletionCallback {
     fun onGameDeleted(success: Boolean)
@@ -154,12 +155,14 @@ fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) 
             snapshot?.documents?.forEach { document ->
                 val data = document.data
                 if (data != null) {
-                    val id = data[KEY_ID] as String
-                    val playerIds = data[KEY_PLAYERIDS] as List<String>
-                    val nextPlayer = data[KEY_NEXTPLAYER] as String
-                    val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long).toInt()
-                    val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long).toInt()
-                    val gameBoardJson = data[KEY_GAMEBOARD] as String
+                    val id = data[KEY_ID] as String? ?: ""
+                    val playerIds = data[KEY_PLAYERIDS] as List<String>? ?: listOf()
+                    val nextPlayer = data[KEY_NEXTPLAYER] as String? ?: ""
+                    val freeDiscsGray = (data[KEY_FREE_DISCS_GRAY] as Long?)?.toInt() ?: -1
+                    val freeDiscsBrown = (data[KEY_FREE_DISCS_BROWN] as Long?)?.toInt() ?: -2
+                    val gameBoardJson = data[KEY_GAMEBOARD] as String? ?: ""
+                    val turnTime = (data[KEY_TURNTIME] as Long?)?.toInt() ?: 172800000
+                    val lastTurnTime = (data[KEY_LASTTURNTIME] as Timestamp?)?.toDate() ?: Date()
 
                     // Deserialize gameboard from JSON string to GameBoard object
                     val gameBoard = Gson().fromJson(gameBoardJson, GameBoard::class.java)
@@ -172,6 +175,8 @@ fun listenForCurrentUserGamesUpdates(currentId: String?, callback: (List<Game>) 
                         game.freeDiscsGray = freeDiscsGray
                         game.freeDiscsBrown = freeDiscsBrown
                         game.gameboard = gameBoard
+                        game.turnTime = turnTime
+                        game.lastTurnTime = lastTurnTime
 
                         gameList.add(game)
                     }
