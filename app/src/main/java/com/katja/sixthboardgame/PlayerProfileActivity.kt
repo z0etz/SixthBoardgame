@@ -29,7 +29,7 @@ class PlayerProfileActivity : AppCompatActivity() {
         val currentUserId = auth.currentUser?.uid
         Log.d("PlayerProfileActivity", "Current User ID: $currentUserId")
 
-        // Show username
+
         dao.fetchUsernameById(currentUserId ?: "Unknown") { username ->
             if (username != null) {
                 Log.d("PlayerProfileActivity", "Username: $username")
@@ -39,7 +39,7 @@ class PlayerProfileActivity : AppCompatActivity() {
             }
         }
 
-        // Show current score
+
         dao.fetchUserScoreById(currentUserId ?: "Unknown") { score ->
             if (score != null) {
                 Log.d("PlayerProfileActivity", "Score: $score")
@@ -77,8 +77,10 @@ class PlayerProfileActivity : AppCompatActivity() {
                                 Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show()
                                 val intent = Intent(this, MainActivity::class.java)
                                 startActivity(intent)
+                                auth.signOut()
                             }
                             .addOnFailureListener { exception ->
+
 
                                 Toast.makeText(this, "Failed to delete account", Toast.LENGTH_SHORT).show()
                                 Log.e("DeleteAccount", "Failed to delete user from Firebase Authentication", exception)
